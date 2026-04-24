@@ -1,0 +1,58 @@
+\chapter{Metodologia}
+\label{cap:03}
+
+% Este capítulo visa descrever a metodologia empregada no desenvolvimento do Guy - apresentando desde o Panorama Geral da Pesquisa até o desenvolvimento da aplicação em si.
+
+Este capítulo visa descrever a metodologia empregada no desenvolvimento do software Guy, apresentando desde o panorama geral da pesquisa até o detalhamento técnico da aplicação.
+
+\section{Panorama Geral da Pesquisa}
+% Elaborar uma ilustração visual, no esquema da Perspectiva do Produto do Documento de Visão e apresentar e explicar a figura aqui.
+% Esta figura tem que trazer o contexto principal da sua pesquisa, onde está inserido, envolvidos, beneficios, fluxo, etc...
+Como ilustrado na Figura \ref{fig:fluxo_guy}, o Guy tem como objetivo permitir que, durante o processo de desenvolvimento, os programadores gerem Grafos de Fluxo de Controle (GFCs) e testes de seus códigos de forma autônoma, orientando o desenvolvedor e proporcionando um fluxo de trabalho mais eficiente.
+
+\begin{figure}[htbp]
+\centering
+\caption{Fluxo de funcionamento da ferramenta proposta}
+% Placeholder para o desenho do grafo
+\includegraphics[width=0.75\linewidth]{imagens/fluxo_guy.png}
+
+\fonte{Elaborada pelo autor com auxílio da inteligência artificial Nano Banana Pro.}
+\label{fig:fluxo_guy}
+
+\end{figure}
+
+A dinâmica de funcionamento da ferramenta inicia-se com a inserção do código-fonte (\textit{source code}) pelo usuário. A partir desse ponto, o núcleo de processamento do Guy realiza a análise estática interna, mapeando as estruturas lógicas do algoritmo para, em seguida, construir a representação visual do Grafo de Fluxo de Controle. Essa abstração permite identificar claramente os nós de decisão e os caminhos de execução possíveis daquele trecho de software.
+
+Com o GFC estruturado, o sistema avança para a etapa de automação, derivando os casos de teste (\textit{test cases}) diretamente dos caminhos independentes identificados no grafo. Esse fluxo integrado visa mitigar o problema recorrente de rotinas de testes manuais e incompletas, beneficiando desenvolvedores e analistas de qualidade (\textit{testers}). Como resultado, observa-se o aumento da confiabilidade do software, a garantia de uma maior cobertura de testes e a viabilização de um fluxo de entregas contínuas e confiáveis (CI/CD).
+
+
+
+\section{Etapas para o Desenvolvimento da Ferramenta Proposta}
+% Elaborar uma figura de passo a passo para definir as etapas para o desenvolvimento e depois explicar detalhadamente como cada uma das etapas serão desenvolvidas.
+
+O processo de construção do Guy seguiu um ciclo de vida de desenvolvimento de software iterativo. As principais fases executadas para a consolidação deste projeto estão sumarizadas na Figura \ref{fig:fluxo_met_guy}.
+
+\begin{figure}[H]
+\centering
+\caption{Fluxo das etapas metodológicas para o desenvolvimento}
+% Placeholder para o desenho do grafo
+\includegraphics[width=0.35\linewidth]{imagens/fluxo_met_guy.png}
+
+\fonte{Elaborada pelo autor}
+\label{fig:fluxo_met_guy}
+
+\end{figure}
+
+Conforme evidenciado no diagrama acima, a metodologia adota uma progressão estruturada, garantindo que o desenvolvimento da ferramenta seja fundamentado em pesquisas sólidas antes de avançar para a construção técnica. O fluxo visualizado inicia-se no campo de investigação de mercado e de planejamento, estende-se pela concepção arquitetural e visual e culmina na fase de codificação e validação das funcionalidades.
+
+Essa cadência assegura que as limitações identificadas durante a análise de ferramentas concorrentes sejam diretamente traduzidas em requisitos funcionais para o Guy. Posteriormente, a prototipagem orienta de forma assertiva a fase de implementação, cujos resultados são submetidos a testes rigorosos de qualidade antes de chegarem ao usuário final. Cada bloco apresentado na Figura \ref{fig:fluxo_met_guy} representa um marco crítico do projeto, cujo detalhamento específico encontra-se descrito a seguir:
+
+\begin{enumerate}
+\item \textbf{Análise das Ferramentas Disponíveis no Mercado:} Foi realizada uma pesquisa exploratória para identificar soluções comerciais e \textit{open-source} similares. A análise comparativa examinou funcionalidades, custos e usabilidade, permitindo identificar lacunas nas soluções existentes.
+\item \textbf{Levantamento de Requisitos:} Nesta etapa inicial, foram identificadas as necessidades funcionais e não funcionais do sistema por meio de entrevistas com os \textit{stakeholders}.
+\item \textbf{Prototipagem e \textit{Design}:} Com base nos requisitos documentados, procedeu-se à elaboração dos \textit{wireframes} e à definição da arquitetura de informação do sistema.
+\item \textbf{Implementação (Codificação):} Fase de desenvolvimento efetivo, utilizando tecnologias como Node.js e React para o \textit{back-end} e o \textit{front-end}, respectivamente.
+\item \textbf{Validação e Testes:} Realização de testes de usabilidade e verificação de erros (\textit{bugs}) antes da liberação da versão final.
+\end{enumerate}
+
+Os resultados obtidos são apresentados no Capítulo 4, detalhando o processo de desenvolvimento da ferramenta Guy, desde sua concepção inicial até a validação das funcionalidades implementadas.

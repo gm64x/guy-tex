@@ -1,0 +1,37 @@
+\begin{center}
+
+   	\ABNTEXchapterfont\Large\textsf{\MakeUppercase{\imprimirautor}}
+   	\vspace{2.5cm}
+
+   	\ABNTEXchapterfont\LARGE\textsf{\MakeUppercase{\imprimirtitulo\ifdef{\osubtitulo}{:}{} }}
+
+    \ifdef{\osubtitulo}{\ABNTEXchapterfont\Large\imprimirsubtitulo}{}
+   	\vspace{2.5cm}
+
+   	\hspace{.4\textwidth}
+   	\begin{minipage}{.5\textwidth}
+   		\SingleSpacing
+   		\large\imprimirpreambulo
+
+   		\vspace{\onelineskip}
+
+   		Orientador: \imprimirorientador
+
+        \ifdef{\ocoorientador}{
+            \vspace{\onelineskip}
+
+       		Coorientador: \imprimircoorientador
+        }{}
+
+
+
+   	\end{minipage}%
+    \vfill
+
+   	\Large\textsf{\MakeUppercase{\imprimirlocal}}
+
+   	\Large\textsf{\MakeUppercase{\imprimirano}}
+
+   	\vspace*{2cm}
+
+\end{center}

@@ -1,0 +1,40 @@
+\chapter{Introdução}
+\label{cap:01}
+
+Nas últimas décadas, a Engenharia de Software consolidou-se como uma disciplina essencial para o processo de desenvolvimento de software. Segundo \citeonline{Pressman2016} e \citeonline{Sommerville2019} o software deixou de ser apenas uma ferramenta de suporte para se tornar o motor que garante o funcionamento da sociedade como a conhecemos.
+
+Entretanto, à medida que as funcionalidades dos sistemas aumentam, crescem também a complexidade do código-fonte. \citeonline{Sommerville2019} aponta que a complexidade é um dos maiores inimigos da confiabilidade, tornando impossível garantir a qualidade apenas com inspeção visual/manual. Esse cenário impõe um desafio crítico: garantir que a lógica funcione conforme o esperado. Como afirma \citeonline{Myers2014}, o objetivo do teste não é provar que o software funciona, mas sim encontrar falhas antes que o usuário o faça.
+
+É neste contexto que se destacam as técnicas de teste de caixa branca (estrutural) que analisam o interior do componente para identificar códigos mortos e otimizar o sistema. Essa análise é fundamentada no Grafo de Fluxo de Controle (GFC), uma estrutura abstrata onde nós representam instruções e arestas descrevem o fluxo de controle e os desvios lógicos do programa \cite{Delamaro2013}.
+
+O emprego do GFC fundamenta a aplicação de métricas estruturais rigorosas, com destaque para a Complexidade Ciclomática. Introduzida por \citeonline{McCabe1976}, esta métrica permite mensurar a complexidade lógica de um módulo e estabelecer a quantidade mínima de trajetos independentes necessários para uma cobertura de testes abrangente.
+
+
+
+\section{Justificativa}
+
+A garantia da qualidade de software consolidou-se como um fator crítico de sucesso na indústria de tecnologia. A presença de defeitos em ambientes de produção não afeta apenas a experiência do usuário, mas gera prejuízos financeiros significativos e, no caso de sistemas críticos, pode comprometer a segurança operacional \citeonline{Boehm2001}.
+
+\pagebreak
+
+Sob essa ótica, as diretrizes do autor para a redução de defeitos alertam que o custo para corrigir uma falha após a entrega do software é exponencialmente maior do que durante a fase de desenvolvimento. Entretanto, a crescente complexidade dos sistemas modernos dificulta a detecção manual de erros lógicos.
+
+Este trabalho propõe a aplicação de técnicas consolidadas da Engenharia de Software, apresentando uma ferramenta que busca auxiliar analistas, engenheiros e programadores a otimizar o fluxo de verificação e validação de código-fonte do sistema.
+
+
+\section{Objetivos}
+
+\subsection{Objetivo Geral}
+O objetivo desta pesquisa é desenvolver o Guy, uma ferramenta de análise de códigos-fonte para gerar, automaticamente, o Grafo de Fluxo de Controle (GFC), buscando auxiliar desenvolvedores na elaboração de testes estruturais e na mensuração da complexidade do código.
+
+\subsection{Objetivos Específicos}
+Para alcançar o objetivo geral, foram definidos os seguintes objetivos específicos:
+
+\begin{itemize}
+	\item Fundamentar conceitos de Teste de Software, Caixa Branca e a métrica de Complexidade Ciclomática de McCabe;
+	\item Implementar um analisador capaz de identificar estruturas de decisão e repetição no código-fonte inserido;
+	\item Desenvolver o algoritmo para mapeamento e renderização visual dos nós e arestas do Grafo de Fluxo de Controle;
+	\item Automatizar o cálculo da complexidade ciclomática ($V(G)$) com base na topologia do grafo gerado;
+	\item Desenvolver uma aplicação \textit{web} para que o usuário tenha acesso a ferramenta;
+    \item Validar a ferramenta desenvolvida comparando os grafos gerados experimentos reais;
+\end{itemize}

@@ -1,0 +1,102 @@
+\chapter{Resultados e Conclusões Parciais}
+\label{cap:04}
+
+\section{Análise das Ferramentas Disponíveis no mercado}
+
+%Lista e descreve brevemente ferramentas existentes (SonarQube, CodeClimate, PMD, ESLint, etc.).
+Existem diversas ferramentas de mercado focadas na qualidade de código, embora muitas vezes com objetivos distintos da visualização educacional de grafos. 
+
+Sendo assim, esta seção busca apresentar algumas das principais ferramentas disponíveis no mercado, com o objetivo de analisar suas funcionalidades para embasar a construção da ferramenta proposta nesta pesquisa.
+
+\subsection{SonarQube}
+
+A Ferramenta Sonar Qube (Figura 4) é uma plataforma  de código aberto (\textit{open source}), líder em inspeção contínua da qualidade do código . Ao invés de apenas gerar listas de erros, a ferramenta permite a análise , rastreiro e gerenciamento  da qualidade do software de modo proativo ao longo do tempo \citeonline{sonarqube}. 
+\begin{figure}[H]
+    \centering
+    \caption{Captura de tela da interface do SonarQube}
+    \includegraphics[width=0.75\linewidth]{imagens/sonarqube-screen.png}
+    \fonte{Adaptado de SonarSource (2026).}
+    \label{fig:sonarqube_screen}
+\end{figure}
+
+ 
+
+Atuando na exibição de potenciais \textit{bugs}, violações de convenções e de boas práticas (como padrões de estilo e nomenclatura), além de medir a cobertura de testes e a duplicação de código. Também avalia a quantidade de comentários em APIs públicas, escolhas de arquitetura e \textit{design}, e a complexidade ciclomática. Dessa forma, possibilita a inspeção contínua por meio de \textit{dashboards} e histórico de análises, integrando-se às principais IDEs do mercado \citeonline{campbell2013sonarqube}.
+
+No entanto, embora a plataforma possua uma versão gratuita, algumas funcionalidades avançadas como \textit{plugins} e recursos gerenciais são comerciais e requerem pagamento. Ademais, a ferramenta pode apresentar dificuldades na análise simultânea de múltiplas linguagens e está sujeita à ocorrência de falsos positivos. Vale ressaltar que, apesar de calcular a complexidade ciclomática, os dados são exibidos de forma tabular nos \textit{dashboards}, sem focar na visualização gráfica do Grafo de Fluxo de Controle (GFC) do algoritmo.
+
+
+\subsection{Codacy}
+
+O Codacy (Figura 5) é uma plataforma de análise estática de código fechado (\textit{closed-source}), embora gratuita para projetos de código aberto, com foco na melhoria da qualidade do software, aumento da cobertura de testes e prevenção de falhas de segurança \citeonline{ardito2020tool}. Distanciando-se de métricas matemáticas puras, a ferramenta prioriza uma abordagem prática na identificação de bugs e comportamentos indefinidos numa ampla variedade de linguagens de programação \citeonline{ardito2020tool}.
+
+\begin{figure}[h]
+    \centering
+    \caption{Interface do Dashboard de Monitoramento Codacy}
+    \includegraphics[width=0.5\linewidth]{imagens/codacy-fromCodacyDocs-print.png}
+    \label{fig:codacy_dashboard}
+    \fonte{Documentação Oficial do Codacy (2026). }
+\end{figure}
+
+Esta plataforma destaca-se pela sua interface amigável e intuitiva, sendo considerada ideal para iniciantes, além de exigir pouquíssimos passos para configuração e integração nos projetos \citeonline{imbugwa2021case, rahmawati2023analisis}. Como diferencial, o Codacy consolida estatísticas detalhadas sobre propensão a erros, estilo e segurança num dashboard, atribuindo uma nota geral ao projeto que varia de "A" (alta qualidade) a "F" (baixa qualidade) \citeonline{ardito2020tool, imbugwa2021case}.
+
+No entanto, a ferramenta apresenta desvantagens na sua transparência e eficácia técnica, a começar pela metodologia opaca na agregação de métricas para a nota final, que impede as equipes de desenvolvimento de compreenderem com exatidão o peso de cada fator \citeonline{ardito2020tool, imbugwa2021case}. A análise depende frequentemente de \textit{linters} de terceiros e é propensa a gerar falsos positivos \citeonline{imbugwa2021case}.  Consequentemente, embora avalie categorias de complexidade \citeonline{ardito2020tool}, os seus resultados permanecem restritos a notas agregadas e painéis, mantendo a lacuna analítica de não fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
+
+\subsection{ESLint}
+
+O ESLint (Figura 6) é um \textit{linter} plugável e uma ferramenta de análise estática de código amplamente utilizada, projetada para JavaScript e extensível ao TypeScript por meio de plugins \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Tendo como função principal é examinar o código sem executá-lo para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. Destacando-se por sua alta flexibilidade, não possuindo regras ativadas por padrão e permitindo a adoção de presets da comunidade \citeonline{tomasdottir2020adoption}. 
+
+\begin{figure}[H]
+    \centering
+    \caption{Playground do ESLint  exibindo a identificação de erros de sintaxe e estilo.}
+    \includegraphics[width=0.75\linewidth]{imagens/eslint-capture.png}
+    \fonte{Adaptado de ESLint (2026).}
+    \label{fig:eslint_playground_demo}
+\end{figure}
+
+Além de oferecer correção automática (auto-fix) e um ecossistema extensível \citeonline{rafnsson2020fixing, bhutani2024analysing}, o ESLint possui fácil integração com IDEs e pipelines de CI/CD, fornecendo \textit{feedback} em tempo real e atuando como um recurso educacional para os desenvolvedores \citeonline{bhutani2024analysing, murugaraj_automated, tomasdottir2017why}.
+
+Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint varre apenas um arquivo por vez, o que impede a detecção de vulnerabilidades complexas originadas na interação entre diferentes módulos ou em dependências de terceiros \citeonline{rafnsson2020fixing}. Sua eficácia também esbarra na natureza dinâmica do JavaScript, não sendo capaz de prever erros em tempo de execução \citeonline{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; esse excesso de avisos frequentemente resulta em uma ``fadiga de alertas'', levando os desenvolvedores a ignorarem os reportes ou a perderem a confiança na análise \citeonline{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
+
+No que diz respeito à análise da estrutura lógica, essa restrição estática torna-se ainda mais limitante. Embora possua regras nativas para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, ele atua estritamente como um verificador textual, analisando o código linha a linha \citeonline{eslint}. Consequentemente, a plataforma não fornece nenhuma representação visual do fluxo de execução do algoritmo, restringindo a compreensão estrutural a meros alertas em texto e falhando em prover uma visualização gráfica do fluxo de controle.
+
+
+\section{Levantamento de Requisitos da Ferramenta Guy}
+
+Esta seção irá apresentar um levantamento de requisitos inicial da Ferramenta Guy, propsota nesta pesquisa.
+
+O acesso à ferramenta poderá ser realizado por meio de uma interface web intuitiva e também integrado diretamente ao ambiente de desenvolvimento através de uma extensão para o editor Visual Studio Code \citeonline{microsoft_vscode}. Um requisito fundamental é que a análise estática seja executada de forma estritamente local (\textit{client-side}). Isso será possível graças ao uso de tecnologias como o WebAssembly e o Tree-sitter, que atuarão na construção eficiente da árvore sintática, podendo integrar-se ao ecossistema do ESLint para potencializar o fornecimento de diagnósticos. 
+
+Essa arquitetura garante que o processamento léxico e sintático do código ocorra diretamente no navegador ou no computador do usuário. Dessa forma, assegura-se um \textit{feedback} em tempo real durante a escrita do código. Além disso, essa abordagem assegura a conformidade (\textit{compliance}) com políticas de segurança corporativa e privacidade, ao proteger a propriedade intelectual e evitar a exposição do código a ambientes de terceiros, eliminando os custos com infraestrutura de nuvem, uma vez que dispensa o envio dos trechos desenvolvidos para servidores externos.
+
+No aspecto funcional, a principal entrega do sistema consiste na renderização visual interativa do Grafo de Fluxo de Controle (GFC) assim que o código-fonte é analisado. A interface deverá permitir que o programador interaja com o grafo gerado, correlacionando visualmente os nós de decisão e as arestas direcionadas com as respectivas linhas do texto inserido. Em conjunto com essa visualização, a plataforma tem o requisito de calcular e exibir instantaneamente a métrica de Complexidade Ciclomática, atuando como um indicador imediato sobre a saúde, a legibilidade e a testabilidade do código.
+
+De modo que a aplicação atue de forma ativa junto com o desenvolvedor na garantia da qualidade do software, ela deverá ser capaz de derivar e sugerir casos de teste automatizados com base nos caminhos linearmente independentes identificados no grafo. O sistema guiará o programador para alcançar uma cobertura estrutural completa das funções analisadas. Dessa forma, a análise estática converte-se em uma etapa de apoio prático, otimizando o tempo do desenvolvedor e facilitando a construção de uma base de código confiável e rigorosamente testada antes mesmo de ser submetida a qualquer processo posterior de integração.
+
+\section{Prototipagem e Design da Ferramenta Guy}
+
+ROADMAP: 
+1. Definição da Arquitetura de Funcionamento da Ferramenta
+. Web? Desktop? Plugin do VSCode?
+. Quais linguagens utilizaremos?
+. Como as coisas interagem? Fluxo de dados entre as partes?
+
+2. Quais são as funcionalidades que a Ferramenta tem?
+. Upload de código-fonte?
+. Desenhar o GFC
+. Visualizar Detalhes de Nós e Arestas
+. Cálculo do V(g)
+
+Eh um Diagrama de Casos de Uso e Cenários (PRECISAMOS VALIDAR ISTO O QUANTO ANTES)
+
+------ 28/04
+
+3. Prototipar o Frontend da Ferramenta (Com base nos Casos de Uso)
+
+4. Desenvolver o Backend para Aplicar as Regras criadas (Com base nos Casos de Uso)
+
+PRAZO PARA TERMINAR A APLICAÇÃO: 24/05/2026
+ESCRITA: 25/05 a 20/06
+%\section{Implementação da Ferramenta Guy}
+
+%\section{Validação e Testes da Ferramenta Guy}
