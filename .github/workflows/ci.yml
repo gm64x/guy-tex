@@ -1,5 +1,9 @@
 name: CI — Render Diagrams & Build LaTeX
 
+env:
+  DIAGRAMS_DIR: imagens/diagrams
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
 on:
   push:
     paths:
@@ -33,7 +37,48 @@ on:
         default: ""
 
 jobs:
+  dry-run:
+    name: Dry-run detection
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect changed files and print flags
+        run: |
+          set -euo pipefail
+          echo "Dry-run: Detecting changed files (mermaid / latex)"
+
+          CHANGED=""
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "Event is pull_request, base_ref=${{ github.base_ref }}"
+            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}" || true
+            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} || true)
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            echo "Event is push, before=${{ github.event.before }} sha=${{ github.sha }}"
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
+          else
+            echo "Event ${GITHUB_EVENT_NAME} - falling back to listing tracked files"
+            CHANGED=$(git ls-files '*.mmd' '*.tex' '*.bib' '*.sty' '*.cls' || true)
+          fi
+
+          echo "Changed files:\n$CHANGED"
+
+          mermaid_changed=false
+          latex_changed=false
+          if echo "$CHANGED" | grep -q "\.mmd\b"; then
+            mermaid_changed=true
+          fi
+          if echo "$CHANGED" | grep -E "\.(tex|bib|sty|cls)\b"; then
+            latex_changed=true
+          fi
+
+          echo "mermaid_changed=$mermaid_changed"
+          echo "latex_changed=$latex_changed"
+          echo "changed_files:\n$CHANGED"
+
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
@@ -106,13 +151,13 @@ jobs:
           set -euo pipefail
           npm install -g @mermaid-js/mermaid-cli@9
 
-      - name: Render .mmd -> imagens/ (only changed or forced)
+      - name: Render .mmd -> diagrams dir (only changed or forced)
         if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
         working-directory: ${{ github.workspace }}
         run: |
           set -euo pipefail
-          mkdir -p imagens/diagrams
-          echo "Rendering Mermaid files to imagens/diagrams/"
+          mkdir -p "$DIAGRAMS_DIR"
+          echo "Rendering Mermaid files to $DIAGRAMS_DIR"
 
           # Safely dump the changed_files output to a temp file and iterate it line-by-line
           echo "${{ steps.detect.outputs.changed_files }}" > .changed_files_list || true
@@ -121,23 +166,23 @@ jobs:
             while IFS= read -r f; do
               [ -z "$f" ] && continue
               case "$f" in
-                              *.mmd)
-                                base=$(basename "$f" .mmd)
-                                out="imagens/diagrams/${base}.png"
-                                echo "Rendering $f -> $out"
-                                npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" || npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" --quiet || true
-                                ;;
-                              *) ;;
+                *.mmd)
+                  base=$(basename "$f" .mmd)
+                  out="$DIAGRAMS_DIR/${base}.png"
+                  echo "Rendering $f -> $out"
+                  npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" || npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" --quiet || true
+                  ;;
+                *) ;;
               esac
             done < .changed_files_list
           else
             echo "No changed file list available; rendering all .mmd files"
             for f in $(git ls-files '*.mmd'); do
-                          base=$(basename "$f" .mmd)
-                          out="imagens/diagrams/${base}.png"
-                          echo "Rendering $f -> $out"
-                          npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" || npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" --quiet || true
-                        done
+              base=$(basename "$f" .mmd)
+              out="$DIAGRAMS_DIR/${base}.png"
+              echo "Rendering $f -> $out"
+              npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" || npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" --quiet || true
+            done
           fi
 
       - name: Commit rendered PNGs (with loop protection)
@@ -146,7 +191,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add imagens/diagrams/*.png || true
+          git add "$DIAGRAMS_DIR"/*.png || true
 
           if git diff --staged --quiet; then
             echo "No diagram PNGs to commit"
@@ -238,6 +283,17 @@ jobs:
           pdflatex -interaction=nonstopmode -halt-on-error "$ROOT_TEX" || true
           pdflatex -interaction=nonstopmode -halt-on-error "$ROOT_TEX" || true
 
+      - name: Set PDF path
+        id: pdfpath
+        if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
+        env:
+          ROOT_TEX: ${{ steps.findroot.outputs.root_tex }}
+        run: |
+          set -euo pipefail
+          pdf="${ROOT_TEX%.tex}.pdf"
+          echo "pdf_path=$pdf" >> $GITHUB_OUTPUT
+          echo "Set pdf_path=$pdf"
+
       - name: Upload generated PDF
         if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
         uses: actions/upload-artifact@v4
@@ -265,6 +321,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.findroot.outputs.root_tex }}
-          asset_name: ${{ steps.findroot.outputs.root_tex }}
+          asset_path: ${{ steps.pdfpath.outputs.pdf_path }}
+          asset_name: ${{ steps.pdfpath.outputs.pdf_path }}
           asset_content_type: application/pdf
