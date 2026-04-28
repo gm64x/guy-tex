@@ -3,6 +3,7 @@ name: CI — Render Diagrams & Build LaTeX
 env:
   DIAGRAMS_DIR: imagens/diagrams
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+  MERMAID_CLI_VERSION: "9"
 
 on:
   push:
@@ -145,11 +146,21 @@ jobs:
         with:
           node-version: "18"
 
+      - name: Cache npm cache (speed up mermaid-cli fetch)
+        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-cache-mermaid-${{ env.MERMAID_CLI_VERSION }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-mermaid-${{ env.MERMAID_CLI_VERSION }}-
+            ${{ runner.os }}-npm-cache-mermaid-
+
       - name: Install mermaid-cli
         if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
         run: |
           set -euo pipefail
-          npm install -g @mermaid-js/mermaid-cli@9
+          npm install -g @mermaid-js/mermaid-cli@${{ env.MERMAID_CLI_VERSION }}
 
       - name: Render .mmd -> diagrams dir (only changed or forced)
         if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
@@ -185,8 +196,49 @@ jobs:
             done
           fi
 
-      - name: Commit rendered PNGs (with loop protection)
+      - name: Validate generated diagrams (ensure outputs exist before commit)
         if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
+        working-directory: ${{ github.workspace }}
+        run: |
+          set -euo pipefail
+          echo "Validating generated diagrams"
+
+          # Use changed_files_list if present, otherwise consider all .mmd files
+          if [ -s .changed_files_list ]; then
+            files_list=.changed_files_list
+          else
+            git ls-files '*.mmd' > .changed_files_list_all || true
+            files_list=.changed_files_list_all
+          fi
+
+          missing=0
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              *.mmd)
+                base=$(basename "$f" .mmd)
+                img="$DIAGRAMS_DIR/${base}.png"
+                if [ ! -f "$img" ]; then
+                  echo "ERROR: expected diagram not found: $img"
+                  missing=$((missing+1))
+                else
+                  echo "Found: $img"
+                fi
+                ;;
+              *) ;;
+            esac
+          done < "$files_list"
+
+          if [ "$missing" -gt 0 ]; then
+            echo "Validation failed: $missing diagrams missing"
+            exit 1
+          fi
+          echo "All expected diagrams are present"
+
+      - name: Commit rendered PNGs (with stronger loop protection)
+        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
+        env:
+          GITHUB_ACTOR: ${{ github.actor }}
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
@@ -198,24 +250,38 @@ jobs:
             exit 0
           fi
 
-          # Loop protection: if last commit author is the workflow bot, skip committing to avoid loops
+          # Loop protection: skip commit if the triggering actor is a workflow/bot or last commit author is the bot
           last_author=$(git log -1 --pretty=%an || echo "")
           echo "Last commit author: $last_author"
-          if echo "$last_author" | grep -qi "github-actions"; then
-            echo "Last commit was by a workflow bot; skipping commit to avoid loop"
+          echo "GitHub actor: $GITHUB_ACTOR"
+
+          # Normalize to lowercase for checks
+          la_lower=$(echo "$last_author" | tr '[:upper:]' '[:lower:]')
+          actor_lower=$(echo "$GITHUB_ACTOR" | tr '[:upper:]' '[:lower:]')
+
+          if echo "$la_lower" | grep -qi "github-actions" || echo "$actor_lower" | grep -qi "github-actions" || echo "$actor_lower" | grep -qi "[bot]"; then
+            echo "Detected bot actor/author (last_author or github.actor). Skipping commit to avoid loop."
             exit 0
           fi
 
-          # Use [skip ci] in the commit message to avoid retriggering workflows
-          git commit -m "chore: render mermaid diagrams to PNG [skip ci]"
+          # Use both common skip tokens to maximize CI skip coverage
+          git commit -m "chore: render mermaid diagrams to PNG [skip ci][ci skip]"
           git push
 
-      - name: Setup TeX (only if LaTeX changes detected)
+      - name: Setup TeX (conditional full/minimal install)
         if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-bibtex-extra latexmk
+
+          # Install texlive-full only on main/master or if explicitly forced
+          if [ "${{ github.ref }}" = "refs/heads/main" ] || [ "${{ github.ref }}" = "refs/heads/master" ] || [ "${{ github.event.inputs.force_publish }}" = "true" ] || [ "${{ github.event.inputs.force_all }}" = "true" ] || [ "${{ github.event.inputs.force_latex }}" = "true" ]; then
+            echo "Installing full TeX Live (may be large)"
+            sudo apt-get install -y texlive-full latexmk || true
+          else
+            echo "Installing minimal TeX set for PRs/feature branches"
+            sudo apt-get install -y --no-install-recommends texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-bibtex-extra latexmk || true
+          fi
 
       - name: Find root .tex file (with debug and override)
         id: findroot
