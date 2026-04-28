@@ -21,8 +21,9 @@ render_file() {
   local out="$DIAGRAMS_DIR/${base}.png"
 
   echo "Process: '$f' -> '$out'"
-  # Use the puppeteer config file with the -p flag
-  if ! npx -y @mermaid-js/mermaid-cli@9 -i "$f" -o "$out" --quiet -p "$PUPPETEER_CONFIG"; then
+  # Use the version from env or default to 9
+  local version="${MERMAID_CLI_VERSION:-9}"
+  if ! npx -y "@mermaid-js/mermaid-cli@$version" -i "$f" -o "$out" --quiet -p "$PUPPETEER_CONFIG"; then
     echo "::warning file=$f::Failed to render Mermaid diagram. Skipping."
     return 0
   fi

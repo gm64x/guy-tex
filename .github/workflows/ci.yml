@@ -62,9 +62,9 @@ jobs:
 
           echo "$CHANGED" > .changed_files_list
 
-          MERMAID=$(grep -q "\.mmd\b" .changed_files_list && echo "true" || echo "false")
-          LATEX=$(grep -E "\.(tex|bib|sty|cls)\b" .changed_files_list && echo "true" || echo "false")
-
+          # Use grep -E for extended regex and line-end anchors for reliability
+          MERMAID=$(grep -Eq "\.mmd$" .changed_files_list && echo "true" || echo "false")
+          LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
           [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; LATEX="true"; }
 
           echo "mermaid_changed=$MERMAID" >> $GITHUB_OUTPUT
