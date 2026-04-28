@@ -76,7 +76,7 @@ jobs:
         if: steps.detect.outputs.mermaid_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "24"
 
       - name: Render Diagrams
         if: steps.detect.outputs.mermaid_changed == 'true'
