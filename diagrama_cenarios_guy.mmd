@@ -1,0 +1,23 @@
+sequenceDiagram
+    actor Usuario as Desenvolvedor
+    participant Editor as VS Code
+    participant Extensao as Extensao Guy
+    participant Painel as Painel lateral
+
+    rect rgb(240, 248, 255)
+        Note over Usuario,Painel: Cenario 1: visualizacao inicial do GFC e de V(g)
+        Usuario->>Editor: Abre arquivo de codigo-fonte
+        Usuario->>Extensao: Aciona a extensao com o editor em foco
+        Extensao->>Extensao: Analisa o codigo localmente
+        Extensao->>Painel: Abre painel lateral
+        Painel-->>Usuario: Exibe GFC e valor de V(g)
+    end
+
+    rect rgb(245, 245, 245)
+        Note over Usuario,Editor: Cenario 2: navegacao interativa pelo grafo
+        Usuario->>Painel: Seleciona vertice ou aresta do GFC
+        Painel->>Extensao: Envia elemento selecionado
+        Extensao->>Extensao: Identifica trecho correspondente no codigo
+        Extensao->>Editor: Move cursor para a regiao relacionada
+        Editor-->>Usuario: Destaca o trecho de codigo correspondente
+    end

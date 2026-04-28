@@ -24,7 +24,7 @@ Esse processo inicia-se de forma granular, focando em componentes individuais ou
 %Descreve os princípios do teste estrutural, destacando sua análise da lógica interna do programa. Mostra por que ele é relevante para identificar caminhos independentes, estruturas condicionais e decisões do código.
 Por sua vez, o teste estrutural, também conhecido como teste de caixa branca, foca na análise da lógica interna do programa \cite{Delamaro2013}. Ao contrário do teste de caixa preta, que observa apenas se as entradas e saídas correspondem ao esperado, esta técnica exige acesso ao código-fonte para avaliar caminhos de execução, \textit{loops} e condições lógicas.
 
-Sua relevância reside na capacidade de garantir que as estruturas foram executadas adequadamente. Isso inclui verificar se todas as instruções independentes foram executadas, se os desvios lógicos (verdadeiro e falso) foram testados, se os laços de repetição operaram dentro do esperado e se a lógica de negócio está sendo aplicada, sendo a base para a identificação de códigos desnecessários.
+Sua relevância reside na capacidade de orientar a verificação das estruturas internas do programa. Isso inclui apoiar a identificação de instruções, desvios lógicos (verdadeiro e falso), laços de repetição e caminhos independentes que devem ser considerados durante o planejamento dos testes.
 
 \subsubsection{Grafo de Fluxo de Controle (GFC)}
 
@@ -50,7 +50,7 @@ A partir da análise do Código, é possível mapear a lógica para uma represen
     \fonte{Elaborada pelo Autor}
 \end{figure}
 
-\subsubsection{Complexidade Ciclomática - V(g)}
+\subsubsection{Complexidade Ciclomática - V(G)}
 
 %Detalha a métrica proposta por McCabe, apresentando fórmula, interpretação, relação com quantidade de caminhos independentes e justificativa para sua adoção como indicador de complexidade lógica.
 A Complexidade Ciclomática é uma métrica de software desenvolvida por Thomas McCabe em 1976. Ela quantifica a complexidade lógica de um programa contando o número de caminhos linearmente independentes através do seu Grafo de Fluxo de Controle \citeonline{McCabe1976}.
@@ -99,17 +99,16 @@ Em seguida, realiza-se a identificação de estruturas através da \textbf{anál
 \section{Tecnologias e Linguagens Adotadas}
 
 %Apresenta as tecnologias que podem ser aplicadas no desenvolvimento da ferramenta web: frameworks front-end, back-end, bibliotecas de parsing, libs de visualização de grafos, e justificativas técnicas para as escolhas.
-A ferramenta proposta a ser desenvolvida nesta pesquisa busca utilizar uma arquitetura moderna baseada em tecnologias Web. No \textit{front-end}, o framework \textbf{React.js} se destaca pela sua eficiência na atualização da interface do usuário baseada em estados e pelo seu vasto ecossistema de componentes reutilizáveis \citeonline{react_docs}.
+A ferramenta proposta nesta pesquisa adota uma arquitetura de extensão para o \textit{Visual Studio Code}. A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar o processo de análise estática e coordenar a comunicação com a interface. Para a camada visual, o framework \textbf{React.js} é utilizado em uma \textit{Webview}, permitindo a renderização interativa do Grafo de Fluxo de Controle \citeonline{react_docs}.
 
-Para o processamento de código e análise sintática (\textit{parsing}), a arquitetura foi projetada visando a extensibilidade e o suporte a múltiplos paradigmas de programação, visto que a linguagem-alvo de análise ainda está em definição. Para isso, adotam-se preferencialmente o \textbf{Tree-sitter} \citeonline{TreeSitterWeb}, uma ferramenta moderna de geração de analisadores que utiliza \textit{WebAssembly} para executar com alta performance diretamente no navegador. Como alternativa consolidada no meio acadêmico e na construção de compiladores, considera-se também a utilização do \textbf{ANTLR} (\textit{Another Tool for Language Recognition}) \cite{ANTLRWeb}.
+Para o processamento de código e análise sintática (\textit{parsing}), a arquitetura foi projetada visando a extensibilidade e o suporte a múltiplos paradigmas de programação, visto que a linguagem-alvo de análise ainda está em definição. Para isso, adota-se preferencialmente o \textbf{Tree-sitter} \citeonline{TreeSitterWeb}, uma ferramenta moderna de geração de analisadores que pode ser utilizada com \textit{WebAssembly} para executar com desempenho adequado no ambiente local da extensão. Como alternativa consolidada no meio acadêmico e na construção de compiladores, considera-se também a utilização do \textbf{ANTLR} (\textit{Another Tool for Language Recognition}) \cite{ANTLRWeb}.
 
-Essa abordagem agnóstica à linguagem permite que a ferramenta gere a Árvore Sintática Abstrata (AST) e, consequentemente, o Grafo de Fluxo de Controle (GFC) para diversas linguagens (como JavaScript, Python, Java ou C++) apenas alternando as gramáticas utilizadas, sem necessidade de reestruturar o núcleo de visualização. Para a renderização visual dos grafos gerados, empregam-se bibliotecas especializadas como \textbf{Cytoscape.js} \citeonline{CytoscapeWeb} ou \textbf{D3.js} \citeonline{D3Web}, garantindo interatividade e performance no lado do cliente (\textit{client-side}).
+Essa abordagem agnóstica à linguagem permite que a ferramenta gere a Árvore Sintática Abstrata (AST) e, consequentemente, o Grafo de Fluxo de Controle (GFC) para diversas linguagens apenas alternando as gramáticas utilizadas, sem necessidade de reestruturar o núcleo de visualização. Para a renderização visual dos grafos gerados, empregam-se bibliotecas especializadas como \textbf{Cytoscape.js} \citeonline{CytoscapeWeb} ou \textbf{D3.js} \citeonline{D3Web}, garantindo interatividade na \textit{Webview} da extensão.
 
 
 %\section{Ferramentas Correlatas}
 
 %Lista e descreve brevemente ferramentas existentes (SonarQube, CodeClimate, PMD, ESLint, etc.).
-Existem diversas ferramentas de mercado focadas na qualidade de código, embora muitas vezes com objetivos distintos da visualização educacional de grafos.
 
 %\subsection{SonarQube}
 %Plataforma líder em inspeção contínua da qualidade do código \citeonline{sonarqube}. Realiza análise estática para detectar bugs e ``code smells'' em várias linguagens. Embora calcule a complexidade ciclomática, exibe os dados de forma tabular em dashboards, sem focar na visualização gráfica do fluxo de controle do algoritmo.
@@ -133,7 +132,7 @@ A principal distinção reside no escopo: o VEIL é um algoritmo de otimização
 \subsection{CodeSurfer}
 O CodeSurfer, desenvolvido pela GrammaTech, é uma ferramenta de alta precisão para análise estática e navegação em código-fonte complexo (C/C++) \citeonline{codesurfer}. Diferente de IDEs comuns, ele constrói uma rede de dependências completa do software, permitindo que o desenvolvedor visualize e navegue pelo Grafo de Fluxo de Controle e pelo Grafo de Dependência de Dados de qualquer função.
 
-A distinção em relação ao trabalho proposto é o público-alvo e a complexidade. O CodeSurfer é uma solução industrial voltada para auditoria de segurança e manutenção de sistemas legados críticos. A ferramenta aqui desenvolvida busca simplificar esse poder de análise, trazendo a geração automática de GFCs para o contexto educacional e para a web (JavaScript), removendo a barreira de entrada e a complexidade de configuração de ferramentas comerciais pesadas.
+A distinção em relação ao trabalho proposto é o público-alvo e a complexidade. O CodeSurfer é uma solução industrial voltada para auditoria de segurança e manutenção de sistemas legados críticos. A ferramenta aqui desenvolvida busca simplificar esse poder de análise, trazendo a geração automática de GFCs para o contexto educacional e para o ambiente local do \textit{Visual Studio Code}, removendo a barreira de entrada e a complexidade de configuração de ferramentas comerciais pesadas.
 
 \subsection{Code2Flow}
 O Code2Flow é uma ferramenta comercial amplamente utilizada para converter pseudocódigo e códigos de diversas linguagens em fluxogramas interativos \citeonline{code2flow}. Seu foco principal é a documentação de processos e a comunicação lógica entre gerentes e desenvolvedores, permitindo a criação rápida de diagramas a partir de texto.

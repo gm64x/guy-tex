@@ -1,13 +1,13 @@
 \chapter{Introdução}
 \label{cap:01}
 
-Nas últimas décadas, a Engenharia de Software consolidou-se como uma disciplina essencial para o processo de desenvolvimento de software. Segundo \citeonline{Pressman2016} e \citeonline{Sommerville2019} o software deixou de ser apenas uma ferramenta de suporte para se tornar o motor que garante o funcionamento da sociedade como a conhecemos.
+Nas últimas décadas, a Engenharia de Software consolidou-se como uma disciplina essencial para o processo de desenvolvimento de software. Segundo \citeonline{Pressman2016} e \citeonline{Sommerville2019}, os sistemas computacionais passaram a exercer papel central em atividades sociais, econômicas e organizacionais.
 
-Entretanto, à medida que as funcionalidades dos sistemas aumentam, crescem também a complexidade do código-fonte. \citeonline{Sommerville2019} aponta que a complexidade é um dos maiores inimigos da confiabilidade, tornando impossível garantir a qualidade apenas com inspeção visual/manual. Esse cenário impõe um desafio crítico: garantir que a lógica funcione conforme o esperado. Como afirma \citeonline{Myers2014}, o objetivo do teste não é provar que o software funciona, mas sim encontrar falhas antes que o usuário o faça.
+Entretanto, à medida que as funcionalidades dos sistemas aumentam, cresce também a complexidade do código-fonte. \citeonline{Sommerville2019} aponta que a complexidade é um dos maiores inimigos da confiabilidade, tornando insuficiente garantir a qualidade apenas por inspeção manual. Esse cenário impõe um desafio crítico: verificar se a lógica do software se comporta conforme o esperado. Como afirma \citeonline{Myers2014}, o objetivo do teste não é provar que o software funciona, mas encontrar falhas antes que elas cheguem ao usuário.
 
-É neste contexto que se destacam as técnicas de teste de caixa branca (estrutural) que analisam o interior do componente para identificar códigos mortos e otimizar o sistema. Essa análise é fundamentada no Grafo de Fluxo de Controle (GFC), uma estrutura abstrata onde nós representam instruções e arestas descrevem o fluxo de controle e os desvios lógicos do programa \cite{Delamaro2013}.
+É neste contexto que se destacam as técnicas de teste de caixa branca (estrutural), que analisam a lógica interna do componente para identificar caminhos de execução, estruturas de decisão e fluxos que devem ser considerados durante o planejamento dos testes. Essa análise pode ser representada pelo Grafo de Fluxo de Controle (GFC), uma estrutura abstrata em que nós representam blocos de instruções e arestas descrevem o fluxo de controle e os desvios lógicos do programa \cite{Delamaro2013}.
 
-O emprego do GFC fundamenta a aplicação de métricas estruturais rigorosas, com destaque para a Complexidade Ciclomática. Introduzida por \citeonline{McCabe1976}, esta métrica permite mensurar a complexidade lógica de um módulo e estabelecer a quantidade mínima de trajetos independentes necessários para uma cobertura de testes abrangente.
+O emprego do GFC fundamenta a aplicação de métricas estruturais, com destaque para a Complexidade Ciclomática. Introduzida por \citeonline{McCabe1976}, esta métrica permite mensurar a complexidade lógica de um módulo e estimar o número de caminhos linearmente independentes que podem orientar a definição de casos de teste.
 
 
 
@@ -17,24 +17,24 @@ A garantia da qualidade de software consolidou-se como um fator crítico de suce
 
 \pagebreak
 
-Sob essa ótica, as diretrizes do autor para a redução de defeitos alertam que o custo para corrigir uma falha após a entrega do software é exponencialmente maior do que durante a fase de desenvolvimento. Entretanto, a crescente complexidade dos sistemas modernos dificulta a detecção manual de erros lógicos.
+Sob essa ótica, estudos sobre redução de defeitos alertam que o custo para corrigir uma falha após a entrega do software tende a ser maior do que durante a fase de desenvolvimento. Entretanto, a crescente complexidade dos sistemas modernos dificulta a detecção manual de erros lógicos.
 
-Este trabalho propõe a aplicação de técnicas consolidadas da Engenharia de Software, apresentando uma ferramenta que busca auxiliar analistas, engenheiros e programadores a otimizar o fluxo de verificação e validação de código-fonte do sistema.
+Este trabalho propõe a aplicação de técnicas consolidadas da Engenharia de Software, apresentando uma ferramenta que busca auxiliar analistas, engenheiros e programadores no processo de verificação e validação estrutural de código-fonte.
 
 
 \section{Objetivos}
 
 \subsection{Objetivo Geral}
-O objetivo desta pesquisa é desenvolver o Guy, uma ferramenta de análise de códigos-fonte para gerar, automaticamente, o Grafo de Fluxo de Controle (GFC), buscando auxiliar desenvolvedores na elaboração de testes estruturais e na mensuração da complexidade do código.
+O objetivo desta pesquisa é desenvolver o Guy, uma extensão para o \textit{Visual Studio Code} destinada à análise estrutural de código-fonte e à geração automática do Grafo de Fluxo de Controle (GFC), fornecendo uma base visual e analítica para auxiliar desenvolvedores na mensuração da complexidade lógica e no planejamento de testes estruturais.
 
 \subsection{Objetivos Específicos}
 Para alcançar o objetivo geral, foram definidos os seguintes objetivos específicos:
 
 \begin{itemize}
 	\item Fundamentar conceitos de Teste de Software, Caixa Branca e a métrica de Complexidade Ciclomática de McCabe;
-	\item Implementar um analisador capaz de identificar estruturas de decisão e repetição no código-fonte inserido;
+	\item Implementar um analisador capaz de identificar estruturas de decisão e repetição no arquivo de código-fonte aberto no editor;
 	\item Desenvolver o algoritmo para mapeamento e renderização visual dos nós e arestas do Grafo de Fluxo de Controle;
 	\item Automatizar o cálculo da complexidade ciclomática ($V(G)$) com base na topologia do grafo gerado;
-	\item Desenvolver uma aplicação \textit{web} para que o usuário tenha acesso a ferramenta;
-    \item Validar a ferramenta desenvolvida comparando os grafos gerados experimentos reais;
+	\item Desenvolver uma extensão para o editor \textit{Visual Studio Code} para que o usuário tenha acesso à ferramenta localmente;
+    \item Validar a ferramenta desenvolvida por meio da comparação entre os grafos e valores de complexidade gerados e os resultados esperados para os códigos analisados;
 \end{itemize}
