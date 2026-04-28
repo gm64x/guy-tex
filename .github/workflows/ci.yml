@@ -134,7 +134,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: compiled-thesis
-          path: "*.pdf"
+          path: main.pdf
           if-no-files-found: error
 
       - name: Create Release
@@ -146,6 +146,6 @@ jobs:
         with:
           tag_name: build-${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: "*.pdf"
+          files: main.pdf
           generate_release_notes: true
           fail_on_unmatched_files: true
