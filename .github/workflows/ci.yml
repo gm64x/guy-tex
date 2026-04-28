@@ -1,15 +1,19 @@
-name: CI — Render Diagrams & Build LaTeX
+name: CI — Build & Release
 
 env:
   DIAGRAMS_DIR: imagens/diagrams
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
   MERMAID_CLI_VERSION: "9"
 
 on:
   push:
+    branches: [main, master]
     paths:
       - "**/*.mmd"
       - "**/*.tex"
+      - "**/*.bib"
+      - "**/*.sty"
+      - "**/*.cls"
+      - ".github/workflows/ci.yml"
   pull_request:
     paths:
       - "**/*.mmd"
@@ -17,376 +21,131 @@ on:
   workflow_dispatch:
     inputs:
       force_all:
-        description: "Force all stages to run"
-        required: false
-        default: "false"
-      force_mermaid:
-        description: "Force mermaid render stage"
-        required: false
-        default: "false"
-      force_latex:
-        description: "Force LaTeX test/build stages"
-        required: false
-        default: "false"
+        description: "Force all stages"
+        type: boolean
+        default: false
       force_publish:
-        description: "Force creation of release and upload of PDF even if not on main/master"
-        required: false
-        default: "false"
-      root_tex_override:
-        description: "Override root TeX filename (relative path)"
-        required: false
-        default: ""
+        description: "Force Release creation"
+        type: boolean
+        default: false
 
 jobs:
-  dry-run:
-    name: Dry-run detection
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Detect changed files and print flags
-        run: |
-          set -euo pipefail
-          echo "Dry-run: Detecting changed files (mermaid / latex)"
-
-          CHANGED=""
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "Event is pull_request, base_ref=${{ github.base_ref }}"
-            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}" || true
-            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} || true)
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            echo "Event is push, before=${{ github.event.before }} sha=${{ github.sha }}"
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
-          else
-            echo "Event ${GITHUB_EVENT_NAME} - falling back to listing tracked files"
-            CHANGED=$(git ls-files '*.mmd' '*.tex' '*.bib' '*.sty' '*.cls' || true)
-          fi
-
-          echo "Changed files:\n$CHANGED"
-
-          mermaid_changed=false
-          latex_changed=false
-          if echo "$CHANGED" | grep -q "\.mmd\b"; then
-            mermaid_changed=true
-          fi
-          if echo "$CHANGED" | grep -E "\.(tex|bib|sty|cls)\b"; then
-            latex_changed=true
-          fi
-
-          echo "mermaid_changed=$mermaid_changed"
-          echo "latex_changed=$latex_changed"
-          echo "changed_files:\n$CHANGED"
-
   build:
-    name: Build
+    name: Build & Release
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      pull-requests: read
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          persist-credentials: true
+          fetch-depth: 0
 
-      - name: Detect changed files and decide stages
+      - name: Detect Changes
         id: detect
         run: |
           set -euo pipefail
-          echo "Detecting changed files (mermaid / latex)"
+          echo "::group::Change Detection"
 
           CHANGED=""
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            echo "Event is pull_request, base_ref=${{ github.base_ref }}"
-            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}" || true
-            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} || true)
-          elif [ "${{ github.event_name }}" = "push" ]; then
-            echo "Event is push, before=${{ github.event.before }} sha=${{ github.sha }}"
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} || true)
+            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
+            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
           else
-            echo "Event ${GITHUB_EVENT_NAME} - falling back to listing tracked files"
-            CHANGED=$(git ls-files '*.mmd' '*.tex' '*.bib' '*.sty' '*.cls' || true)
+            CHANGED=$(git ls-files)
           fi
 
-          echo "Changed files:\n$CHANGED"
+          echo "$CHANGED" > .changed_files_list
 
-          mermaid_changed=false
-          latex_changed=false
-          if echo "$CHANGED" | grep -q "\.mmd\b"; then
-            mermaid_changed=true
-          fi
-          if echo "$CHANGED" | grep -E "\.(tex|bib|sty|cls)\b"; then
-            latex_changed=true
-          fi
+          MERMAID=$(grep -q "\.mmd\b" .changed_files_list && echo "true" || echo "false")
+          LATEX=$(grep -E "\.(tex|bib|sty|cls)\b" .changed_files_list && echo "true" || echo "false")
 
-          # Allow forcing via workflow_dispatch inputs
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            if [ "${{ github.event.inputs.force_all }}" = "true" ]; then
-              mermaid_changed=true
-              latex_changed=true
-            else
-              if [ "${{ github.event.inputs.force_mermaid }}" = "true" ]; then
-                mermaid_changed=true
-              fi
-              if [ "${{ github.event.inputs.force_latex }}" = "true" ]; then
-                latex_changed=true
-              fi
-            fi
-          fi
+          [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; LATEX="true"; }
 
-          echo "mermaid_changed=$mermaid_changed" >> $GITHUB_OUTPUT
-          echo "latex_changed=$latex_changed" >> $GITHUB_OUTPUT
-          # expose changed files list for debugging
-          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGED" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "mermaid_changed=$MERMAID" >> $GITHUB_OUTPUT
+          echo "latex_changed=$LATEX" >> $GITHUB_OUTPUT
+          echo "Found: Mermaid=$MERMAID, LaTeX=$LATEX"
+          echo "::endgroup::"
 
-      - name: Setup Node.js (only if mermaid rendering required)
-        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
+      - name: Setup Node.js
+        if: steps.detect.outputs.mermaid_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
 
-      - name: Cache npm cache (speed up mermaid-cli fetch)
-        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-npm-cache-mermaid-${{ env.MERMAID_CLI_VERSION }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-cache-mermaid-${{ env.MERMAID_CLI_VERSION }}-
-            ${{ runner.os }}-npm-cache-mermaid-
-
-      - name: Install mermaid-cli
-        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
+      - name: Render Diagrams
+        if: steps.detect.outputs.mermaid_changed == 'true'
         run: |
-          set -euo pipefail
-          npm install -g @mermaid-js/mermaid-cli@${{ env.MERMAID_CLI_VERSION }}
+          chmod +x .github/scripts/render_diagrams.sh
+          ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" .changed_files_list
 
-      - name: Render .mmd -> diagrams dir (only changed or forced)
-        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
-        working-directory: ${{ github.workspace }}
+      - name: Commit Diagrams
+        if: steps.detect.outputs.mermaid_changed == 'true' && github.event_name != 'pull_request'
         run: |
-          set -euo pipefail
-          mkdir -p "$DIAGRAMS_DIR"
-          echo "Rendering Mermaid files to $DIAGRAMS_DIR"
-
-          # Safely dump the changed_files output to a temp file and iterate it line-by-line
-          echo "${{ steps.detect.outputs.changed_files }}" > .changed_files_list || true
-          if [ -s .changed_files_list ]; then
-            echo "Using detected changed files"
-            while IFS= read -r f; do
-              [ -z "$f" ] && continue
-              case "$f" in
-                *.mmd)
-                  base=$(basename "$f" .mmd)
-                  out="$DIAGRAMS_DIR/${base}.png"
-                  echo "Rendering $f -> $out"
-                  npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" || npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" --quiet || true
-                  ;;
-                *) ;;
-              esac
-            done < .changed_files_list
-          else
-            echo "No changed file list available; rendering all .mmd files"
-            for f in $(git ls-files '*.mmd'); do
-              base=$(basename "$f" .mmd)
-              out="$DIAGRAMS_DIR/${base}.png"
-              echo "Rendering $f -> $out"
-              npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" || npx -y @mermaid-js/mermaid-cli -i "$f" -o "$out" --quiet || true
-            done
-          fi
-
-      - name: Validate generated diagrams (ensure outputs exist before commit)
-        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
-        working-directory: ${{ github.workspace }}
-        run: |
-          set -euo pipefail
-          echo "Validating generated diagrams"
-
-          # Use changed_files_list if present, otherwise consider all .mmd files
-          if [ -s .changed_files_list ]; then
-            files_list=.changed_files_list
-          else
-            git ls-files '*.mmd' > .changed_files_list_all || true
-            files_list=.changed_files_list_all
-          fi
-
-          missing=0
-          while IFS= read -r f; do
-            [ -z "$f" ] && continue
-            case "$f" in
-              *.mmd)
-                base=$(basename "$f" .mmd)
-                img="$DIAGRAMS_DIR/${base}.png"
-                if [ ! -f "$img" ]; then
-                  echo "ERROR: expected diagram not found: $img"
-                  missing=$((missing+1))
-                else
-                  echo "Found: $img"
-                fi
-                ;;
-              *) ;;
-            esac
-          done < "$files_list"
-
-          if [ "$missing" -gt 0 ]; then
-            echo "Validation failed: $missing diagrams missing"
-            exit 1
-          fi
-          echo "All expected diagrams are present"
-
-      - name: Commit rendered PNGs (with stronger loop protection)
-        if: ${{ steps.detect.outputs.mermaid_changed == 'true' || github.event.inputs.force_mermaid == 'true' || github.event.inputs.force_all == 'true' }}
-        env:
-          GITHUB_ACTOR: ${{ github.actor }}
-        run: |
-          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "$DIAGRAMS_DIR"/*.png || true
 
-          if git diff --staged --quiet; then
-            echo "No diagram PNGs to commit"
-            exit 0
+          if ! git diff --staged --quiet; then
+            # Loop protection
+            if [[ "$(git log -1 --pretty=%an)" != *"github-actions"* ]]; then
+              git commit -m "chore: auto-render diagrams [skip ci]"
+              git push
+            fi
           fi
 
-          # Loop protection: skip commit if the triggering actor is a workflow/bot or last commit author is the bot
-          last_author=$(git log -1 --pretty=%an || echo "")
-          echo "Last commit author: $last_author"
-          echo "GitHub actor: $GITHUB_ACTOR"
-
-          # Normalize to lowercase for checks
-          la_lower=$(echo "$last_author" | tr '[:upper:]' '[:lower:]')
-          actor_lower=$(echo "$GITHUB_ACTOR" | tr '[:upper:]' '[:lower:]')
-
-          if echo "$la_lower" | grep -qi "github-actions" || echo "$actor_lower" | grep -qi "github-actions" || echo "$actor_lower" | grep -qi "[bot]"; then
-            echo "Detected bot actor/author (last_author or github.actor). Skipping commit to avoid loop."
-            exit 0
-          fi
-
-          # Use both common skip tokens to maximize CI skip coverage
-          git commit -m "chore: render mermaid diagrams to PNG [skip ci][ci skip]"
-          git push
-
-      - name: Setup TeX (conditional full/minimal install)
-        if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
-        run: |
-          set -euo pipefail
-          sudo apt-get update
-
-          # Install texlive-full only on main/master or if explicitly forced
-          if [ "${{ github.ref }}" = "refs/heads/main" ] || [ "${{ github.ref }}" = "refs/heads/master" ] || [ "${{ github.event.inputs.force_publish }}" = "true" ] || [ "${{ github.event.inputs.force_all }}" = "true" ] || [ "${{ github.event.inputs.force_latex }}" = "true" ]; then
-            echo "Installing full TeX Live (may be large)"
-            sudo apt-get install -y texlive-full latexmk || true
-          else
-            echo "Installing minimal TeX set for PRs/feature branches"
-            sudo apt-get install -y --no-install-recommends texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra texlive-bibtex-extra latexmk || true
-          fi
-
-      - name: Find root .tex file (with debug and override)
+      - name: Find Root TeX
         id: findroot
-        if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
+        if: steps.detect.outputs.latex_changed == 'true'
         run: |
-          set -euo pipefail
-          echo "Working dir: $(pwd)"
-          echo "List top-level files:"
-          ls -la
-          echo "Searching for .tex files (debug list):"
-          find . -type f -name "*.tex" -print || true
-
-          # Allow overriding the root tex file via workflow_dispatch input root_tex_override
-          if [ -n "${{ github.event.inputs.root_tex_override }}" ]; then
-            echo "root_tex_override is set to: '${{ github.event.inputs.root_tex_override }}'"
-            if [ -f "${{ github.event.inputs.root_tex_override }}" ]; then
-              root_tex="${{ github.event.inputs.root_tex_override }}"
-              echo "Using override: $root_tex"
-            else
-              # try to find by basename in repo (handles spaces)
-              found=$(find . -type f -name "${{ github.event.inputs.root_tex_override }}" | head -n1 || true)
-              if [ -n "$found" ]; then
-                root_tex="$found"
-                echo "Found override by name: $root_tex"
-              else
-                echo "Override specified but file not found: ${ROOT_TEX_OVERRIDE:-}"
-                exit 1
-              fi
-            fi
+          echo "::group::Root Discovery"
+          if ls "Template Latex - Relatorio Tecnico - IFSP - SBV.tex" >/dev/null 2>&1; then
+            ORIGINAL="Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
           else
-            # Auto-detect: Find the first .tex that contains \begin{document}
-            root_tex=""
-            while IFS= read -r -d '' file; do
-              if grep -q "\\begin{document}" "$file" 2>/dev/null; then
-                root_tex="$file"
-                break
-              fi
-            done < <(find . -type f -name "*.tex" -print0)
-
-            if [ -z "$root_tex" ]; then
-              echo "No .tex file with \\begin{document} found."
-              exit 1
-            fi
+            ORIGINAL=$(grep -l "\\begin{document}" *.tex | head -n 1 || echo "")
           fi
 
-          # Normalize path and output
-          root_tex="${root_tex#./}"
-          echo "root_tex=$root_tex" >> $GITHUB_OUTPUT
-          echo "Found root tex: $root_tex"
-
-      - name: Compile final PDF (pdflatex/bibtex flow)
-        if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
-        env:
-          ROOT_TEX: ${{ steps.findroot.outputs.root_tex }}
-        run: |
-          set -euo pipefail
-          echo "Compiling $ROOT_TEX"
-          pdflatex -interaction=nonstopmode -halt-on-error "$ROOT_TEX" || true
-          auxfile="${ROOT_TEX%.tex}.aux"
-          if [ -f "$auxfile" ]; then
-            if grep -q "\\bibdata" "$auxfile" 2>/dev/null || grep -q "\\citation" "$auxfile" 2>/dev/null; then
-              bibtex "${ROOT_TEX%.tex}" || true
-            fi
+          if [ -z "$ORIGINAL" ]; then
+            echo "::error::No root LaTeX file found!"
+            exit 1
           fi
-          pdflatex -interaction=nonstopmode -halt-on-error "$ROOT_TEX" || true
-          pdflatex -interaction=nonstopmode -halt-on-error "$ROOT_TEX" || true
 
-      - name: Set PDF path
-        id: pdfpath
-        if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
-        env:
-          ROOT_TEX: ${{ steps.findroot.outputs.root_tex }}
-        run: |
-          set -euo pipefail
-          pdf="${ROOT_TEX%.tex}.pdf"
-          echo "pdf_path=$pdf" >> $GITHUB_OUTPUT
-          echo "Set pdf_path=$pdf"
+          # Create a symlink without spaces to avoid issues with docker-based actions
+          ln -sf "$ORIGINAL" main.tex
+          echo "root_tex=main.tex" >> $GITHUB_OUTPUT
+          echo "Using: $ORIGINAL (linked to main.tex)"
+          echo "::endgroup::"
 
-      - name: Upload generated PDF
-        if: ${{ steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true' }}
+      - name: Compile LaTeX
+        if: steps.detect.outputs.latex_changed == 'true'
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: ${{ steps.findroot.outputs.root_tex }}
+          # Use latexmk with -pdf to ensure pdflatex is used and references are resolved
+          args: "-pdf -interaction=nonstopmode -halt-on-error"
+
+      - name: Upload PDF
+        if: steps.detect.outputs.latex_changed == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: compiled-pdfs
-          path: "**/*.pdf"
+          name: compiled-thesis
+          path: "*.pdf"
+          if-no-files-found: error
 
-      - name: Create GitHub Release and upload PDF (only on main/master or if forced)
-        if: ${{ success() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.event.inputs.force_publish == 'true') && (steps.detect.outputs.latex_changed == 'true' || github.event.inputs.force_latex == 'true' || github.event.inputs.force_all == 'true') }}
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Release
+        if: |
+          success() &&
+          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish == true) &&
+          steps.detect.outputs.latex_changed == 'true'
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: pdf-${{ github.run_number }}-${{ github.sha }}
-          release_name: LaTeX PDF #${{ github.run_number }}
-          body: Compiled PDF from LaTeX (generated by combined workflow)
-          draft: true
-          prerelease: false
-
-      - name: Upload PDF to release
-        if: ${{ success() && steps.create_release.outputs.upload_url }}
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.pdfpath.outputs.pdf_path }}
-          asset_name: ${{ steps.pdfpath.outputs.pdf_path }}
-          asset_content_type: application/pdf
+          tag_name: build-${{ github.run_number }}
+          name: Release ${{ github.run_number }}
+          files: "*.pdf"
+          generate_release_notes: true
+          fail_on_unmatched_files: true
