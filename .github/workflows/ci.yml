@@ -2,7 +2,7 @@ name: CI — Build & Release
 
 env:
   DIAGRAMS_DIR: imagens/diagrams
-  MERMAID_CLI_VERSION: "9"
+  MERMAID_CLI_VERSION: "11"
 
 on:
   push:
