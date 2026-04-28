@@ -1,0 +1,41 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp.cjs
+.pnp.loader.mjs
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+.eslintcache
+
+# LaTeX build artifacts
+*.aux
+*.lof
+*.log
+*.lot
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.synctex.gz
+*.nav
+*.snm
+*.vrb
+*.idx
+*.ilg
+*.ind
+*.glo
+*.gls
+*.ist
+*.run.xml
+latexmkrc
+
+# Build directories
+_build/
+_dist/
+
+# OS files
+.DS_Store
+Thumbs.db
