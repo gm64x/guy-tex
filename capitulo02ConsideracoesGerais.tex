@@ -37,9 +37,9 @@ Elementos cruciais do GFC incluem os nós de predicado, que correspondem a ponto
 
 Para consolidar o entendimento sobre a relação entre o código fonte, o Grafo de Fluxo de Controle (GFC) e a Complexidade Ciclomática, apresenta-se a seguir um algoritmo simples de verificação condicional.
 
-\lstinputlisting[language=Python]{fontes/verificaStatus.py} 
+\lstinputlisting[language=Python, label={lst:verifica_status}]{fontes/verificaStatus.py}
 
-A partir da análise do Código, é possível mapear a lógica para uma representação visual. A Figura \ref{fig:exemplo_gfc} ilustra o GFC correspondente, onde os blocos de comando tornam-se nós e o fluxo de execução torna-se arestas direcionadas.
+A partir da análise do Código \ref{lst:verifica_status}, é possível mapear a lógica para uma representação visual. A Figura \ref{fig:exemplo_gfc} ilustra o GFC correspondente, onde os blocos de comando tornam-se nós e o fluxo de execução torna-se arestas direcionadas.
 
 \begin{figure}[H]
     \centering
@@ -125,7 +125,7 @@ Essa abordagem agnóstica à linguagem permite que a ferramenta gere a Árvore S
 A pesquisa bibliográfica identificou ferramentas e algoritmos que, assim como a proposta deste trabalho, exploram a representação gráfica de programas para auxiliar na compreensão e no teste de software. Abaixo, destacam-se três abordagens relevantes: um algoritmo de layout de ponta focado na legibilidade de fluxo (VEIL), uma ferramenta comercial de documentação (Code2Flow) e uma solução industrial de análise profunda (CodeSurfer).
 
 \subsection{VEIL (\textit{Vertical Execution-order Informed Layout})}
-O VEIL é um algoritmo de desenho de grafos proposto recentemente por Schaad, Ben-Nun e Hoefler (2025), desenvolvido para alinhar a visualização de Grafos de Fluxo de Controle (GFC) com a estrutura mental de leitura de código-fonte \citeonline{veil}. A abordagem utiliza análise de dominadores para aplicar dois novos critérios estéticos: o \textit{Happens-Before} (C10), que garante que nós executados posteriormente sejam desenhados verticalmente abaixo de seus predecessores; e o \textit{Edge Direction Grouping} (C11), que agrupa arestas de retorno (loops) à esquerda e desvios condicionais à direita do grafo \citeonline{veil}.
+O VEIL é um algoritmo de desenho de grafos proposto recentemente por \citeonline{veil}, desenvolvido para alinhar a visualização de Grafos de Fluxo de Controle (GFC) com a estrutura mental de leitura de código-fonte. A abordagem utiliza análise de dominadores para aplicar dois novos critérios estéticos: o \textit{Happens-Before} (C10), que garante que nós executados posteriormente sejam desenhados verticalmente abaixo de seus predecessores; e o \textit{Edge Direction Grouping} (C11), que agrupa arestas de retorno (loops) à esquerda e desvios condicionais à direita do grafo \citeonline{veil}.
 
 A principal distinção reside no escopo: o VEIL é um algoritmo de otimização de layout visual para compiladores e ferramentas de análise, focado em "como desenhar" o grafo para maximizar a legibilidade. A ferramenta proposta neste trabalho, por outro lado, utiliza a visualização do GFC como meio pedagógico para ensinar \textbf{Métricas de Teste} (como a Complexidade Ciclomática), permitindo que o estudante interaja com o código e veja o cálculo da métrica em tempo real, algo que não é o foco primário do VEIL.
 

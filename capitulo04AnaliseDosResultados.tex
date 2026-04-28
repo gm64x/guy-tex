@@ -10,7 +10,7 @@ Sendo assim, esta seção busca apresentar algumas das principais ferramentas di
 
 \subsection{SonarQube}
 
-A ferramenta SonarQube (Figura 4) é uma plataforma de código aberto (\textit{open source}) voltada à inspeção contínua da qualidade do código. Em vez de apenas gerar listas de erros, a ferramenta permite a análise, o rastreamento e o gerenciamento da qualidade do software de modo proativo ao longo do tempo \citeonline{sonarqube}.
+A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de código aberto (\textit{open source}) voltada à inspeção contínua da qualidade do código. Em vez de apenas gerar listas de erros, a ferramenta permite a análise, o rastreamento e o gerenciamento da qualidade do software de modo proativo ao longo do tempo \citeonline{sonarqube}.
 \begin{figure}[H]
     \centering
     \caption{Captura de tela da interface do SonarQube}
@@ -28,7 +28,7 @@ No entanto, embora a plataforma possua uma versão gratuita, algumas funcionalid
 
 \subsection{Codacy}
 
-O Codacy (Figura 5) é uma plataforma de análise estática, gratuita para projetos de código aberto, com foco na melhoria da qualidade do software, no aumento da cobertura de testes e na prevenção de falhas de segurança \citeonline{ardito2020tool}. Distanciando-se de métricas matemáticas puras, a ferramenta prioriza uma abordagem prática na identificação de \textit{bugs} e comportamentos indefinidos em uma ampla variedade de linguagens de programação \citeonline{ardito2020tool}.
+O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática, gratuita para projetos de código aberto, com foco na melhoria da qualidade do software, no aumento da cobertura de testes e na prevenção de falhas de segurança \citeonline{ardito2020tool}. Distanciando-se de métricas matemáticas puras, a ferramenta prioriza uma abordagem prática na identificação de \textit{bugs} e comportamentos indefinidos em uma ampla variedade de linguagens de programação \citeonline{ardito2020tool}.
 
 \begin{figure}[h]
     \centering
@@ -44,7 +44,7 @@ No entanto, a ferramenta apresenta limitações quanto à transparência da agre
 
 \subsection{ESLint}
 
-O ESLint (Figura 6) é um \textit{linter} plugável e uma ferramenta de análise estática amplamente utilizada, projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. A ferramenta destaca-se por sua flexibilidade, permitindo a adoção de regras e \textit{presets} da comunidade \citeonline{tomasdottir2020adoption}.
+O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática amplamente utilizada, projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. A ferramenta destaca-se por sua flexibilidade, permitindo a adoção de regras e \textit{presets} da comunidade \citeonline{tomasdottir2020adoption}.
 
 \begin{figure}[H]
     \centering
@@ -75,35 +75,11 @@ Para apoiar o desenvolvedor na análise da qualidade estrutural do software, a e
 
 \section{Prototipagem e Design da Ferramenta Guy}
 
-ROADMAP:
-1. Definição da Arquitetura de Funcionamento da Ferramenta
-. Web? Desktop? Plugin do VSCode? ->  Plugin do VSCode
-. Quais linguagens utilizaremos? -> typescript,js -> webassembly e dicionario de go (poucas palavras)
-. Como as coisas interagem? Fluxo de dados entre as partes?
-
 O usuário aciona a extensão com o editor de código aberto e em foco. Em resposta, a ferramenta abre uma janela lateral, de forma semelhante a uma pré-visualização de Markdown, apresentando o Grafo de Fluxo de Controle (GFC) e o cálculo da Complexidade Ciclomática, representada por \(V(g)\).
 A partir dessa visualização, o usuário pode selecionar vértices e arestas do grafo para navegar diretamente até os trechos correspondentes do código-fonte, estabelecendo uma relação interativa entre a representação visual e a implementação analisada.
 
-
-2. Quais são as funcionalidades que a Ferramenta tem?
-. Upload de código-fonte?
-. Desenhar o GFC
-. Visualizar Detalhes de Nós e Arestas
-. Cálculo do V(g)
-
-
 Essa proposta atende aos principais requisitos definidos para a ferramenta: execução local, sem envio do código-fonte para servidores externos; apresentação do GFC em conjunto com o valor de \(V(g)\); e interação direta entre os elementos do grafo e as regiões correspondentes do código.
 
-Eh um Diagrama de Casos de Uso e Cenários (PRECISAMOS VALIDAR ISTO O QUANTO ANTES)
-
------- 28/04
-
-3. Prototipar o Frontend da Ferramenta (Com base nos Casos de Uso)
-
-4. Desenvolver o Backend para Aplicar as Regras criadas (Com base nos Casos de Uso)
-
-PRAZO PARA TERMINAR A APLICAÇÃO: 24/05/2026
-ESCRITA: 25/05 a 20/06
 %\section{Implementação da Ferramenta Guy}
 
 %\section{Validação e Testes da Ferramenta Guy}

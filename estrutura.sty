@@ -21,7 +21,6 @@
 \RequirePackage{amssymb}
 \RequirePackage{tabularx}
 \RequirePackage{booktabs}
-\RequirePackage{lastpage}
 \RequirePackage{enumitem}
 \RequirePackage{bigints}
 \RequirePackage{listingsutf8}
@@ -61,7 +60,7 @@
    \ifthenelse{\boolean{ABNTEXsumario-abnt-6027-2012}}{
        \renewcommand{\appendixtocname}{\texorpdfstring{\MakeTextUppercase{#2}}{#2}}
    }{%
-   \renewcommand{\appendixtocname}{#2}} 
+   \renewcommand{\appendixtocname}{#2}}
    \renewcommand{\appendixpagename}{#2}
    \switchchapname{#1}% Corrected from \switchapname -> \switchchapname
    \renewcommand*{\cftappendixname}{#1 \space}
@@ -135,11 +134,11 @@
 \makeatletter
 \hypersetup{
 	%pagebackref=true,
-	pdftitle={\@title}, 
+	pdftitle={\@title},
 	pdfauthor={\@author},
 	pdfsubject={\imprimirpreambulo},
-	pdfcreator={Nome Completo},
-	pdfkeywords={Palavra chave 1}{Palavra chave 2}{Palavra chave 3}{Palavra chave n}, 
+	pdfcreator={\@author},
+	pdfkeywords={Engenharia de Software}{Análise de Código}{Grafo de Fluxo de Controle}{Complexidade Ciclomática},
 	colorlinks=true,       		% false: boxed links; true: colored links
 	linkcolor=black,          	% color of internal links
 	citecolor=black,       		% color of links to bibliography
@@ -148,6 +147,9 @@
 	bookmarksdepth=4
 }
 \makeatother
+
+\widowpenalty=10000
+\clubpenalty=10000
 
 \newcommand{\citeauthorandyear}[1]{\citeauthoronline{#1} (\citeyear{#1})}
 
@@ -162,7 +164,7 @@
 % configurações para atender às regras da ABNT
 \setfloatadjustment{quadro}{\centering}
 \counterwithout{quadro}{chapter}
-\renewcommand{\cftquadroname}{\quadroname\space} 
+\renewcommand{\cftquadroname}{\quadroname\space}
 \renewcommand*{\cftquadroaftersnum}{\hfill--\hfill}
 
 % Configuração de posicionamento padrão:
@@ -170,7 +172,7 @@
 
 % em versões mais novas do abntex2 o preenchimento da macro
 % \tituloestrangeiro tornou-se obrigatório.
-% abaixo redefine-se a macro \maketitlehookb que usa o 
+% abaixo redefine-se a macro \maketitlehookb que usa o
 % título estrangeiro para inserção no cabeçalho e que gera
 % erros caso não tenha se definido tal título
 \renewcommand{\maketitlehookb}{}
