@@ -104,20 +104,21 @@ jobs:
         if: steps.detect.outputs.latex_changed == 'true'
         run: |
           echo "::group::Root Discovery"
-          # Priority: 1. Template name, 2. Manual override, 3. \begin{document}
-          ROOT=""
           if ls "Template Latex - Relatorio Tecnico - IFSP - SBV.tex" >/dev/null 2>&1; then
-            ROOT="Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
+            ORIGINAL="Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
           else
-            ROOT=$(grep -l "\\begin{document}" *.tex | head -n 1 || echo "")
+            ORIGINAL=$(grep -l "\\begin{document}" *.tex | head -n 1 || echo "")
           fi
 
-          if [ -z "$ROOT" ]; then
+          if [ -z "$ORIGINAL" ]; then
             echo "::error::No root LaTeX file found!"
             exit 1
           fi
-          echo "root_tex=$ROOT" >> $GITHUB_OUTPUT
-          echo "Using: $ROOT"
+
+          # Create a symlink without spaces to avoid issues with docker-based actions
+          ln -sf "$ORIGINAL" main.tex
+          echo "root_tex=main.tex" >> $GITHUB_OUTPUT
+          echo "Using: $ORIGINAL (linked to main.tex)"
           echo "::endgroup::"
 
       - name: Compile LaTeX
@@ -125,6 +126,7 @@ jobs:
         uses: xu-cheng/latex-action@v3
         with:
           root_file: ${{ steps.findroot.outputs.root_tex }}
+          # Use latexmk with -pdf to ensure pdflatex is used and references are resolved
           args: "-pdf -interaction=nonstopmode -halt-on-error"
 
       - name: Upload PDF

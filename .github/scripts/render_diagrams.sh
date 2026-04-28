@@ -6,6 +6,11 @@ DIAGRAMS_DIR="${1:-imagens/diagrams}"
 CHANGED_FILES_LIST="${2:-.changed_files_list}"
 
 mkdir -p "$DIAGRAMS_DIR"
+
+# Create a puppeteer config to bypass sandbox issues in Linux CI
+PUPPETEER_CONFIG="/tmp/puppeteer-config.json"
+echo '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > "$PUPPETEER_CONFIG"
+
 echo "::group::Mermaid Rendering"
 echo "Rendering Mermaid files to: $DIAGRAMS_DIR"
 
@@ -16,7 +21,8 @@ render_file() {
   local out="$DIAGRAMS_DIR/${base}.png"
 
   echo "Process: '$f' -> '$out'"
-  if ! npx -y @mermaid-js/mermaid-cli@9 -i "$f" -o "$out" --quiet; then
+  # Use the puppeteer config file with the -p flag
+  if ! npx -y @mermaid-js/mermaid-cli@9 -i "$f" -o "$out" --quiet -p "$PUPPETEER_CONFIG"; then
     echo "::warning file=$f::Failed to render Mermaid diagram. Skipping."
     return 0
   fi
@@ -40,3 +46,4 @@ else
 fi
 
 echo "::endgroup::"
+rm -f "$PUPPETEER_CONFIG"
