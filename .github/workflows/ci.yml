@@ -31,6 +31,10 @@ on:
         description: "Force Release creation"
         type: boolean
         default: false
+      render_images_only:
+        description: "Only render images and push them"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -71,6 +75,16 @@ jobs:
           LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
           [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; PLANTUML="true"; LATEX="true"; }
 
+          # If manually dispatched to only render images, force diagram rendering and
+          # clear the changed-files list so the renderer will scan the repo for all diagrams.
+          if [[ "${{ inputs.render_images_only }}" == "true" ]]; then
+            CHANGED=""
+            echo "" > .changed_files_list
+            MERMAID="true"
+            PLANTUML="true"
+            LATEX="false"
+          fi
+
           DIAGRAMS="false"
           if [ "$MERMAID" = "true" ] || [ "$PLANTUML" = "true" ]; then
             DIAGRAMS="true"
@@ -84,26 +98,26 @@ jobs:
           echo "::endgroup::"
 
       - name: Setup Node.js
-        if: steps.detect.outputs.mermaid_changed == 'true'
+        if: steps.detect.outputs.mermaid_changed == 'true' || inputs.render_images_only == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "24"
 
       - name: Setup Java
-        if: steps.detect.outputs.plantuml_changed == 'true'
+        if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: "17"
 
       - name: Render Diagrams
-        if: steps.detect.outputs.diagrams_changed == 'true'
+        if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
         run: |
           chmod +x .github/scripts/render_diagrams.sh
           ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" .changed_files_list
 
       - name: Commit Diagrams
-        if: steps.detect.outputs.diagrams_changed == 'true' && github.event_name != 'pull_request'
+        if: (steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true') && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
