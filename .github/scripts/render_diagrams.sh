@@ -11,10 +11,13 @@ mkdir -p "$DIAGRAMS_DIR"
 PUPPETEER_CONFIG="/tmp/puppeteer-config.json"
 echo '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > "$PUPPETEER_CONFIG"
 
-echo "::group::Mermaid Rendering"
-echo "Rendering Mermaid files to: $DIAGRAMS_DIR"
+PLANTUML_JAR="${PLANTUML_JAR:-/tmp/plantuml.jar}"
+PLANTUML_JAR_URL="${PLANTUML_JAR_URL:-https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar}"
 
-render_file() {
+echo "::group::Diagram Rendering"
+echo "Rendering diagrams to: $DIAGRAMS_DIR"
+
+render_mermaid() {
   local f="$1"
   local base
   base=$(basename "$f" .mmd)
@@ -29,20 +32,76 @@ render_file() {
   fi
 }
 
+render_plantuml() {
+  local f="$1"
+  local base
+  base=$(basename "$f" .plantuml)
+  local out="$DIAGRAMS_DIR/${base}.png"
+
+  echo "Process: '$f' -> '$out'"
+
+  if [ ! -f "$PLANTUML_JAR" ]; then
+    echo "Downloading PlantUML jar to $PLANTUML_JAR..."
+    if ! curl -sSL -o "$PLANTUML_JAR" "$PLANTUML_JAR_URL"; then
+      echo "::warning file=$f::Failed to download PlantUML. Skipping."
+      return 0
+    fi
+  fi
+
+  if ! java -jar "$PLANTUML_JAR" -tpng -charset UTF-8 -o "$DIAGRAMS_DIR" "$f" >/dev/null 2>&1; then
+    echo "::warning file=$f::Failed to render PlantUML diagram. Skipping."
+    return 0
+  fi
+}
+
 if [ -s "$CHANGED_FILES_LIST" ]; then
   echo "Using detected changed files list..."
   while IFS= read -r f; do
-    [[ -z "$f" || ! "$f" == *.mmd ]] && continue
-    if [[ -f "$f" ]]; then
-      render_file "$f"
-    else
-      echo "::debug::Skipping deleted or missing file: $f"
-    fi
+    [[ -z "$f" ]] && continue
+
+    case "$f" in
+      *.mmd)
+        # If a PlantUML file with the same base exists, prefer it and skip the .mmd
+        base=$(basename "$f" .mmd)
+        dir=$(dirname "$f")
+        if [ -f "$dir/${base}.plantuml" ]; then
+          echo "::debug::Skipping '$f' because '$dir/${base}.plantuml' exists (prefer PlantUML)"
+          continue
+        fi
+        if [[ -f "$f" ]]; then
+          render_mermaid "$f"
+        else
+          echo "::debug::Skipping deleted or missing file: $f"
+        fi
+        ;;
+      *.plantuml)
+        if [[ -f "$f" ]]; then
+          render_plantuml "$f"
+        else
+          echo "::debug::Skipping deleted or missing file: $f"
+        fi
+        ;;
+      *)
+        ;;
+    esac
   done < "$CHANGED_FILES_LIST"
 else
-  echo "No changed file list available; scanning for all .mmd files..."
-  find . -maxdepth 4 -name "*.mmd" -print0 | while IFS= read -r -d '' f; do
-    render_file "$f"
+  echo "No changed file list available; scanning for all .mmd and .plantuml files..."
+  find . -maxdepth 4 \( -name "*.mmd" -o -name "*.plantuml" \) -print0 | while IFS= read -r -d '' f; do
+    case "$f" in
+      *.mmd)
+        base=$(basename "$f" .mmd)
+        dir=$(dirname "$f")
+        if [ -f "$dir/${base}.plantuml" ]; then
+          echo "::debug::Skipping '$f' because '$dir/${base}.plantuml' exists (prefer PlantUML)"
+          continue
+        fi
+        render_mermaid "$f"
+        ;;
+      *.plantuml)
+        render_plantuml "$f"
+        ;;
+    esac
   done
 fi
 

@@ -3,12 +3,14 @@ name: CI — Build & Release
 env:
   DIAGRAMS_DIR: imagens/diagrams
   MERMAID_CLI_VERSION: "11"
+  PLANTUML_JAR_URL: "https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar"
 
 on:
   push:
     branches: [main, master]
     paths:
       - "**/*.mmd"
+      - "**/*.plantuml"
       - "**/*.tex"
       - "**/*.bib"
       - "**/*.sty"
@@ -17,6 +19,7 @@ on:
   pull_request:
     paths:
       - "**/*.mmd"
+      - "**/*.plantuml"
       - "**/*.tex"
   workflow_dispatch:
     inputs:
@@ -62,14 +65,22 @@ jobs:
 
           echo "$CHANGED" > .changed_files_list
 
-          # Use grep -E for extended regex and line-end anchors for reliability
+          # Detect diagram types and LaTeX changes
           MERMAID=$(grep -Eq "\.mmd$" .changed_files_list && echo "true" || echo "false")
+          PLANTUML=$(grep -Eq "\.plantuml$" .changed_files_list && echo "true" || echo "false")
           LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
-          [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; LATEX="true"; }
+          [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; PLANTUML="true"; LATEX="true"; }
+
+          DIAGRAMS="false"
+          if [ "$MERMAID" = "true" ] || [ "$PLANTUML" = "true" ]; then
+            DIAGRAMS="true"
+          fi
 
           echo "mermaid_changed=$MERMAID" >> $GITHUB_OUTPUT
+          echo "plantuml_changed=$PLANTUML" >> $GITHUB_OUTPUT
+          echo "diagrams_changed=$DIAGRAMS" >> $GITHUB_OUTPUT
           echo "latex_changed=$LATEX" >> $GITHUB_OUTPUT
-          echo "Found: Mermaid=$MERMAID, LaTeX=$LATEX"
+          echo "Found: Mermaid=$MERMAID, PlantUML=$PLANTUML, LaTeX=$LATEX, Diagrams=$DIAGRAMS"
           echo "::endgroup::"
 
       - name: Setup Node.js
@@ -78,14 +89,21 @@ jobs:
         with:
           node-version: "24"
 
+      - name: Setup Java
+        if: steps.detect.outputs.plantuml_changed == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
       - name: Render Diagrams
-        if: steps.detect.outputs.mermaid_changed == 'true'
+        if: steps.detect.outputs.diagrams_changed == 'true'
         run: |
           chmod +x .github/scripts/render_diagrams.sh
           ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" .changed_files_list
 
       - name: Commit Diagrams
-        if: steps.detect.outputs.mermaid_changed == 'true' && github.event_name != 'pull_request'
+        if: steps.detect.outputs.diagrams_changed == 'true' && github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

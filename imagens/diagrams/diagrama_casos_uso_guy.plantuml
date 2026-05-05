@@ -1,0 +1,23 @@
+@startuml
+left to right direction
+
+actor Desenvolvedor
+
+rectangle "Ferramenta Guy" {
+  usecase "Acionar extensão" as UC1
+  usecase "Analisar código-fonte\nlocalmente" as UC2
+  usecase "Visualizar GFC" as UC3
+  usecase "Calcular V(g)" as UC4
+  usecase "Navegar do grafo\npara o código" as UC5
+}
+
+Desenvolvedor --> UC1
+Desenvolvedor --> UC3
+Desenvolvedor --> UC5
+
+UC1 .> UC2 : <<include>>
+UC2 .> UC3 : <<include>>
+UC2 .> UC4 : <<include>>
+UC5 .> UC3 : <<extend>>
+
+@enduml
