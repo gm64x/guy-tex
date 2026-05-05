@@ -95,6 +95,12 @@ jobs:
             RENDER_ALL_DIAGRAMS="true"
           fi
 
+          if [[ "$LATEX" == "true" ]]; then
+            MERMAID="true"
+            PLANTUML="true"
+            RENDER_ALL_DIAGRAMS="true"
+          fi
+
           # If manually dispatched to only render images, force diagram rendering and
           # clear the changed-files list so the renderer will scan the repo for all diagrams.
           if [[ "${{ inputs.render_images_only }}" == "true" ]]; then

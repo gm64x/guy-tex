@@ -52,11 +52,12 @@ render_mermaid() {
     echo "Running: ${cmd[*]}"
     if ! "${cmd[@]}"; then
       echo "::warning file=$f::Mermaid render failed"
+      return 1
     fi
   else
     if ! "${cmd[@]}" >/dev/null 2>&1; then
-      echo "::warning file=$f::Failed to render Mermaid diagram. Skipping."
-      return 0
+      echo "::error file=$f::Failed to render Mermaid diagram."
+      return 1
     fi
   fi
 }
@@ -89,8 +90,8 @@ render_plantuml() {
   echo "PlantUML: '$f' -> '$out'"
 
   if ! ensure_plantuml_jar; then
-    echo "::warning file=$f::PlantUML jar download failed. Skipping."
-    return 0
+    echo "::error file=$f::PlantUML jar download failed."
+    return 1
   fi
 
   # PlantUML resolves relative -o paths from the input file directory, so use
@@ -100,20 +101,21 @@ render_plantuml() {
     echo "Running: ${cmd[*]}"
     local output
     if ! output="$("${cmd[@]}" 2>&1)"; then
-      echo "::warning file=$f::PlantUML render failed. Output:"
+      echo "::error file=$f::PlantUML render failed. Output:"
       echo "$output"
-      return 0
+      return 1
     fi
     echo "$output"
   else
     if ! "${cmd[@]}" >/dev/null 2>&1; then
-      echo "::warning file=$f::Failed to render PlantUML diagram. Skipping."
+      echo "::error file=$f::Failed to render PlantUML diagram."
       # fallback: if plantuml emitted file next to source, try to move it
       local fallback="$dir/${base}.png"
       if [ -f "$fallback" ]; then
         mv "$fallback" "$out" || true
+        return 0
       fi
-      return 0
+      return 1
     fi
   fi
 
@@ -125,7 +127,8 @@ render_plantuml() {
       mv "$candidate" "$out" || true
       echo "Moved generated file $candidate -> $out"
     else
-      echo "::warning file=$f::PlantUML rendering reported success but output not found at $out"
+      echo "::error file=$f::PlantUML rendering reported success but output not found at $out"
+      return 1
     fi
   fi
 }
@@ -140,7 +143,27 @@ has_plantuml_variant() {
   return 1
 }
 
-if [ -s "$CHANGED_FILES_LIST" ]; then
+render_all_diagrams() {
+  echo "Scanning repository for .mmd and PlantUML files..."
+  find . -maxdepth 6 \( -name "*.mmd" -o -name "*.plantuml" -o -name "*.puml" -o -name "*.uml" \) -print0 | while IFS= read -r -d '' f; do
+    case "$f" in
+      *.mmd)
+        dir=$(dirname "$f")
+        base=$(basename "$f" .mmd)
+        if has_plantuml_variant "$dir" "$base"; then
+          echo "::debug::Skipping '$f' because a PlantUML variant exists (prefer PlantUML)"
+          continue
+        fi
+        render_mermaid "$f"
+        ;;
+      *.plantuml|*.puml|*.uml)
+        render_plantuml "$f"
+        ;;
+    esac
+  done
+}
+
+if [ -s "$CHANGED_FILES_LIST" ] && grep -Eq "\.(mmd|plantuml|puml|uml)$" "$CHANGED_FILES_LIST"; then
   echo "Using detected changed files list: $CHANGED_FILES_LIST"
   while IFS= read -r f || [ -n "$f" ]; do
     # strip CRLF
@@ -174,23 +197,8 @@ if [ -s "$CHANGED_FILES_LIST" ]; then
     esac
   done < "$CHANGED_FILES_LIST"
 else
-  echo "No changed file list; scanning repository for .mmd and PlantUML files..."
-  find . -maxdepth 6 \( -name "*.mmd" -o -name "*.plantuml" -o -name "*.puml" -o -name "*.uml" \) -print0 | while IFS= read -r -d '' f; do
-    case "$f" in
-      *.mmd)
-        dir=$(dirname "$f")
-        base=$(basename "$f" .mmd)
-        if has_plantuml_variant "$dir" "$base"; then
-          echo "::debug::Skipping '$f' because a PlantUML variant exists (prefer PlantUML)"
-          continue
-        fi
-        render_mermaid "$f"
-        ;;
-      *.plantuml|*.puml|*.uml)
-        render_plantuml "$f"
-        ;;
-    esac
-  done
+  echo "No diagram files in changed list; rendering all diagrams."
+  render_all_diagrams
 fi
 
 echo "Done. Rendered files in: $DIAGRAMS_DIR"
