@@ -18,6 +18,7 @@ on:
       - "**/*.sty"
       - "**/*.cls"
       - ".github/workflows/ci.yml"
+      - ".github/scripts/render_diagrams.sh"
   pull_request:
     paths:
       - "**/*.mmd"
@@ -25,6 +26,8 @@ on:
       - "**/*.puml"
       - "**/*.uml"
       - "**/*.tex"
+      - ".github/workflows/ci.yml"
+      - ".github/scripts/render_diagrams.sh"
   workflow_dispatch:
     inputs:
       force_all:
@@ -77,16 +80,32 @@ jobs:
           MERMAID=$(grep -Eq "\.mmd$" .changed_files_list && echo "true" || echo "false")
           PLANTUML=$(grep -Eq "\.(plantuml|puml|uml)$" .changed_files_list && echo "true" || echo "false")
           LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
-          [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; PLANTUML="true"; LATEX="true"; }
+          RENDER_ALL_DIAGRAMS="false"
+          CI_CONFIG=$(grep -Eq "^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$" .changed_files_list && echo "true" || echo "false")
+          if [[ "${{ inputs.force_all }}" == "true" ]]; then
+            MERMAID="true"
+            PLANTUML="true"
+            LATEX="true"
+            RENDER_ALL_DIAGRAMS="true"
+          fi
+
+          if [[ "$CI_CONFIG" == "true" ]]; then
+            MERMAID="true"
+            PLANTUML="true"
+            RENDER_ALL_DIAGRAMS="true"
+          fi
 
           # If manually dispatched to only render images, force diagram rendering and
           # clear the changed-files list so the renderer will scan the repo for all diagrams.
           if [[ "${{ inputs.render_images_only }}" == "true" ]]; then
-            CHANGED=""
-            echo "" > .changed_files_list
             MERMAID="true"
             PLANTUML="true"
             LATEX="false"
+            RENDER_ALL_DIAGRAMS="true"
+          fi
+
+          if [[ "$RENDER_ALL_DIAGRAMS" == "true" ]]; then
+            echo "" > .changed_files_list
           fi
 
           DIAGRAMS="false"

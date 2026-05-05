@@ -9,6 +9,7 @@ DIAGRAMS_DIR="${1:-imagens/diagrams}"
 CHANGED_FILES_LIST="${2:-.changed_files_list}"
 
 mkdir -p "$DIAGRAMS_DIR"
+DIAGRAMS_DIR_ABS="$(cd "$DIAGRAMS_DIR" && pwd -P)"
 
 # Create a puppeteer config to bypass sandbox issues in Linux CI
 PUPPETEER_CONFIG="/tmp/puppeteer-config.json"
@@ -23,6 +24,7 @@ echo "Rendering diagrams to: $DIAGRAMS_DIR"
 if [ "$DEBUG" = "true" ]; then
   echo "DEBUG mode ON"
   echo "DIAGRAMS_DIR=$DIAGRAMS_DIR"
+  echo "DIAGRAMS_DIR_ABS=$DIAGRAMS_DIR_ABS"
   echo "CHANGED_FILES_LIST=$CHANGED_FILES_LIST"
   echo "PLANTUML_JAR=$PLANTUML_JAR"
   echo "PLANTUML_JAR_URL=$PLANTUML_JAR_URL"
@@ -91,7 +93,9 @@ render_plantuml() {
     return 0
   fi
 
-  local cmd=(java -jar "$PLANTUML_JAR" -tpng -charset UTF-8 -o "$DIAGRAMS_DIR" "$f")
+  # PlantUML resolves relative -o paths from the input file directory, so use
+  # an absolute output directory to avoid nested imagens/diagrams paths in CI.
+  local cmd=(java -jar "$PLANTUML_JAR" -tpng -charset UTF-8 -o "$DIAGRAMS_DIR_ABS" "$f")
   if [ "$DEBUG" = "true" ]; then
     echo "Running: ${cmd[*]}"
     local output
