@@ -90,6 +90,7 @@ jobs:
           fi
 
           if [[ "$CI_CONFIG" == "true" ]]; then
+            echo "CI workflow/script changed; forcing all stages."
             MERMAID="true"
             PLANTUML="true"
             LATEX="true"
