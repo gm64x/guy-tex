@@ -12,7 +12,7 @@ mkdir -p "$DIAGRAMS_DIR"
 
 # Create a puppeteer config to bypass sandbox issues in Linux CI
 PUPPETEER_CONFIG="/tmp/puppeteer-config.json"
-echo '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > "$PUPPETEER_CONFIG"
+printf '%s' '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > "$PUPPETEER_CONFIG"
 
 PLANTUML_JAR="${PLANTUML_JAR:-/tmp/plantuml.jar}"
 PLANTUML_JAR_URL="${PLANTUML_JAR_URL:-https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar}"
@@ -33,8 +33,12 @@ fi
 
 render_mermaid() {
   local f="$1"
+  # sanitize CRLF
+  f="${f//$'\r'/}"
+  local base_noext
+  base_noext=$(basename "$f")
   local base
-  base=$(basename "$f" .mmd)
+  base="${base_noext%.*}"
   local out="$DIAGRAMS_DIR/${base}.png"
 
   echo "Mermaid: '$f' -> '$out'"
@@ -57,6 +61,7 @@ render_mermaid() {
 
 ensure_plantuml_jar() {
   if [ ! -f "$PLANTUML_JAR" ]; then
+    mkdir -p "$(dirname "$PLANTUML_JAR")" || true
     echo "Downloading PlantUML jar to $PLANTUML_JAR..."
     if ! curl -sSL -o "$PLANTUML_JAR" "$PLANTUML_JAR_URL"; then
       echo "::warning::Failed to download PlantUML jar from $PLANTUML_JAR_URL"
@@ -68,13 +73,16 @@ ensure_plantuml_jar() {
 
 render_plantuml() {
   local f="$1"
-  # sanitize CRLF from input lines (handles Windows-created .changed_files_list)
+  # sanitize CRLF
   f="${f//$'\r'/}"
+  local base_noext
+  base_noext=$(basename "$f")
+  local base
+  base="${base_noext%.*}"
   local dir
   dir=$(dirname "$f")
-  local base
-  base=$(basename "$f" .plantuml)
-  local out="$DIAGRAMS_DIR/${base}.png"
+  local out
+  out="$DIAGRAMS_DIR/${base}.png"
 
   echo "PlantUML: '$f' -> '$out'"
 
@@ -96,7 +104,7 @@ render_plantuml() {
   else
     if ! "${cmd[@]}" >/dev/null 2>&1; then
       echo "::warning file=$f::Failed to render PlantUML diagram. Skipping."
-      # try to move fallback file next to source
+      # fallback: if plantuml emitted file next to source, try to move it
       local fallback="$dir/${base}.png"
       if [ -f "$fallback" ]; then
         mv "$fallback" "$out" || true
@@ -118,6 +126,16 @@ render_plantuml() {
   fi
 }
 
+# Helper to check for any PlantUML variant with same base name
+has_plantuml_variant() {
+  local dir="$1"
+  local base="$2"
+  [ -f "$dir/${base}.plantuml" ] && return 0
+  [ -f "$dir/${base}.puml" ] && return 0
+  [ -f "$dir/${base}.uml" ] && return 0
+  return 1
+}
+
 if [ -s "$CHANGED_FILES_LIST" ]; then
   echo "Using detected changed files list: $CHANGED_FILES_LIST"
   while IFS= read -r f || [ -n "$f" ]; do
@@ -129,8 +147,8 @@ if [ -s "$CHANGED_FILES_LIST" ]; then
       *.mmd)
         dir=$(dirname "$f")
         base=$(basename "$f" .mmd)
-        if [ -f "$dir/${base}.plantuml" ]; then
-          echo "::debug::Skipping '$f' because '$dir/${base}.plantuml' exists (prefer PlantUML)"
+        if has_plantuml_variant "$dir" "$base"; then
+          echo "::debug::Skipping '$f' because a PlantUML variant exists (prefer PlantUML)"
           continue
         fi
         if [ -f "$f" ]; then
@@ -139,7 +157,7 @@ if [ -s "$CHANGED_FILES_LIST" ]; then
           echo "::debug::Skipping missing file: $f"
         fi
         ;;
-      *.plantuml)
+      *.plantuml|*.puml|*.uml)
         if [ -f "$f" ]; then
           render_plantuml "$f"
         else
@@ -152,19 +170,19 @@ if [ -s "$CHANGED_FILES_LIST" ]; then
     esac
   done < "$CHANGED_FILES_LIST"
 else
-  echo "No changed file list; scanning repository for .mmd and .plantuml files..."
-  find . -maxdepth 6 \( -name "*.mmd" -o -name "*.plantuml" \) -print0 | while IFS= read -r -d '' f; do
+  echo "No changed file list; scanning repository for .mmd and PlantUML files..."
+  find . -maxdepth 6 \( -name "*.mmd" -o -name "*.plantuml" -o -name "*.puml" -o -name "*.uml" \) -print0 | while IFS= read -r -d '' f; do
     case "$f" in
       *.mmd)
         dir=$(dirname "$f")
         base=$(basename "$f" .mmd)
-        if [ -f "$dir/${base}.plantuml" ]; then
-          echo "::debug::Skipping '$f' because '$dir/${base}.plantuml' exists (prefer PlantUML)"
+        if has_plantuml_variant "$dir" "$base"; then
+          echo "::debug::Skipping '$f' because a PlantUML variant exists (prefer PlantUML)"
           continue
         fi
         render_mermaid "$f"
         ;;
-      *.plantuml)
+      *.plantuml|*.puml|*.uml)
         render_plantuml "$f"
         ;;
     esac

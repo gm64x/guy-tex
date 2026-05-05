@@ -11,6 +11,8 @@ on:
     paths:
       - "**/*.mmd"
       - "**/*.plantuml"
+      - "**/*.puml"
+      - "**/*.uml"
       - "**/*.tex"
       - "**/*.bib"
       - "**/*.sty"
@@ -20,6 +22,8 @@ on:
     paths:
       - "**/*.mmd"
       - "**/*.plantuml"
+      - "**/*.puml"
+      - "**/*.uml"
       - "**/*.tex"
   workflow_dispatch:
     inputs:
@@ -71,7 +75,7 @@ jobs:
 
           # Detect diagram types and LaTeX changes
           MERMAID=$(grep -Eq "\.mmd$" .changed_files_list && echo "true" || echo "false")
-          PLANTUML=$(grep -Eq "\.plantuml$" .changed_files_list && echo "true" || echo "false")
+          PLANTUML=$(grep -Eq "\.(plantuml|puml|uml)$" .changed_files_list && echo "true" || echo "false")
           LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
           [[ "${{ inputs.force_all }}" == "true" ]] && { MERMAID="true"; PLANTUML="true"; LATEX="true"; }
 
