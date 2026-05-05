@@ -92,6 +92,7 @@ jobs:
           if [[ "$CI_CONFIG" == "true" ]]; then
             MERMAID="true"
             PLANTUML="true"
+            LATEX="true"
             RENDER_ALL_DIAGRAMS="true"
           fi
 
@@ -138,6 +139,14 @@ jobs:
         with:
           distribution: "temurin"
           java-version: "17"
+
+      - name: Setup Graphviz
+        if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y graphviz
+          echo "GRAPHVIZ_DOT=$(command -v dot)" >> $GITHUB_ENV
+          dot -V
 
       - name: Render Diagrams
         if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
