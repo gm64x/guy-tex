@@ -82,6 +82,7 @@ jobs:
           LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
           RENDER_ALL_DIAGRAMS="false"
           CI_CONFIG=$(grep -Eq "^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$" .changed_files_list && echo "true" || echo "false")
+
           if [[ "${{ inputs.force_all }}" == "true" ]]; then
             MERMAID="true"
             PLANTUML="true"
@@ -133,6 +134,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "24"
+
+      - name: Install Chrome for Mermaid
+        if: steps.detect.outputs.mermaid_changed == 'true' || inputs.render_images_only == 'true'
+        run: |
+          npx --yes @puppeteer/browsers@latest install chrome@148.0.7778.97
 
       - name: Setup Java
         if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
@@ -193,11 +199,10 @@ jobs:
           echo "::endgroup::"
 
       - name: Compile LaTeX
-        if: steps.detect.outputs.latex_changed == 'true'
+        if: steps.findroot.outputs.root_tex != '' && steps.detect.outputs.latex_changed == 'true'
         uses: xu-cheng/latex-action@v3
         with:
           root_file: ${{ steps.findroot.outputs.root_tex }}
-          # Use latexmk with -pdf to ensure pdflatex is used and references are resolved
           args: "-pdf -interaction=nonstopmode -halt-on-error"
 
       - name: Upload PDF
