@@ -76,7 +76,6 @@ jobs:
 
           echo "$CHANGED" > .changed_files_list
 
-          # Detect diagram types and LaTeX changes
           MERMAID=$(grep -Eq "\.mmd$" .changed_files_list && echo "true" || echo "false")
           PLANTUML=$(grep -Eq "\.(plantuml|puml|uml)$" .changed_files_list && echo "true" || echo "false")
           LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
@@ -104,8 +103,6 @@ jobs:
             RENDER_ALL_DIAGRAMS="true"
           fi
 
-          # If manually dispatched to only render images, force diagram rendering and
-          # clear the changed-files list so the renderer will scan the repo for all diagrams.
           if [[ "${{ inputs.render_images_only }}" == "true" ]]; then
             MERMAID="true"
             PLANTUML="true"
@@ -130,15 +127,27 @@ jobs:
           echo "::endgroup::"
 
       - name: Setup Node.js
-        if: steps.detect.outputs.mermaid_changed == 'true' || inputs.render_images_only == 'true'
+        if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "24"
 
       - name: Install Chrome for Mermaid
-        if: steps.detect.outputs.mermaid_changed == 'true' || inputs.render_images_only == 'true'
+        if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
         run: |
-          npx --yes @puppeteer/browsers@latest install chrome@148.0.7778.97
+          set -euo pipefail
+          npx --yes @puppeteer/browsers@latest install chrome-headless-shell@148.0.7778.97
+
+          CHROME_PATH="$(find "$HOME/.cache/puppeteer" -type f \( -name chrome-headless-shell -o -name chrome \) | head -n 1 || true)"
+
+          if [ -z "$CHROME_PATH" ]; then
+            echo "::error::Chrome binary not found in Puppeteer cache"
+            find "$HOME/.cache/puppeteer" -maxdepth 5 -type f || true
+            exit 1
+          fi
+
+          echo "PUPPETEER_EXECUTABLE_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+          echo "Using browser: $CHROME_PATH"
 
       - name: Setup Java
         if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
@@ -169,7 +178,6 @@ jobs:
           git add "$DIAGRAMS_DIR"/*.png || true
 
           if ! git diff --staged --quiet; then
-            # Loop protection
             if [[ "$(git log -1 --pretty=%an)" != *"github-actions"* ]]; then
               git commit -m "chore: auto-render diagrams [skip ci]"
               git push
@@ -192,7 +200,6 @@ jobs:
             exit 1
           fi
 
-          # Create a symlink without spaces to avoid issues with docker-based actions
           ln -sf "$ORIGINAL" main.tex
           echo "root_tex=main.tex" >> $GITHUB_OUTPUT
           echo "Using: $ORIGINAL (linked to main.tex)"

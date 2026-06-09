@@ -11,17 +11,22 @@ CHANGED_FILES_LIST="${2:-.changed_files_list}"
 mkdir -p "$DIAGRAMS_DIR"
 DIAGRAMS_DIR_ABS="$(cd "$DIAGRAMS_DIR" && pwd -P)"
 
-# Create a puppeteer config to bypass sandbox issues in Linux CI
-# and optionally point to a browser executable if provided by the workflow.
+# Create a puppeteer config to bypass sandbox issues in Linux CI.
+# If the workflow provides PUPPETEER_EXECUTABLE_PATH, use it explicitly.
 PUPPETEER_CONFIG="/tmp/puppeteer-config.json"
-
 if [ -n "${PUPPETEER_EXECUTABLE_PATH:-}" ]; then
-  printf '%s' "{
-  \"executablePath\": \"${PUPPETEER_EXECUTABLE_PATH}\",
-  \"args\": [\"--no-sandbox\", \"--disable-setuid-sandbox\"]
-}" > "$PUPPETEER_CONFIG"
+  cat > "$PUPPETEER_CONFIG" <<EOF
+{
+  "executablePath": "${PUPPETEER_EXECUTABLE_PATH}",
+  "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+}
+EOF
 else
-  printf '%s' '{"args": ["--no-sandbox", "--disable-setuid-sandbox"]}' > "$PUPPETEER_CONFIG"
+  cat > "$PUPPETEER_CONFIG" <<'EOF'
+{
+  "args": ["--no-sandbox", "--disable-setuid-sandbox"]
+}
+EOF
 fi
 
 PLANTUML_JAR="${PLANTUML_JAR:-/tmp/plantuml.jar}"
