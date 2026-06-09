@@ -138,16 +138,21 @@ jobs:
           set -euo pipefail
           npx --yes @puppeteer/browsers@latest install chrome-headless-shell@148.0.7778.97
 
-          CHROME_PATH="$(find "$HOME/.cache/puppeteer" -type f \( -name chrome-headless-shell -o -name chrome \) | head -n 1 || true)"
+          echo "::group::Browser discovery"
+          echo "Searching for installed Chrome binary..."
+          BROWSER_PATH="$(find "$GITHUB_WORKSPACE" "$HOME/.cache/puppeteer" -type f \( -name chrome-headless-shell -o -name chrome \) 2>/dev/null | head -n 1 || true)"
 
-          if [ -z "$CHROME_PATH" ]; then
-            echo "::error::Chrome binary not found in Puppeteer cache"
-            find "$HOME/.cache/puppeteer" -maxdepth 5 -type f || true
+          if [ -z "$BROWSER_PATH" ]; then
+            echo "No browser found under workspace or Puppeteer cache."
+            find "$GITHUB_WORKSPACE" -maxdepth 6 -type f | sed -n '1,200p' || true
+            find "$HOME" -maxdepth 6 -type f 2>/dev/null | grep -E 'chrome-headless-shell|/chrome$' || true
+            echo "::error::Chrome binary not found after installation."
             exit 1
           fi
 
-          echo "PUPPETEER_EXECUTABLE_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
-          echo "Using browser: $CHROME_PATH"
+          echo "PUPPETEER_EXECUTABLE_PATH=$BROWSER_PATH" >> "$GITHUB_ENV"
+          echo "Using browser: $BROWSER_PATH"
+          echo "::endgroup::"
 
       - name: Setup Java
         if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
