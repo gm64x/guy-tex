@@ -21,7 +21,7 @@ A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de 
 
 
 
-A plataforma atua na exibição de potenciais \textit{bugs}, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também permite inspeção contínua por meio de \textit{dashboards} e histórico de análises, integrando-se às principais IDEs do mercado \citeonline{campbell2013sonarqube}.
+A plataforma atua na exibição de potenciais \textit{bugs}, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Dessa forma, possibilita a inspeção contínua por meio de \textit{dashboards} e histórico de análises, integrando-se às principais IDEs do mercado \citeonline{campbell2013sonarqube}.
 
 No entanto, embora a plataforma possua uma versão gratuita, algumas funcionalidades avançadas e recursos gerenciais são comerciais e requerem pagamento. Ademais, a ferramenta está sujeita à ocorrência de falsos positivos e exige configuração adequada para o contexto de cada projeto. Vale ressaltar que, apesar de calcular a complexidade ciclomática, os dados são exibidos principalmente em painéis e relatórios, sem focar na visualização gráfica e interativa do Grafo de Fluxo de Controle (GFC) do algoritmo.
 
@@ -67,11 +67,11 @@ Esta seção apresenta um levantamento de requisitos inicial da ferramenta Guy, 
 
 O acesso à ferramenta será realizado diretamente no ambiente de desenvolvimento por meio de uma extensão para o editor \textit{Visual Studio Code} \citeonline{microsoft_vscode}. Um requisito fundamental é que a análise estática seja executada de forma estritamente local. Isso será possível graças ao uso de tecnologias como o \textit{WebAssembly} e o Tree-sitter, que atuarão na construção eficiente da árvore sintática, podendo integrar-se ao ecossistema do ESLint para potencializar o fornecimento de diagnósticos.
 
-Essa arquitetura garante que o processamento léxico e sintático do código ocorra de forma estritamente local, diretamente no ambiente de desenvolvimento do usuário. Com isso, a ferramenta pode fornecer \textit{feedback} em tempo real durante a escrita do código. Além disso, essa abordagem favorece a conformidade (\textit{compliance}) com políticas de segurança corporativa e privacidade, ao proteger a propriedade intelectual e evitar a exposição do código a ambientes de terceiros, eliminando os custos com infraestrutura de nuvem, uma vez que dispensa o envio dos trechos desenvolvidos para servidores externos.
+Essa arquitetura garante que o processamento léxico e sintático do código ocorra de forma estritamente local, diretamente no ambiente de desenvolvimento do usuário. Dessa forma, assegura-se um \textit{feedback} em tempo real durante a escrita do código. Além disso, essa abordagem favorece a conformidade (\textit{compliance}) com políticas de segurança corporativa e privacidade, ao proteger a propriedade intelectual e evitar a exposição do código a ambientes de terceiros, eliminando os custos com infraestrutura de nuvem, uma vez que dispensa o envio dos trechos desenvolvidos para servidores externos.
 
 No aspecto funcional, a principal entrega do sistema consiste na renderização visual interativa do Grafo de Fluxo de Controle (GFC) assim que o código-fonte é analisado. A interface deverá permitir que o programador interaja com o grafo gerado, correlacionando visualmente os nós de decisão e as arestas direcionadas com as respectivas linhas do arquivo aberto no editor. Em conjunto com essa visualização, a extensão tem o requisito de calcular e exibir a métrica de Complexidade Ciclomática, atuando como um indicador sobre a complexidade lógica e a testabilidade do código.
 
-Para apoiar o desenvolvedor na análise da qualidade estrutural do software, a extensão servirá como uma ferramenta visual para a identificação dos caminhos linearmente independentes no grafo. O sistema fornecerá os dados estruturais necessários para que o programador elabore casos de teste alinhados aos fluxos identificados. Assim, a análise estática passa a funcionar como apoio prático ao diagnóstico e à compreensão da lógica do código.
+Para apoiar o desenvolvedor na análise da qualidade estrutural do software, a extensão servirá como uma ferramenta visual para a identificação dos caminhos linearmente independentes no grafo. O sistema fornecerá os dados estruturais necessários para que o programador elabore casos de teste alinhados aos fluxos identificados. Dessa forma, a análise estática converte-se em uma etapa de apoio prático ao diagnóstico e à compreensão da lógica do código.
 
 \section{Prototipagem e Design da Ferramenta Guy}
 
@@ -84,7 +84,7 @@ Essa proposta atende aos principais requisitos definidos para a ferramenta: exec
 \begin{figure}[H]
   \centering
     \caption{Diagrama de casos de uso da Ferramenta Guy.}
-  \includegraphics[width=1\linewidth]{imagens/diagrams/diagrama_casos_uso_guy.png}
+  \includegraphics[width=0.65\linewidth]{imagens/diagrams/diagrama_casos_uso_guy.png}
   \fonte{Elaborada pelo autor}
   \label{fig:casos_uso_guy}
 \end{figure}
@@ -92,565 +92,35 @@ Essa proposta atende aos principais requisitos definidos para a ferramenta: exec
 \begin{figure}[H]
   \centering
     \caption{Diagrama de cenários (sequência) da Ferramenta Guy.}
-  \includegraphics[width=1\linewidth]{imagens/diagrams/diagrama_cenarios_guy.png}
+  \includegraphics[width=0.85\linewidth]{imagens/diagrams/diagrama_cenarios_guy.png}
   \fonte{Elaborada pelo autor}
   \label{fig:cenarios_guy}
 \end{figure}
 
 
 \section{Implementação da Ferramenta Guy}
+%desenvolvimento e configuracao no VSCode - pode criar subsecoes
 
-A ferramenta Guy foi implementada como uma extensão para o \textit{Visual Studio Code}, com o objetivo de integrar a análise de fluxo de controle diretamente ao ambiente de desenvolvimento utilizado pelo programador. O nome da extensão deriva de \textit{Graphing Utility for Your code} e, em sua versão atual, o protótipo tem como foco a análise de arquivos Python.
+%explicar com trechos de codigo
 
-O código completo do protótipo está disponível no repositório GitHub em \url{https://github.com/gm64x/guy-vscode.git}. Neste projeto, o código da extensão está organizado no diretório \texttt{app/}. A extensão foi desenvolvida em TypeScript e utiliza a API do VS Code para registrar comandos, acessar o editor ativo, abrir a visualização lateral e realizar a navegação entre os elementos do grafo e as linhas do código-fonte. A interface visual do GFC foi construída com React e \texttt{@xyflow/react}, enquanto a organização automática dos nós utiliza a biblioteca \texttt{dagre}. Para a análise sintática do código Python, a ferramenta utiliza o Tree-sitter por meio de WebAssembly.
-
-A configuração inicial da extensão fica no arquivo \texttt{package.json}, que é lido pelo próprio VS Code. Esse arquivo declara quando a extensão deve ser ativada, quais comandos ficam disponíveis para o usuário e em quais menus eles aparecem. O trecho a seguir mostra a parte relacionada aos comandos principais da Guy.
-
-\begin{lstlisting}[caption={Recorte da configuração de comandos da extensão Guy.}, label={lst:guy_package_commands}]
-"activationEvents": [
-  "onLanguage:python",
-  "onCommand:guy.generateCfgFromFile",
-  "onCommand:guy.generateCfgFromSelection",
-  "onCommand:guy.generateCfgFromCurrentFunction",
-  "onCommand:guy.toggleGraphDetailMode"
-],
-"contributes": {
-  "commands": [
-    {
-      "command": "guy.generateCfgFromFile",
-      "title": "Generate CFG from File",
-      "category": "GUY"
-    },
-    {
-      "command": "guy.generateCfgFromSelection",
-      "title": "Generate CFG from Selection",
-      "category": "GUY"
-    },
-    {
-      "command": "guy.generateCfgFromCurrentFunction",
-      "title": "Generate CFG from Current Function",
-      "category": "GUY"
-    },
-    {
-      "command": "guy.toggleGraphDetailMode",
-      "title": "Toggle Simplified/Detailed CFG View",
-      "category": "GUY"
-    }
-  ]
-}
-\end{lstlisting}
-
-O mesmo arquivo também define opções de uso da extensão, como abertura automática da pré-visualização, direção do leiaute do grafo, exibição do painel de métricas, destaque de código ao selecionar nós e limite considerado alto para a Complexidade Ciclomática.
-
-\subsection{Estrutura geral da extensão}
-
-A implementação está organizada em módulos com responsabilidades separadas. O arquivo \texttt{src/extension.ts} registra os comandos da extensão e coordena o fluxo principal de execução. Os módulos do diretório \texttt{src/core/} concentram a análise do código-fonte, a construção do GFC, o cálculo das métricas e a identificação de caminhos independentes. Já os módulos em \texttt{src/vscode/} tratam da integração com o editor, incluindo a criação da janela lateral e o destaque de trechos do código. A interface React da pré-visualização fica em \texttt{src/webview/}.
-
-A Tabela \ref{tab:estrutura_guy} resume os módulos mais importantes da implementação.
-
-\begin{table}[H]
-    \centering
-    \caption{Principais módulos da implementação da ferramenta Guy.}
-    \begin{tabular}{p{0.32\linewidth} | p{0.58\linewidth}}
-        \hline
-        \textbf{Módulo} & \textbf{Responsabilidade} \\ \hline
-        \texttt{extension.ts} & Registra os comandos da extensão, obtém o arquivo ativo, controla o modo de geração do grafo e envia os resultados para a Webview. \\ \hline
-        \texttt{parser.ts} & Utiliza o Tree-sitter para transformar o código Python em uma estrutura sintática intermediária, identificando funções, comandos sequenciais, condicionais, laços e comandos de desvio. \\ \hline
-        \texttt{cfgBuilder.ts} & Constrói os nós e as arestas do Grafo de Fluxo de Controle a partir da estrutura sintática gerada pelo parser. \\ \hline
-        \texttt{metrics.ts} & Calcula a quantidade de nós, arestas, decisões, componentes conectados e a Complexidade Ciclomática. \\ \hline
-        \texttt{paths.ts} & Lista caminhos independentes entre o nó de entrada e o nó de saída, respeitando limites para grafos grandes. \\ \hline
-        \texttt{webviewPanel.ts} e \texttt{webview/src/App.tsx} & Criam a pré-visualização interativa do grafo, a barra lateral de métricas, as listas de nós, arestas, funções e caminhos independentes. \\ \hline
-        \texttt{editorNavigation.ts} & Realiza o destaque e a navegação entre elementos selecionados no grafo e os trechos correspondentes do arquivo Python. \\ \hline
-    \end{tabular}
-    \fonte{Elaborada pelo autor.}
-    \label{tab:estrutura_guy}
-\end{table}
-
-Com essa divisão, a análise do código Python fica separada da integração com o editor. O diretório \texttt{src/core/} concentra a construção do grafo e das métricas, enquanto \texttt{src/vscode/} e \texttt{src/webview/} cuidam da comunicação com o VS Code e da interface visual.
-
-\subsection{Comandos e formas de análise}
-
-A extensão disponibiliza comandos no VS Code para gerar o GFC a partir de três escopos de análise: arquivo completo, trecho selecionado e função atual. Esses comandos podem ser acionados pela Paleta de Comandos e também por menus de contexto do editor Python. O comando de arquivo completo fica disponível na barra de título do editor, enquanto os comandos de seleção e função atual ficam disponíveis no menu de contexto.
-
-\begin{table}[H]
-    \centering
-    \caption{Comandos principais da ferramenta Guy.}
-    \begin{tabular}{p{0.42\linewidth} | p{0.48\linewidth}}
-        \hline
-        \textbf{Comando} & \textbf{Descrição} \\ \hline
-        \texttt{GUY: Generate CFG from File} & Gera o GFC a partir de todo o arquivo Python ativo. \\ \hline
-        \texttt{GUY: Generate CFG from Selection} & Gera o GFC apenas para o trecho de código selecionado no editor. \\ \hline
-        \texttt{GUY: Generate CFG from Current Function} & Gera o GFC da função Python na qual o cursor está posicionado. \\ \hline
-        \texttt{GUY: Toggle Simplified/Detailed CFG View} & Alterna a visualização entre o modo simplificado e o modo detalhado. \\ \hline
-    \end{tabular}
-    \fonte{Elaborada pelo autor.}
-    \label{tab:comandos_guy}
-\end{table}
-
-O fluxo de execução parte do editor ativo. Ao executar um comando, a extensão verifica se o documento é Python, captura o conteúdo correspondente ao escopo escolhido e aciona o construtor de grafos. Após a construção do GFC, os dados são enviados para a Webview, que renderiza a visualização em uma coluna lateral do VS Code.
-
-No ponto de entrada da extensão, em \texttt{src/extension.ts}, a função \texttt{activate} instancia o construtor do grafo, o navegador do editor e o painel da Webview. Em seguida, associa cada comando declarado no \texttt{package.json} à respectiva função TypeScript.
-
-\begin{lstlisting}[caption={Registro dos comandos principais da extensão.}, label={lst:guy_activate}]
-export function activate(context: vscode.ExtensionContext): void {
-  const builder = new CFGBuilder();
-  navigator = new EditorNavigator();
-  panel = new GuyWebviewPanel(context.extensionUri, (message) =>
-    handleWebviewMessage(message, builder),
-  );
-
-  context.subscriptions.push(
-    navigator,
-    vscode.commands.registerCommand("guy.generateCfgFromFile", () =>
-      generateFromFile(builder),
-    ),
-    vscode.commands.registerCommand("guy.generateCfgFromSelection", () =>
-      generateFromSelection(builder),
-    ),
-    vscode.commands.registerCommand("guy.generateCfgFromCurrentFunction", () =>
-      generateFromCurrentFunction(builder),
-    ),
-    vscode.commands.registerCommand("guy.toggleGraphDetailMode", () =>
-      toggleDetailMode(builder),
-    ),
-  );
-}
-\end{lstlisting}
-
-Para a análise do arquivo completo, a extensão lê o conteúdo do documento ativo, chama \texttt{builder.generate} e envia o resultado para o painel lateral.
-
-\begin{lstlisting}[caption={Geração do GFC a partir do arquivo Python ativo.}, label={lst:guy_generate_file}]
-async function generateFromFile(builder: CFGBuilder): Promise<void> {
-  const editor = getPythonEditor();
-  if (!editor) {
-    return;
-  }
-
-  panel.loading();
-  currentCfg = await builder.generate({
-    source: editor.document.getText(),
-    fileName: editor.document.fileName,
-    mode: "file",
-    viewMode: currentViewMode,
-    highComplexityThreshold: getHighComplexityThreshold(),
-  });
-  panel.show(currentCfg);
-  showDiagnostics(currentCfg);
-}
-\end{lstlisting}
-
-\subsection{Construção do Grafo de Fluxo de Controle}
-
-A análise do código é realizada em duas etapas principais. Primeiro, o parser baseado em Tree-sitter percorre a árvore sintática do código Python e classifica os elementos relevantes para o fluxo de controle. Na versão atual, são tratados comandos sequenciais, funções, estruturas \texttt{if}/\texttt{elif}/\texttt{else}, laços \texttt{for} e \texttt{while}, além de comandos \texttt{return}, \texttt{break} e \texttt{continue}. Esses elementos são representados internamente pelos tipos indicados no trecho a seguir.
-
-\begin{lstlisting}[caption={Tipos de comandos Python reconhecidos pelo parser.}, label={lst:guy_parser_kinds}]
-export type PythonStatementKind =
-  | "statement"
-  | "if"
-  | "loop"
-  | "return"
-  | "break"
-  | "continue"
-  | "function";
-\end{lstlisting}
-
-Durante o processamento, cada nó relevante da árvore sintática é convertido em uma estrutura interna da Guy. Definições de função, condicionais, laços e comandos de desvio são diferenciados pelo tipo retornado pelo Tree-sitter.
-
-\begin{lstlisting}[caption={Recorte simplificado da classificação de nós sintáticos relevantes para o GFC.}, label={lst:guy_parser_nodes}]
-private nodeFromTreeSitter(
-  node: TreeSitterNode,
-  offset: SourceOffset,
-): PythonAstNode | undefined {
-  if (node.type === "function_definition") {
-    return { kind: "function", name, code: firstLine(node.text), body };
-  }
-
-  if (node.type === "if_statement") {
-    return this.ifFromTreeSitter(node, offset);
-  }
-
-  if (node.type === "for_statement" || node.type === "while_statement") {
-    return { kind: "loop", loopKind, condition, code, body };
-  }
-
-  if (node.type === "return_statement") {
-    return { kind: "return", code: node.text };
-  }
-}
-\end{lstlisting}
-
-Depois da etapa de análise sintática, o módulo \texttt{cfgBuilder.ts} transforma a estrutura intermediária no GFC. Todo grafo gerado possui um nó inicial, \texttt{Entry}, e um nó final, \texttt{Exit}. Comandos sequenciais usam arestas \texttt{next}; condicionais usam arestas \texttt{true} e \texttt{false}; laços usam arestas de repetição \texttt{loop}; e retornos são conectados diretamente ao nó de saída.
-
-\begin{lstlisting}[caption={Fluxo principal de construção do GFC.}, label={lst:guy_builder_run}]
-const entry = this.addNode("Entry", "entry", "", defaultRange);
-const exit = this.addNode("Exit", "exit", "", body[body.length - 1]);
-this.exitNodeId = exit.id;
-
-const open = this.buildSequence(
-  body,
-  [entry.id],
-  undefined,
-  { loopStack: [] },
-  this.options.viewMode,
-);
-
-for (const from of open) {
-  this.addEdge(from, exit.id, "next");
-}
-
-const metrics = calculateMetrics(this.nodes, this.edges);
-const independentPathResult = calculateIndependentPaths(
-  this.nodes,
-  this.edges,
-  entry.id,
-  exit.id,
-  metrics.cyclomaticComplexity,
-);
-\end{lstlisting}
-
-Nas condicionais, a ferramenta cria um nó para a condição e um nó de junção, chamado \texttt{merge}, para reunir os ramos ao final da estrutura. O ramo verdadeiro recebe a aresta \texttt{true}; o fluxo alternativo segue pela aresta \texttt{false}.
-
-\begin{lstlisting}[caption={Recorte da construção de estruturas condicionais.}, label={lst:guy_build_if}]
-const condition = this.addNode(
-  `if ${branch.condition ?? ""}`,
-  "condition",
-  branch.condition ?? statement.code,
-  branch,
-);
-
-this.connect(pendingFalseFrom, condition.id, pendingLabel);
-const branchExits = this.buildSequence(
-  branch.body,
-  [condition.id],
-  "true",
-  context,
-  viewMode,
-);
-
-pendingFalseFrom = [condition.id];
-pendingLabel = "false";
-
-const merge = this.addNode("merge", "merge", "", statement);
-this.connect(pendingFalseFrom, merge.id, pendingLabel);
-this.connect(exits, merge.id, "next");
-\end{lstlisting}
-
-Nos laços, a ferramenta cria um nó para a condição do \texttt{for} ou \texttt{while}, um nó de saída e uma aresta de retorno para representar a repetição.
-
-\begin{lstlisting}[caption={Recorte da construção de laços no GFC.}, label={lst:guy_build_loop}]
-const condition = this.addNode(
-  `${statement.loopKind} ${statement.condition}`,
-  "loop",
-  statement.code,
-  statement,
-);
-const afterLoop = this.addNode("after loop", "merge", "", statement);
-
-this.connect(predecessors, condition.id, firstLabel ?? "next");
-const bodyExits = this.buildSequence(
-  statement.body,
-  [condition.id],
-  "true",
-  loopContext,
-  viewMode,
-);
-
-this.connect(bodyExits, condition.id, "loop");
-this.addEdge(condition.id, afterLoop.id, "false");
-\end{lstlisting}
-
-No caso de laços, a ferramenta mantém uma pilha interna para associar corretamente comandos \texttt{break} e \texttt{continue} ao laço em que aparecem. Com isso, um \texttt{break} é ligado ao ponto posterior ao laço, enquanto um \texttt{continue} retorna para a condição do laço. Esse controle é necessário porque esses comandos dependem do laço mais interno em execução, e não apenas da posição textual em que aparecem.
-
-A ferramenta também oferece dois modos de visualização. No modo simplificado, comandos sequenciais adjacentes são compactados em um único nó, reduzindo a densidade visual do grafo. No modo detalhado, os comandos são preservados de forma mais granular, favorecendo uma análise mais próxima da estrutura linha a linha do código.
-
-\subsection{Métricas e caminhos independentes}
-
-Após a construção do grafo, a ferramenta calcula métricas estruturais do GFC. A principal delas é a Complexidade Ciclomática, calculada pela expressão:
-
-\begin{equation}
-    V(G) = E - N + 2P
-\end{equation}
-
-em que \(E\) representa o número de arestas, \(N\) o número de nós e \(P\) o número de componentes conectados do grafo. A extensão também apresenta a quantidade de decisões, o total de nós e arestas e a lista de caminhos independentes entre o nó de entrada e o nó de saída. O cálculo fica concentrado no módulo \texttt{metrics.ts}.
-
-\begin{lstlisting}[caption={Cálculo das métricas estruturais do GFC.}, label={lst:guy_metrics}]
-export function calculateMetrics(nodes: CFGNode[], edges: CFGEdge[]): CFGMetrics {
-  const decisionCount = nodes.filter(
-    (node) => node.kind === "condition" || node.kind === "loop",
-  ).length;
-  const connectedComponents = countConnectedComponents(nodes, edges);
-  const cyclomaticComplexity = Math.max(
-    1,
-    edges.length - nodes.length + 2 * connectedComponents,
-  );
-
-  return {
-    nodeCount: nodes.length,
-    edgeCount: edges.length,
-    decisionCount,
-    connectedComponents,
-    cyclomaticComplexity,
-    simplifiedCyclomaticComplexity: decisionCount + 1,
-  };
-}
-\end{lstlisting}
-
-A interface também possui um limite de complexidade configurável. Por padrão, quando \(V(G)\) ultrapassa o valor 10, a extensão exibe sugestões simples, indicando que a função pode ser candidata a refatoração, divisão em funções menores ou redução de condicionais aninhadas.
-
-\subsection{Interface de visualização}
-
-A visualização do GFC é apresentada em uma Webview lateral. O grafo é renderizado com nós, arestas direcionadas e rótulos que indicam o tipo de transição, como \texttt{true}, \texttt{false}, \texttt{loop}, \texttt{return}, \texttt{break} e \texttt{continue}. A interface oferece controles para ajustar a visualização, centralizar o grafo, redefinir o zoom e ampliar ou reduzir a escala.
-
-A barra lateral da Webview apresenta as métricas calculadas, a fórmula de Complexidade Ciclomática aplicada ao grafo gerado, a lista de nós, a lista de arestas, as funções encontradas e os caminhos independentes. Ao selecionar um nó, uma aresta ou um caminho, a extensão envia uma mensagem da Webview para o VS Code e destaca o trecho correspondente no editor. Essa interação atende ao objetivo educacional da ferramenta, pois permite relacionar diretamente a estrutura visual do fluxo de controle com o código-fonte analisado.
-
-A janela lateral é criada no módulo \texttt{webviewPanel.ts}. O painel é aberto ao lado do editor, permite execução de scripts e registra o canal de mensagens usado pela interface React.
-
-\begin{lstlisting}[caption={Criação da Webview lateral no VS Code.}, label={lst:guy_webview_panel}]
-this.panel = vscode.window.createWebviewPanel(
-  "guyCfgPreview",
-  title,
-  vscode.ViewColumn.Beside,
-  {
-    enableScripts: true,
-    retainContextWhenHidden: true,
-    localResourceRoots: [this.extensionUri],
-  },
-);
-
-this.panel.webview.onDidReceiveMessage((message: WebviewMessage) =>
-  this.onMessage(message),
-);
-this.panel.webview.html = getWebviewHtml(
-  this.panel.webview,
-  this.extensionUri,
-  cfg,
-);
-\end{lstlisting}
-
-Na interface React, os nós e arestas do GFC são convertidos para o formato esperado pelo \texttt{@xyflow/react}. A biblioteca \texttt{dagre} calcula a posição automática dos elementos, e os eventos de clique enviam mensagens para a extensão.
-
-\begin{lstlisting}[caption={Renderização interativa do GFC na Webview.}, label={lst:guy_reactflow}]
-<ReactFlow
-  nodes={flowNodes}
-  edges={flowEdges}
-  nodeTypes={nodeTypes}
-  onNodeClick={(_, node) => selectNode(node.id)}
-  onEdgeClick={(_, edge) => selectEdge(edge.id)}
-  nodesConnectable={false}
-  elementsSelectable
->
-  <Background color="var(--border)" gap={20} size={0.5} />
-</ReactFlow>
-
-const selectNode = useCallback((nodeId: string) => {
-  setSelectedNodeId(nodeId);
-  vscode?.postMessage({ type: "NODE_SELECTED", payload: { nodeId } });
-}, []);
-\end{lstlisting}
-
-O módulo \texttt{editorNavigation.ts} completa essa integração: quando recebe uma seleção vinda da Webview, localiza o trecho correspondente no arquivo Python e aplica uma decoração temporária no editor. Assim, grafo e código permanecem sincronizados.
-
-\subsection{Critérios de implementação observados}
-
-Os pontos técnicos verificados na implementação aparecem em arquivos específicos da extensão. A Tabela \ref{tab:criterios_implementacao_guy} relaciona cada critério com a evidência encontrada no código-fonte.
-
-\begin{table}[H]
-    \centering
-    \caption{Critérios técnicos observados na implementação da Guy.}
-    \begin{tabular}{p{0.34\linewidth} | p{0.56\linewidth}}
-        \hline
-        \textbf{Critério} & \textbf{Evidência na implementação} \\ \hline
-        Comandos, menus e eventos de ativação & Declarados no \texttt{package.json}, por meio de \texttt{activationEvents}, \texttt{contributes.commands} e \texttt{menus}. \\ \hline
-        Registro dos comandos & Realizado em \texttt{src/extension.ts}, dentro da função \texttt{activate}, com chamadas a \texttt{vscode.commands.registerCommand}. \\ \hline
-        Uso real do Tree-sitter & Implementado em \texttt{src/core/parser.ts}, com \texttt{web-tree-sitter} e a gramática \texttt{tree-sitter-python}. \\ \hline
-        Ausência de fallback textual & Quando o Tree-sitter não carrega, a ferramenta registra diagnóstico e não tenta reconstruir o grafo com um parser simplificado. \\ \hline
-        Estrutura do GFC & Definida em \texttt{src/core/types.ts}, com nós, arestas, \texttt{entryNodeId}, \texttt{exitNodeId}, métricas e caminhos independentes. \\ \hline
-        Posições do código original & Calculadas a partir das posições do Tree-sitter e do deslocamento da seleção, mantendo linha e coluna do arquivo aberto. \\ \hline
-        Integração grafo--código & Cliques na Webview enviam mensagens para a extensão, que destaca os trechos correspondentes no editor. \\ \hline
-        Integração código--grafo & Mudanças de seleção no editor procuram o nó correspondente e o destacam na Webview. \\ \hline
-        Tema claro e escuro & A Webview usa variáveis CSS nativas do VS Code, como \texttt{--vscode-editor-background} e \texttt{--vscode-editor-foreground}. \\ \hline
-    \end{tabular}
-    \fonte{Elaborada pelo autor.}
-    \label{tab:criterios_implementacao_guy}
-\end{table}
-
-Um ponto importante da implementação é que o parser não possui fallback textual. A ferramenta depende do Tree-sitter para montar a estrutura sintática usada na geração do GFC. Se o WebAssembly do parser não puder ser carregado, a extensão retorna um diagnóstico e evita produzir um grafo baseado em inferências frágeis.
-
-\begin{lstlisting}[caption={Tratamento de falha no carregamento do Tree-sitter.}, label={lst:guy_no_fallback}]
-try {
-  const runtime = await this.getWebTreeSitter();
-  const parser = new runtime.Parser();
-  parser.setLanguage(runtime.python);
-  const tree = parser.parse(source);
-  const body = this.nodesFromTreeSitterContainer(tree.rootNode, offset);
-  return { body, functions, diagnostics, treeSitterAvailable: true };
-} catch (err: any) {
-  diagnostics.push(
-    `Tree-sitter WASM could not be loaded: ${err?.message ?? err}`,
-  );
-  return { body: [], functions: [], diagnostics, treeSitterAvailable: false };
-}
-\end{lstlisting}
-
-As posições de origem dos nós são preservadas pela função que converte os intervalos retornados pelo Tree-sitter. Quando a análise é feita sobre uma seleção, o deslocamento inicial da seleção é somado às posições relativas do parser. Por isso, o destaque no editor aponta para as linhas reais do arquivo, e não apenas para o trecho isolado analisado.
-
-\begin{lstlisting}[caption={Conversão das posições do Tree-sitter para o arquivo original.}, label={lst:guy_source_range}]
-function rangeFromTreeSitter(
-  node: TreeSitterNode,
-  offset: SourceOffset,
-): SourceRange {
-  return {
-    startLine: offset.line + node.startPosition.row,
-    startColumn:
-      node.startPosition.row === 0
-        ? offset.column + node.startPosition.column
-        : node.startPosition.column,
-    endLine: offset.line + node.endPosition.row,
-    endColumn:
-      node.endPosition.row === 0
-        ? offset.column + node.endPosition.column
-        : node.endPosition.column,
-  };
-}
-\end{lstlisting}
-
-A sincronização também funciona no sentido contrário. Quando o cursor muda de posição no editor, a extensão procura o menor nó cujo intervalo contém a posição atual. Se encontrar esse nó, envia uma mensagem para a Webview destacá-lo no grafo.
-
-\begin{lstlisting}[caption={Seleção no editor destacando o nó correspondente.}, label={lst:guy_code_to_graph}]
-vscode.window.onDidChangeTextEditorSelection((event) => {
-  if (event.textEditor !== vscode.window.activeTextEditor) {
-    return;
-  }
-  if (navigator.isSelectionFromNavigation()) {
-    return;
-  }
-  const node = navigator.findNodeAt(currentCfg, event.selections[0].active);
-  if (node) {
-    panel.highlightNode(node.id);
-  }
-});
-\end{lstlisting}
-
-A adaptação ao tema do VS Code fica no CSS da Webview. Em vez de fixar cores próprias, a interface utiliza variáveis fornecidas pelo editor. Assim, o fundo, o texto, as bordas e os destaques acompanham o tema claro ou escuro escolhido pelo usuário.
-
-\begin{lstlisting}[caption={Uso de variáveis de tema do VS Code na Webview.}, label={lst:guy_theme_vars}]
-:root {
-  --bg: var(--vscode-editor-background, #1e1e1e);
-  --fg: var(--vscode-editor-foreground, #cccccc);
-  --muted: var(--vscode-descriptionForeground, #858585);
-  --accent: var(--vscode-focusBorder, #007acc);
-  --border: var(--vscode-panel-border, #3c3c3c);
-  --surface: var(--vscode-sideBar-background, #252526);
-}
-\end{lstlisting}
+%adicionar o link do github com o codigo compelto
 
 \section{Validação da Ferramenta Guy}
 
-A validação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{app/src/examples/}. Os experimentos têm como objetivo verificar se a extensão representa corretamente diferentes estruturas de controle em Python e se as métricas exibidas são coerentes com o grafo construído. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
-
 \subsection{Experimento I: Código com Looping e Ifs}
 
-O primeiro experimento utiliza o arquivo \texttt{loop\_break\_continue.py}. O objetivo é verificar se a ferramenta representa corretamente um laço \texttt{while} contendo duas estruturas condicionais internas, uma com \texttt{continue} e outra com \texttt{break}. Esse cenário é importante porque envolve desvios que alteram o fluxo normal da iteração.
+% explicar o objetivo do experimento - o que tem no codigo a ser gerado o GFC
 
-\begin{verbatim}
-x = 0
+% colocar um print do codigo
 
-while x < 10:
-    x += 1
-    if x == 3:
-        continue
-    if x == 8:
-        break
+% colocar o print do GFC gerado no VSCode
 
-print(x)
-\end{verbatim}
+% apresentar as metricas
 
-Ao analisar esse código, a Guy identifica três pontos de decisão: a condição do \texttt{while} e os dois comandos \texttt{if}. O comando \texttt{continue} é representado por uma aresta que retorna para a condição do laço, enquanto o comando \texttt{break} é representado por uma aresta que conduz ao ponto posterior ao laço.
+\subsection{Experimento II: XXX}
 
-\begin{table}[H]
-    \centering
-    \caption{Métricas obtidas no Experimento I.}
-    \begin{tabular}{c | c | c | c | c | c}
-        \hline
-        \textbf{Nós} & \textbf{Arestas} & \textbf{Decisões} & \textbf{Componentes} & \textbf{\(V(G)\)} & \textbf{Caminhos independentes} \\ \hline
-        13 & 15 & 3 & 1 & 4 & 4 \\ \hline
-    \end{tabular}
-    \fonte{Elaborada pelo autor.}
-    \label{tab:experimento1_guy}
-\end{table}
-
-A Complexidade Ciclomática resultante é \(V(G) = 15 - 13 + 2 \times 1 = 4\). Esse valor é coerente com a quantidade de decisões presentes no código, pois, para um único componente conectado, a complexidade também pode ser interpretada como o número de decisões acrescido de uma unidade.
-
-\subsection{Experimento II: Código Condicional Simples}
-
-O segundo experimento utiliza o arquivo \texttt{conditional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
-
-\begin{verbatim}
-x = 10
-
-if x > 5:
-    print("maior")
-else:
-    print("menor")
-
-print("fim")
-\end{verbatim}
-
-Nesse caso, a ferramenta cria um nó de decisão para a condição \texttt{x > 5}, duas saídas para representar os ramos verdadeiro e falso e um nó de junção antes da continuidade do fluxo para o comando final.
-
-\begin{table}[H]
-    \centering
-    \caption{Métricas obtidas no Experimento II.}
-    \begin{tabular}{c | c | c | c | c | c}
-        \hline
-        \textbf{Nós} & \textbf{Arestas} & \textbf{Decisões} & \textbf{Componentes} & \textbf{\(V(G)\)} & \textbf{Caminhos independentes} \\ \hline
-        8 & 8 & 1 & 1 & 2 & 2 \\ \hline
-    \end{tabular}
-    \fonte{Elaborada pelo autor.}
-    \label{tab:experimento2_guy}
-\end{table}
-
-A Complexidade Ciclomática calculada é \(V(G) = 8 - 8 + 2 \times 1 = 2\), representando os dois fluxos possíveis de execução: o caminho em que a condição é verdadeira e o caminho em que ela é falsa.
-
-\subsection{Experimento III: Código com Função, Laço e Condicional}
-
-O terceiro experimento utiliza o arquivo \texttt{functions.py}, analisando especificamente a função \texttt{calculate\_total}. O objetivo é verificar o comando de geração do GFC a partir da função atual, bem como a representação combinada de laço \texttt{for}, condicional \texttt{if} e retorno de valor.
-
-\begin{verbatim}
-def calculate_total(items):
-    total = 0
-    for item in items:
-        if item > 0:
-            total += item
-    return total
-\end{verbatim}
-
-Ao posicionar o cursor dentro da função e executar o comando \texttt{GUY: Generate CFG from Current Function}, a extensão restringe a análise ao corpo da função selecionada. O grafo resultante contém a inicialização da variável, a condição de iteração do \texttt{for}, a decisão interna do \texttt{if}, o retorno ao laço e o comando \texttt{return} conectado ao nó de saída.
-
-\begin{table}[H]
-    \centering
-    \caption{Métricas obtidas no Experimento III.}
-    \begin{tabular}{c | c | c | c | c | c}
-        \hline
-        \textbf{Nós} & \textbf{Arestas} & \textbf{Decisões} & \textbf{Componentes} & \textbf{\(V(G)\)} & \textbf{Caminhos independentes} \\ \hline
-        9 & 10 & 2 & 1 & 3 & 3 \\ \hline
-    \end{tabular}
-    \fonte{Elaborada pelo autor.}
-    \label{tab:experimento3_guy}
-\end{table}
-
-A Complexidade Ciclomática calculada é \(V(G) = 10 - 9 + 2 \times 1 = 3\). O resultado reflete os dois pontos de decisão presentes na função: a repetição do \texttt{for} e a condição \texttt{if item > 0}. Assim, a ferramenta fornece uma indicação objetiva da quantidade mínima de caminhos independentes que devem ser considerados em uma estratégia de teste baseada em fluxo de controle.
+\subsection{Experimento III: XXX}
 
 \section{Análise Qualitativa da Ferramenta Guy}
 
-A análise qualitativa do protótipo indica que a ferramenta atende ao objetivo central proposto: apoiar a compreensão do fluxo lógico de programas por meio de uma representação visual interativa do GFC. Diferentemente de ferramentas voltadas principalmente a painéis de qualidade ou diagnósticos textuais, a Guy aproxima a métrica de Complexidade Ciclomática da estrutura concreta do código analisado.
-
-Entre os principais pontos positivos, destaca-se a integração direta com o VS Code. O desenvolvedor não precisa copiar o código para uma ferramenta externa, pois a análise é acionada no próprio editor. Além disso, o processamento local contribui para a privacidade do código-fonte e reduz a dependência de serviços externos. A possibilidade de gerar grafos a partir do arquivo inteiro, de uma seleção ou da função atual também torna a ferramenta flexível para diferentes contextos de uso.
-
-Outro aspecto positivo é a interação entre grafo e código-fonte. A seleção de nós, arestas e caminhos independentes na Webview destaca as regiões correspondentes no editor, favorecendo o entendimento da relação entre a sintaxe do programa e seu fluxo de execução. A alternância entre os modos simplificado e detalhado também é relevante: o modo simplificado reduz a complexidade visual em exemplos maiores, enquanto o modo detalhado permite uma inspeção mais granular.
-
-Como limitação, a versão atual concentra-se em Python e em estruturas de controle comuns, como condicionais, laços, retornos, \texttt{break} e \texttt{continue}. Casos mais avançados da linguagem, como exceções, chamadas entre funções, recursão, geradores, programação assíncrona e efeitos dinâmicos de execução, ainda não são representados de forma completa. Além disso, por se tratar de análise estática, a ferramenta não substitui a execução de testes nem garante a identificação de todos os comportamentos possíveis em tempo de execução.
-
-Também há limitações relacionadas à visualização de grafos muito grandes. Embora a interface apresente avisos e o sistema oculte a listagem de caminhos independentes em grafos extensos para manter a responsividade, programas com muitas estruturas aninhadas podem gerar representações visualmente densas. Nesses casos, a análise por seleção ou por função tende a ser mais adequada do que a análise do arquivo completo.
-
-Os experimentos indicam que a Guy gera grafos coerentes para estruturas fundamentais de controle de fluxo e apresenta métricas compatíveis com a teoria da Complexidade Ciclomática. Como trabalhos futuros, podem ser considerados o suporte a mais estruturas da linguagem Python, a exportação dos grafos para formatos externos, a inclusão de testes automatizados com exemplos de referência e a ampliação da ferramenta para outras linguagens de programação.
+% Pontos Positivos e Pontos Negativos (Pontos de Melhorias / Limitações)
