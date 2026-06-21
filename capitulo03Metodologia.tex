@@ -1,27 +1,27 @@
 \chapter{Metodologia}
 \label{cap:03}
 
-% Este capítulo visa descrever a metodologia empregada no desenvolvimento do Guy - apresentando desde o Panorama Geral da Pesquisa até o desenvolvimento da aplicação em si.
+% Este capítulo visa descrever a metodologia empregada no desenvolvimento do GUY - apresentando desde o Panorama Geral da Pesquisa até o desenvolvimento da aplicação em si.
 
-Este capítulo visa descrever a metodologia empregada no desenvolvimento da extensão Guy, apresentando desde o panorama geral da pesquisa até o detalhamento técnico da ferramenta proposta.
+Este capítulo visa descrever a metodologia empregada no desenvolvimento da extensão GUY, apresentando desde o panorama geral da pesquisa até o detalhamento técnico da ferramenta proposta.
 
 \section{Panorama Geral da Pesquisa}
 % Elaborar uma ilustração visual, no esquema da Perspectiva do Produto do Documento de Visão e apresentar e explicar a figura aqui.
 % Esta figura tem que trazer o contexto principal da sua pesquisa, onde está inserido, envolvidos, beneficios, fluxo, etc...
-Como ilustrado na Figura \ref{fig:fluxo_guy}, o Guy tem como objetivo permitir que, durante o processo de desenvolvimento no \textit{Visual Studio Code}, os programadores gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no editor, apoiando a compreensão da lógica interna e o planejamento de testes estruturais.
+Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY tem como objetivo permitir que, durante o processo de desenvolvimento no \textit{Visual Studio Code}, os programadores gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no editor, apoiando a compreensão da lógica interna e o planejamento de testes estruturais.
 
 \begin{figure}[htbp]
 \centering
 \caption{Fluxo de funcionamento da ferramenta proposta}
 % Placeholder para o desenho do grafo
-\includegraphics[width=0.75\linewidth]{imagens/fluxo_guy.png}
+\includegraphics[width=0.75\linewidth]{imagens/fluxo_GUY.png}
 
 \fonte{Elaborada pelo autor (2025).}
-\label{fig:fluxo_guy}
+\label{fig:fluxo_GUY}
 
 \end{figure}
 
-A dinâmica de funcionamento da ferramenta inicia-se a partir da ativação da extensão sobre o arquivo de código-fonte aberto no editor. A partir desse ponto, o núcleo de processamento do Guy realiza a análise estática local, mapeando as estruturas lógicas do algoritmo para, em seguida, construir a representação visual do Grafo de Fluxo de Controle. Essa abstração permite identificar os nós de decisão e os caminhos de execução possíveis daquele trecho de software.
+A dinâmica de funcionamento da ferramenta inicia-se a partir da ativação da extensão sobre o arquivo de código-fonte aberto no editor. A partir desse ponto, o núcleo de processamento do GUY realiza a análise estática local, mapeando as estruturas lógicas do algoritmo para, em seguida, construir a representação visual do Grafo de Fluxo de Controle. Essa abstração permite identificar os nós de decisão e os caminhos de execução possíveis daquele trecho de software.
 
 Com o GFC estruturado, o desenvolvedor obtém uma representação dos caminhos independentes do algoritmo. Essa visualização integrada auxilia desenvolvedores e analistas de qualidade (\textit{testers}) na identificação dos fluxos que podem orientar a elaboração de casos de teste estruturais, contribuindo para uma verificação mais sistemática do código analisado.
 
@@ -29,22 +29,22 @@ Com o GFC estruturado, o desenvolvedor obtém uma representação dos caminhos i
 
 \section{Etapas para o Desenvolvimento da Ferramenta Proposta}
 % Elaborar uma figura de passo a passo para definir as etapas para o desenvolvimento e depois explicar detalhadamente como cada uma das etapas serão desenvolvidas.
-O processo de construção do Guy seguiu uma abordagem de pesquisa aplicada, de caráter exploratório e descritivo, associada ao desenvolvimento experimental de uma ferramenta de apoio à análise estrutural de código. As principais fases executadas para a consolidação deste projeto estão sumarizadas na Figura \ref{fig:fluxo_met_guy}.
+O processo de construção do GUY seguiu uma abordagem de pesquisa aplicada, de caráter exploratório e descritivo, associada ao desenvolvimento experimental de uma ferramenta de apoio à análise estrutural de código. As principais fases executadas para a consolidação deste projeto estão sumarizadas na Figura \ref{fig:fluxo_met_GUY}.
 
 \begin{figure}[H]
 \centering
 \caption{Fluxo das etapas metodológicas para o desenvolvimento}
 % Placeholder para o desenho do grafo
-\includegraphics[width=0.35\linewidth]{imagens/fluxo_met_guy.png}
+\includegraphics[width=0.35\linewidth]{imagens/fluxo_met_GUY.png}
 
 \fonte{Elaborada pelo autor}
-\label{fig:fluxo_met_guy}
+\label{fig:fluxo_met_GUY}
 
 \end{figure}
 
 Conforme evidenciado no diagrama acima, a metodologia adota uma progressão estruturada para relacionar fundamentação teórica, levantamento de requisitos, concepção da solução, implementação e validação. O fluxo visualizado inicia-se no campo de investigação de ferramentas correlatas e de planejamento, estende-se pela definição arquitetural e visual e culmina na fase de codificação e avaliação das funcionalidades.
 
-Essa sequência permite que as limitações identificadas durante a análise de ferramentas correlatas sejam traduzidas em requisitos funcionais para o Guy. Posteriormente, a prototipagem orienta a fase de implementação, cujos resultados são avaliados por meio da comparação entre os grafos e valores de complexidade gerados pela ferramenta e os resultados esperados para os exemplos analisados. Cada bloco apresentado na Figura \ref{fig:fluxo_met_guy} representa uma etapa do projeto, cujo detalhamento específico encontra-se descrito a seguir:
+Essa sequência permite que as limitações identificadas durante a análise de ferramentas correlatas sejam traduzidas em requisitos funcionais para o GUY. Posteriormente, a prototipagem orienta a fase de implementação, cujos resultados são avaliados por meio da comparação entre os grafos e valores de complexidade gerados pela ferramenta e os resultados esperados para os exemplos analisados. Cada bloco apresentado na Figura \ref{fig:fluxo_met_GUY} representa uma etapa do projeto, cujo detalhamento específico encontra-se descrito a seguir:
 
 \begin{enumerate}
 \item \textbf{Análise das Ferramentas Disponíveis no Mercado:} Foi realizada uma pesquisa exploratória para identificar soluções comerciais e \textit{open-source} similares. A análise comparativa examinou funcionalidades, custos e usabilidade, permitindo identificar lacunas nas soluções existentes.
@@ -54,4 +54,4 @@ Essa sequência permite que as limitações identificadas durante a análise de 
 \item \textbf{Validação e Testes:} Realização de verificações funcionais e comparação dos resultados gerados pela ferramenta com grafos e valores de complexidade esperados para os códigos analisados.
 \end{enumerate}
 
-Os resultados obtidos são apresentados no Capítulo 4, detalhando o processo de desenvolvimento da ferramenta Guy, desde sua concepção inicial até a validação das funcionalidades implementadas.
+Os resultados obtidos são apresentados no Capítulo 4, detalhando o processo de desenvolvimento da ferramenta GUY, desde sua concepção inicial até a validação das funcionalidades implementadas.
