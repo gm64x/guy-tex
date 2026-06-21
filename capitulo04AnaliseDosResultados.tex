@@ -150,7 +150,6 @@ O mesmo arquivo também define opções de uso da extensão, como abertura autom
 % Explicar com trechos de código
 
 % Adicionar o link do GitHub com o código completo
-
 \subsection{Estrutura geral da extensão}
 
 A implementação está organizada em módulos com responsabilidades separadas. O arquivo \texttt{src/extension.ts} registra os comandos da extensão e coordena o fluxo principal de execução. Os módulos do diretório \texttt{src/core/} concentram a análise do código-fonte, a construção do GFC, o cálculo das métricas e a identificação de caminhos independentes. Já os módulos em \texttt{src/vscode/} tratam da integração com o editor, incluindo a criação da janela lateral e o destaque de trechos do código. A interface React da pré-visualização fica em \texttt{src/webview/}.
