@@ -36,6 +36,37 @@
 \definecolor{corString}{RGB}{206,123,0}
 \definecolor{corPalavraChave}{RGB}{0,0,230}
 
+\lstdefinelanguage{TypeScript}{
+    sensitive=true,
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[b]',
+    morekeywords={abstract,any,as,async,await,boolean,break,case,catch,class,const,constructor,continue,declare,default,delete,do,else,enum,export,extends,false,finally,for,from,function,get,if,implements,import,in,instanceof,interface,let,module,namespace,never,new,null,number,object,of,private,protected,public,readonly,return,set,static,string,super,switch,this,throw,true,try,type,typeof,undefined,unknown,var,void,while,with,yield}
+}
+
+\lstdefinelanguage{TSX}{
+    sensitive=true,
+    morecomment=[l]{//},
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morestring=[b]',
+    morekeywords={const,let,var,function,return,if,else,true,false,null,undefined,type,interface,string,number,boolean,ReactFlow,Background,useCallback,setSelectedNodeId,postMessage}
+}
+
+\lstdefinelanguage{JSON}{
+    sensitive=true,
+    morestring=[b]",
+    morecomment=[l]{//}
+}
+
+\lstdefinelanguage{CSS}{
+    sensitive=true,
+    morecomment=[s]{/*}{*/},
+    morestring=[b]",
+    morekeywords={root,var,color,gap,size}
+}
+
 \lstset{
     inputencoding=utf8/latin1,
 	numbers=left,

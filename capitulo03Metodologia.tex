@@ -7,12 +7,12 @@ Este capítulo visa descrever a metodologia empregada no desenvolvimento da exte
 
 \section{Panorama Geral da Pesquisa}
 % Elaborar uma ilustração visual, no esquema da Perspectiva do Produto do Documento de Visão e apresentar e explicar a figura aqui.
-% Esta figura tem que trazer o contexto principal da sua pesquisa, onde está inserido, envolvidos, beneficios, fluxo, etc...
-Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY tem como objetivo permitir que, durante o processo de desenvolvimento no \textit{Visual Studio Code}, os programadores gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no editor, apoiando a compreensão da lógica interna e o planejamento de testes estruturais.
+% Esta figura tem que trazer o contexto principal da sua pesquisa, onde está inserido, envolvidos, benefícios, fluxo, etc...
+Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY tem como objetivo permitir que, durante o processo de desenvolvimento no \textit{Visual Studio Code} (VS Code), os programadores gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no editor, apoiando a compreensão da lógica interna e o planejamento de testes estruturais.
 
 \begin{figure}[htbp]
 \centering
-\caption{Fluxo de funcionamento da ferramenta proposta}
+\caption{Fluxo de funcionamento da ferramenta proposta.}
 % Placeholder para o desenho do grafo
 \includegraphics[width=0.75\linewidth]{imagens/fluxo_GUY.png}
 
@@ -33,24 +33,24 @@ O processo de construção do GUY seguiu uma abordagem de pesquisa aplicada, de 
 
 \begin{figure}[H]
 \centering
-\caption{Fluxo das etapas metodológicas para o desenvolvimento}
+\caption{Fluxo das etapas metodológicas para o desenvolvimento.}
 % Placeholder para o desenho do grafo
 \includegraphics[width=0.35\linewidth]{imagens/fluxo_met_GUY.png}
 
-\fonte{Elaborada pelo autor}
+\fonte{Elaborada pelo autor.}
 \label{fig:fluxo_met_GUY}
 
 \end{figure}
 
-Conforme evidenciado no diagrama acima, a metodologia adota uma progressão estruturada para relacionar fundamentação teórica, levantamento de requisitos, concepção da solução, implementação e validação. O fluxo visualizado inicia-se no campo de investigação de ferramentas correlatas e de planejamento, estende-se pela definição arquitetural e visual e culmina na fase de codificação e avaliação das funcionalidades.
+Conforme evidenciado na Figura \ref{fig:fluxo_met_GUY}, a metodologia adota uma progressão estruturada para relacionar fundamentação teórica, levantamento de requisitos, concepção da solução, implementação e validação. O fluxo visualizado inicia-se no campo de investigação de ferramentas correlatas e de planejamento, estende-se pela definição arquitetural e visual e culmina na fase de codificação e avaliação das funcionalidades.
 
 Essa sequência permite que as limitações identificadas durante a análise de ferramentas correlatas sejam traduzidas em requisitos funcionais para o GUY. Posteriormente, a prototipagem orienta a fase de implementação, cujos resultados são avaliados por meio da comparação entre os grafos e valores de complexidade gerados pela ferramenta e os resultados esperados para os exemplos analisados. Cada bloco apresentado na Figura \ref{fig:fluxo_met_GUY} representa uma etapa do projeto, cujo detalhamento específico encontra-se descrito a seguir:
 
 \begin{enumerate}
-\item \textbf{Análise das Ferramentas Disponíveis no Mercado:} Foi realizada uma pesquisa exploratória para identificar soluções comerciais e \textit{open-source} similares. A análise comparativa examinou funcionalidades, custos e usabilidade, permitindo identificar lacunas nas soluções existentes.
+\item \textbf{Análise das Ferramentas Disponíveis no Mercado:} Foi realizada uma pesquisa exploratória para identificar soluções comerciais e \textit{open source} similares. A análise comparativa examinou funcionalidades, custos e usabilidade, permitindo identificar lacunas nas soluções existentes.
 \item \textbf{Levantamento de Requisitos:} Nesta etapa inicial, foram identificadas as necessidades funcionais e não funcionais do sistema por meio de entrevistas com os \textit{stakeholders}.
 \item \textbf{Prototipagem e \textit{Design}:} Com base nos requisitos documentados, procedeu-se à elaboração dos \textit{wireframes} e à definição da arquitetura de informação do sistema.
-\item \textbf{Implementação (Codificação):} Fase de desenvolvimento efetivo, utilizando Node.js e TypeScript para a lógica da extensão no \textit{Extension Host} do \textit{Visual Studio Code}, além de React para a interface gráfica interativa em \textit{Webview}.
+\item \textbf{Implementação (Codificação):} Fase de desenvolvimento efetivo, utilizando Node.js e TypeScript para a lógica da extensão no \textit{Extension Host} do VS Code, além de React para a interface gráfica interativa em \textit{Webview}.
 \item \textbf{Validação e Testes:} Realização de verificações funcionais e comparação dos resultados gerados pela ferramenta com grafos e valores de complexidade esperados para os códigos analisados.
 \end{enumerate}
 

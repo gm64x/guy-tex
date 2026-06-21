@@ -15,7 +15,7 @@ Contudo, a relevância da qualidade não se restringe a cenários de alto risco;
 \section{Teste de Software}
 
 %Apresenta conceitos fundamentais sobre testes, objetivos, limitações da inspeção manual e importância de detectar falhas antes da entrega. Explica a perspectiva de Myers e relaciona com a necessidade de suporte automatizado à verificação.
-Por sua vez, o teste de software busca, por meio de um conjunto finito de casos, Verificar e Validar (V\&V) se a aplicação atende aos requisitos esperados \cite{Valente2020}. Essa etapa representa um investimento significativo: cerca de 50\% do tempo e mais de 50\% do custo total do desenvolvimento de um sistema são consumidos pela atividade de testes \cite{Myers2014}.
+Por sua vez, o teste de software busca, por meio de um conjunto finito de casos, verificar e validar (V\&V) se a aplicação atende aos requisitos esperados \cite{Valente2020}. Essa etapa representa um investimento significativo: cerca de 50\% do tempo e mais de 50\% do custo total do desenvolvimento de um sistema são consumidos pela atividade de testes \cite{Myers2014}.
 
 Esse processo inicia-se de forma granular, focando em componentes individuais ou pequenos módulos para identificar falhas lógicas e de dados. Após essa validação inicial, estes são integrados ao sistema para a realização de testes de ordem superior, cujo objetivo é assegurar que o software atenda plenamente aos requisitos do cliente (Validação) \citeonline{Sommerville2019}. Entretanto, vale destacar a perspectiva de \citeonline{Myers2014}, que define o teste não como o processo de demonstrar que o software funciona, mas sim como o processo de executá-lo com a intenção explícita de encontrar falhas. Sob essa ótica, um ``teste bem-sucedido'' é aquele que revela um erro ainda não descoberto. Diante de sistemas de crescente complexidade, a aplicação manual dessa filosofia torna-se exaustiva e sujeita a vieses cognitivos, reforçando a necessidade de suporte automatizado para garantir uma cobertura de verificação eficaz e sistemática.
 
@@ -29,25 +29,25 @@ Sua relevância reside na capacidade de orientar a verificação das estruturas 
 \subsubsection{Grafo de Fluxo de Controle (GFC)}
 
 %Explica o que é o GFC, seus elementos (nós, arestas, desvios), como representa a lógica interna de um programa e sua importância para análise estrutural. Introduz o uso do grafo em ferramentas de teste e análise estática.
-O Grafo de Fluxo de Controle (GFC) é a representação gráfica fundamental para a análise estrutural. Ele modela a lógica do programa como um grafo dirigido, onde os \textbf{nós} representam blocos de processamento sequencial (sem desvios) e as \textbf{arestas} representam o fluxo de controle entre esses nós.
+O Grafo de Fluxo de Controle (GFC) é a representação gráfica fundamental para a análise estrutural. Ele modela a lógica do programa como um grafo dirigido, em que os \textbf{nós} representam blocos de processamento sequencial (sem desvios) e as \textbf{arestas} representam o fluxo de controle entre esses nós.
 
 Elementos cruciais do GFC incluem os nós de predicado, que correspondem a pontos de decisão no código (como \texttt{if} ou \texttt{while}) de onde partem múltiplas arestas (desvios). Ferramentas de teste e análise estática utilizam o GFC para calcular caminhos independentes e determinar a complexidade lógica do algoritmo, transformando o código textual em uma estrutura matemática navegável.
 
 \pagebreak
 
-Para consolidar o entendimento sobre a relação entre o código fonte, o Grafo de Fluxo de Controle (GFC) e a Complexidade Ciclomática, apresenta-se a seguir um algoritmo simples de verificação condicional.
+Para consolidar o entendimento sobre a relação entre o código-fonte, o Grafo de Fluxo de Controle (GFC) e a Complexidade Ciclomática, apresenta-se a seguir um algoritmo simples de verificação condicional.
 
-\lstinputlisting[language=Python, label={lst:verifica_status}]{fontes/verificaStatus.py}
+\lstinputlisting[language=Python, caption={Algoritmo de verificação condicional.}, label={lst:verifica_status}, numbers=left]{fontes/verificaStatus.py}
 
 A partir da análise do Código \ref{lst:verifica_status}, é possível mapear a lógica para uma representação visual. A Figura \ref{fig:exemplo_gfc} ilustra o GFC correspondente, onde os blocos de comando tornam-se nós e o fluxo de execução torna-se arestas direcionadas.
 
 \begin{figure}[H]
     \centering
-      \caption{Exemplo de GFC}
+      \caption{Exemplo de GFC.}
     \includegraphics[width=0.5\linewidth]{imagens/exemplo_gfc.png}
 
     \label{fig:exemplo_gfc}
-    \fonte{Elaborada pelo Autor}
+    \fonte{Elaborada pelo autor.}
 \end{figure}
 
 \subsubsection{Complexidade Ciclomática - V(G)}
@@ -55,7 +55,7 @@ A partir da análise do Código \ref{lst:verifica_status}, é possível mapear a
 %Detalha a métrica proposta por McCabe, apresentando fórmula, interpretação, relação com quantidade de caminhos independentes e justificativa para sua adoção como indicador de complexidade lógica.
 A Complexidade Ciclomática é uma métrica de software desenvolvida por Thomas McCabe em 1976. Ela quantifica a complexidade lógica de um programa contando o número de caminhos linearmente independentes através do seu Grafo de Fluxo de Controle \citeonline{McCabe1976}.
 
-A métrica é calculada pela fórmula $V(G) = E - N + 2$, onde $E$ é o número de arestas e $N$ é o número de nós do grafo. O valor resultante $V(G)$ indica o número mínimo de casos de teste necessários para cobrir todos os caminhos independentes do código. McCabe sugere que módulos com complexidade superior a 10 são mais propensos a erros e difíceis de manter, justificando o uso dessa métrica como um indicador crítico de qualidade e testabilidade \citeonline{McCabe1976}.
+A métrica é calculada pela fórmula $V(G) = E - N + 2P$, em que $E$ é o número de arestas, $N$ é o número de nós e $P$ é o número de componentes conexos do grafo. Em grafos com apenas um componente conexo, essa expressão simplifica-se para $V(G) = E - N + 2$. O valor resultante $V(G)$ indica o número mínimo de casos de teste necessários para cobrir todos os caminhos independentes do código. McCabe sugere que módulos com complexidade superior a 10 são mais propensos a erros e difíceis de manter, justificando o uso dessa métrica como um indicador crítico de qualidade e testabilidade \citeonline{McCabe1976}.
 
 \subsection{Cálculo da Complexidade Ciclomática}
 Com base na representação visual da Figura \ref{fig:exemplo_gfc}, é possível aplicar a métrica de McCabe para determinar a complexidade lógica $V(G)$. Observando o grafo, identificam-se os seguintes elementos:
@@ -63,7 +63,7 @@ Com base na representação visual da Figura \ref{fig:exemplo_gfc}, é possível
 \begin{itemize}
     \item \textbf{Nós ($N$):} 4 (Início/If, Print Aprovado, Print Reprovado, Fim).
     \item \textbf{Arestas ($E$):} 4 (As conexões entre os nós).
-    \item \textbf{Componentes Conexos ($P$):} 1 (O grafo é único e interligado).
+    \item \textbf{Componentes conexos ($P$):} 1 (O grafo é único e interligado).
 \end{itemize}
 
 Aplicando a fórmula fundamental de McCabe:
@@ -92,16 +92,16 @@ Diferencia-se da análise dinâmica, que requer a execução do programa com dad
 \subsection{Processamento Léxico e Sintático}
 
 %Aborda conceitos de compiladores aplicados ao seu trabalho: tokenização, identificação de estruturas, análise sintática simplificada e como essas etapas são utilizadas na construção do GFC.
-Para construir o GFC e realizar a análise estática, a ferramenta proposta utiliza conceitos de compiladores. O processo inicia-se com a \textbf{tokenização} (análise léxica), que quebra o código-fonte em unidades mínimas de significado (tokens)\citeonline{Cooper2012}.
+Para construir o GFC e realizar a análise estática, a ferramenta proposta utiliza conceitos de compiladores. O processo inicia-se com a \textbf{tokenização} (análise léxica), que quebra o código-fonte em unidades mínimas de significado (tokens) \citeonline{Cooper2012}.
 
-Em seguida, realiza-se a identificação de estruturas através da \textbf{análise sintática}, que organiza esses \textit{tokens} em uma Árvore Sintática Abstrata (AST). A AST é uma representação hierárquica que expõe a estrutura gramatical do código\citeonline{Aho1995}. É percorrendo a AST que a ferramenta identifica onde começam e terminam os blocos lógicos (funções, loops, condicionais) para, a partir disso, desenhar os nós e arestas do GFC e calcular a complexidade.
+Em seguida, realiza-se a identificação de estruturas através da \textbf{análise sintática}, que organiza esses \textit{tokens} em uma Árvore Sintática Abstrata (AST). A AST é uma representação hierárquica que expõe a estrutura gramatical do código \citeonline{Aho1995}. É percorrendo a AST que a ferramenta identifica onde começam e terminam os blocos lógicos (funções, loops, condicionais) para, a partir disso, desenhar os nós e arestas do GFC e calcular a complexidade.
 
 \section{Tecnologias e Linguagens Adotadas}
 
 %Apresenta as tecnologias que podem ser aplicadas no desenvolvimento da ferramenta web: frameworks front-end, back-end, bibliotecas de parsing, libs de visualização de grafos, e justificativas técnicas para as escolhas.
-A ferramenta proposta nesta pesquisa adota uma arquitetura de extensão para o \textit{Visual Studio Code}. A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar o processo de análise estática e coordenar a comunicação com a interface. Para a camada visual, o framework \textbf{React.js} é utilizado em uma \textit{Webview}, permitindo a renderização interativa do Grafo de Fluxo de Controle \citeonline{react_docs}.
+A ferramenta proposta nesta pesquisa adota uma arquitetura de extensão para o \textit{Visual Studio Code} (VS Code). A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar o processo de análise estática e coordenar a comunicação com a interface. Para a camada visual, o framework \textbf{React.js} é utilizado em uma \textit{Webview}, permitindo a renderização interativa do Grafo de Fluxo de Controle \citeonline{react_docs}.
 
-Para o processamento de código e análise sintática (\textit{parsing}), a arquitetura foi projetada visando a extensibilidade e o suporte a múltiplos paradigmas de programação, visto que a linguagem-alvo de análise ainda está em definição. Para isso, adota-se preferencialmente o \textbf{Tree-sitter} \citeonline{TreeSitterWeb}, uma ferramenta moderna de geração de analisadores que pode ser utilizada com \textit{WebAssembly} para executar com desempenho adequado no ambiente local da extensão. Como alternativa consolidada no meio acadêmico e na construção de compiladores, considera-se também a utilização do \textbf{ANTLR} (\textit{Another Tool for Language Recognition}) \cite{ANTLRWeb}.
+Para o processamento de código e análise sintática (\textit{parsing}), a arquitetura foi projetada visando a extensibilidade e o suporte a múltiplos paradigmas de programação, com foco inicial em código Python e possibilidade de expansão futura para outras linguagens. Para isso, adota-se preferencialmente o \textbf{Tree-sitter} \citeonline{TreeSitterWeb}, uma ferramenta moderna de geração de analisadores que pode ser utilizada com \textit{WebAssembly} para executar com desempenho adequado no ambiente local da extensão. Como alternativa consolidada no meio acadêmico e na construção de compiladores, considera-se também a utilização do \textbf{ANTLR} (\textit{Another Tool for Language Recognition}) \cite{ANTLRWeb}.
 
 Essa abordagem agnóstica à linguagem permite que a ferramenta gere a Árvore Sintática Abstrata (AST) e, consequentemente, o Grafo de Fluxo de Controle (GFC) para diversas linguagens apenas alternando as gramáticas utilizadas, sem necessidade de reestruturar o núcleo de visualização. Para a renderização visual dos grafos gerados, empregam-se bibliotecas especializadas como \textbf{Cytoscape.js} \citeonline{CytoscapeWeb} ou \textbf{D3.js} \citeonline{D3Web}, garantindo interatividade na \textit{Webview} da extensão.
 
@@ -132,7 +132,7 @@ A principal distinção reside no escopo: o VEIL é um algoritmo de otimização
 \subsection{CodeSurfer}
 O CodeSurfer, desenvolvido pela GrammaTech, é uma ferramenta de alta precisão para análise estática e navegação em código-fonte complexo (C/C++) \citeonline{codesurfer}. Diferente de IDEs comuns, ele constrói uma rede de dependências completa do software, permitindo que o desenvolvedor visualize e navegue pelo Grafo de Fluxo de Controle e pelo Grafo de Dependência de Dados de qualquer função.
 
-A distinção em relação ao trabalho proposto é o público-alvo e a complexidade. O CodeSurfer é uma solução industrial voltada para auditoria de segurança e manutenção de sistemas legados críticos. A ferramenta aqui desenvolvida busca simplificar esse poder de análise, trazendo a geração automática de GFCs para o contexto educacional e para o ambiente local do \textit{Visual Studio Code}, removendo a barreira de entrada e a complexidade de configuração de ferramentas comerciais pesadas.
+A distinção em relação ao trabalho proposto é o público-alvo e a complexidade. O CodeSurfer é uma solução industrial voltada para auditoria de segurança e manutenção de sistemas legados críticos. A ferramenta aqui desenvolvida busca simplificar esse poder de análise, trazendo a geração automática de GFCs para o contexto educacional e para o ambiente local do VS Code, removendo a barreira de entrada e a complexidade de configuração de ferramentas comerciais pesadas.
 
 \subsection{Code2Flow}
 O Code2Flow é uma ferramenta comercial amplamente utilizada para converter pseudocódigo e códigos de diversas linguagens em fluxogramas interativos \citeonline{code2flow}. Seu foco principal é a documentação de processos e a comunicação lógica entre gerentes e desenvolvedores, permitindo a criação rápida de diagramas a partir de texto.
