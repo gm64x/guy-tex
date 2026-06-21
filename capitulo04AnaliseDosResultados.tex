@@ -4,13 +4,13 @@
 \section{Análise das Ferramentas Disponíveis no Mercado}
 
 %Lista e descreve brevemente ferramentas existentes (SonarQube, CodeClimate, PMD, ESLint, etc.).
-Existem diversas ferramentas de mercado focadas na qualidade de código, embora muitas vezes com objetivos distintos da visualização educacional de grafos.
+Existem diversas ferramentas voltadas à qualidade de código, mas a maior parte delas não tem como foco a visualização educacional de grafos.
 
-Dessa forma, esta seção busca apresentar algumas das principais ferramentas disponíveis no mercado, com o objetivo de analisar suas funcionalidades para embasar a construção da ferramenta proposta nesta pesquisa.
+Esta seção apresenta três ferramentas utilizadas na análise de código e discute suas funcionalidades, limitações e diferenças em relação ao GUY.
 
 \subsection{SonarQube}
 
-A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de código aberto (\textit{open source}) voltada à inspeção contínua da qualidade do código. Em vez de apenas gerar listas de erros, a ferramenta permite a análise, o rastreamento e o gerenciamento da qualidade do software de modo proativo ao longo do tempo \citeonline{sonarqube}.
+A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de código aberto (\textit{open source}) voltada à inspeção contínua da qualidade do código. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \citeonline{sonarqube}.
 \begin{figure}[H]
     \centering
     \caption{Captura de tela da interface do SonarQube.}
@@ -21,14 +21,14 @@ A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de 
 
 
 
-A plataforma atua na exibição de potenciais \textit{bugs}, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Dessa forma, possibilita a inspeção contínua por meio de \textit{dashboards} e histórico de análises, integrando-se às principais IDEs do mercado \citeonline{campbell2013sonarqube}.
+A plataforma exibe potenciais \textit{bugs}, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece \textit{dashboards}, histórico de análises e integração com IDEs \citeonline{campbell2013sonarqube}.
 
-No entanto, embora a plataforma possua uma versão gratuita, algumas funcionalidades avançadas e recursos gerenciais são comerciais e requerem pagamento. Ademais, a ferramenta está sujeita à ocorrência de falsos positivos e exige configuração adequada para o contexto de cada projeto. Vale ressaltar que, apesar de calcular a complexidade ciclomática, os dados são exibidos principalmente em painéis e relatórios, sem focar na visualização gráfica e interativa do Grafo de Fluxo de Controle (GFC) do algoritmo.
+Apesar de possuir uma versão gratuita, algumas funcionalidades avançadas e recursos gerenciais são comerciais. A ferramenta também pode gerar falsos positivos e exige configuração adequada para o contexto de cada projeto. Para o escopo deste trabalho, a principal limitação é que, embora calcule complexidade ciclomática, o SonarQube apresenta os dados principalmente em painéis e relatórios, sem priorizar a visualização gráfica e interativa do Grafo de Fluxo de Controle (GFC).
 
 
 \subsection{Codacy}
 
-O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática, gratuita para projetos de código aberto, com foco na melhoria da qualidade do software, no aumento da cobertura de testes e na prevenção de falhas de segurança \citeonline{ardito2020tool}. Distanciando-se de métricas matemáticas puras, a ferramenta prioriza uma abordagem prática na identificação de \textit{bugs} e comportamentos indefinidos em uma ampla variedade de linguagens de programação \citeonline{ardito2020tool}.
+O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática, gratuita para projetos de código aberto, voltada à melhoria da qualidade do software, ao aumento da cobertura de testes e à prevenção de falhas de segurança \citeonline{ardito2020tool}. Em vez de se concentrar apenas em métricas matemáticas, a ferramenta prioriza a identificação prática de \textit{bugs} e comportamentos indefinidos em diferentes linguagens de programação \citeonline{ardito2020tool}.
 
 \begin{figure}[H]
     \centering
@@ -38,9 +38,9 @@ O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise está
     \fonte{Documentação oficial do Codacy (2026).}
 \end{figure}
 
-Esta plataforma destaca-se pela sua interface amigável e pela facilidade de configuração e integração aos projetos \citeonline{imbugwa2021case, rahmawati2023analisis}. Como diferencial, o Codacy consolida estatísticas sobre propensão a erros, estilo e segurança em um \textit{dashboard}, atribuindo uma nota geral ao projeto que varia de "A" (alta qualidade) a "F" (baixa qualidade) \citeonline{ardito2020tool, imbugwa2021case}.
+O Codacy destaca-se pela interface amigável e pela facilidade de configuração e integração aos projetos \citeonline{imbugwa2021case, rahmawati2023analisis}. Como diferencial, consolida estatísticas sobre propensão a erros, estilo e segurança em um \textit{dashboard}, atribuindo ao projeto uma nota geral que varia de "A" (alta qualidade) a "F" (baixa qualidade) \citeonline{ardito2020tool, imbugwa2021case}.
 
-No entanto, a ferramenta apresenta limitações quanto à transparência da agregação de métricas para a nota final, o que pode dificultar a compreensão do peso de cada fator avaliado \citeonline{ardito2020tool, imbugwa2021case}. A análise depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \citeonline{imbugwa2021case}. Consequentemente, embora avalie categorias de complexidade \citeonline{ardito2020tool}, seus resultados permanecem restritos a notas agregadas e painéis, mantendo a lacuna analítica de não fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
+Como limitação, a agregação das métricas na nota final nem sempre deixa claro o peso de cada fator avaliado \citeonline{ardito2020tool, imbugwa2021case}. A análise também depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \citeonline{imbugwa2021case}. Embora avalie categorias de complexidade \citeonline{ardito2020tool}, seus resultados permanecem concentrados em notas e painéis, sem fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
 
 \subsection{ESLint}
 
@@ -58,25 +58,25 @@ Além de oferecer correção automática (auto-fix) e um ecossistema extensível
 
 Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \citeonline{rafnsson2020fixing}. Sua eficácia também esbarra na natureza dinâmica do JavaScript, não sendo capaz de prever todos os erros em tempo de execução \citeonline{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; esse excesso de avisos frequentemente resulta em uma ``fadiga de alertas'', levando os desenvolvedores a ignorarem os reportes ou a perderem a confiança na análise \citeonline{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
 
-No que diz respeito à análise da estrutura lógica, essa restrição torna-se relevante para o escopo desta pesquisa. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \citeonline{eslint}. Consequentemente, a ferramenta restringe a compreensão estrutural a alertas e diagnósticos textuais, sem prover uma visualização gráfica do fluxo de controle.
+Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \citeonline{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
 
 
 \section{Levantamento de Requisitos da Ferramenta GUY}
 
-Esta seção apresenta um levantamento de requisitos inicial da ferramenta GUY, proposta nesta pesquisa.
+Esta seção apresenta os requisitos definidos para a ferramenta GUY.
 
-O acesso à ferramenta será realizado diretamente no ambiente de desenvolvimento por meio de uma extensão para o editor \textit{Visual Studio Code} (VS Code) \citeonline{microsoft_vscode}. Um requisito fundamental é que a análise estática seja executada de forma estritamente local. Isso será possível graças ao uso de tecnologias como o \textit{WebAssembly} e o Tree-sitter, que atuarão na construção eficiente da árvore sintática do código analisado.
+O acesso à ferramenta ocorre diretamente no ambiente de desenvolvimento, por meio de uma extensão para o editor \textit{Visual Studio Code} (VS Code) \citeonline{microsoft_vscode}. Um requisito fundamental é que a análise estática seja executada localmente. Para isso, a proposta utiliza tecnologias como \textit{WebAssembly} e Tree-sitter, responsáveis por apoiar a construção da árvore sintática do código analisado.
 
-Essa arquitetura garante que o processamento léxico e sintático do código ocorra de forma estritamente local, diretamente no ambiente de desenvolvimento do usuário. Dessa forma, assegura-se um \textit{feedback} em tempo real durante a escrita do código. Além disso, essa abordagem favorece a conformidade (\textit{compliance}) com políticas de segurança corporativa e privacidade, ao proteger a propriedade intelectual e evitar a exposição do código a ambientes de terceiros, eliminando os custos com infraestrutura de nuvem, uma vez que dispensa o envio dos trechos desenvolvidos para servidores externos.
+Essa arquitetura mantém o processamento léxico e sintático no ambiente do usuário e evita o envio do código-fonte para servidores externos. Com isso, a extensão reduz riscos relacionados à privacidade e à propriedade intelectual, além de dispensar infraestrutura de nuvem para executar a análise.
 
-No aspecto funcional, a principal entrega do sistema consiste na renderização visual interativa do Grafo de Fluxo de Controle (GFC) assim que o código-fonte é analisado. A interface deverá permitir que o programador interaja com o grafo gerado, correlacionando visualmente os nós de decisão e as arestas direcionadas com as respectivas linhas do arquivo aberto no editor. Em conjunto com essa visualização, a extensão tem o requisito de calcular e exibir a métrica de Complexidade Ciclomática, atuando como um indicador sobre a complexidade lógica e a testabilidade do código.
+No aspecto funcional, a principal entrega do sistema é a renderização visual interativa do Grafo de Fluxo de Controle (GFC) após a análise do código-fonte. A interface deve permitir que o programador interaja com o grafo gerado, relacionando nós de decisão e arestas direcionadas às linhas correspondentes do arquivo aberto no editor. Em conjunto com essa visualização, a extensão deve calcular e exibir a métrica de Complexidade Ciclomática, usada como indicador da complexidade lógica e da testabilidade do código.
 
-Para apoiar o desenvolvedor na análise da qualidade estrutural do software, a extensão servirá como uma ferramenta visual para a identificação dos caminhos linearmente independentes no grafo. O sistema fornecerá os dados estruturais necessários para que o programador elabore casos de teste alinhados aos fluxos identificados. Dessa forma, a análise estática converte-se em uma etapa de apoio prático ao diagnóstico e à compreensão da lógica do código.
+Para apoiar a análise da qualidade estrutural do software, a extensão também deve indicar caminhos linearmente independentes no grafo. Esses dados auxiliam o programador na elaboração de casos de teste alinhados aos fluxos identificados.
 
 \section{Prototipagem e \textit{Design} da Ferramenta GUY}
 
 O usuário aciona a extensão com o editor de código aberto e em foco. Em resposta, a ferramenta abre uma janela lateral, de forma semelhante a uma pré-visualização de Markdown, apresentando o Grafo de Fluxo de Controle (GFC) e o cálculo da Complexidade Ciclomática, representada por \(V(G)\).
-A partir dessa visualização, o usuário pode selecionar vértices e arestas do grafo para navegar diretamente até os trechos correspondentes do código-fonte, estabelecendo uma relação interativa entre a representação visual e a implementação analisada.
+Nessa visualização, o usuário pode selecionar vértices e arestas do grafo para navegar diretamente até os trechos correspondentes do código-fonte, estabelecendo uma relação interativa entre a representação visual e a implementação analisada.
 
 Essa proposta atende aos principais requisitos definidos para a ferramenta: execução local, sem envio do código-fonte para servidores externos; apresentação do GFC em conjunto com o valor de \(V(G)\); e interação direta entre os elementos do grafo e as regiões correspondentes do código.
 
@@ -175,7 +175,7 @@ A Tabela \ref{tab:estrutura_guy} resume os módulos mais importantes da implemen
     \label{tab:estrutura_guy}
 \end{table}
 
-Com essa divisão, a análise do código Python fica separada da integração com o editor. O diretório \texttt{src/core/} concentra a construção do grafo e das métricas, enquanto \texttt{src/vscode/} e \texttt{src/webview/} cuidam da comunicação com o VS Code e da interface visual.
+Essa divisão separa a análise do código Python da integração com o editor. O diretório \texttt{src/core/} concentra a construção do grafo e das métricas, enquanto \texttt{src/vscode/} e \texttt{src/webview/} cuidam da comunicação com o VS Code e da interface visual.
 
 \subsection{Comandos e formas de análise}
 
@@ -653,7 +653,7 @@ A Complexidade Ciclomática calculada é \(V(G) = 10 - 9 + 2 \times 1 = 3\). O r
 
 \section{Análise Qualitativa da Ferramenta GUY}
 
-A análise qualitativa do protótipo indica que a ferramenta atende ao objetivo central proposto: apoiar a compreensão do fluxo lógico de programas por meio de uma representação visual interativa do GFC. Diferentemente de ferramentas voltadas principalmente a painéis de qualidade ou diagnósticos textuais, a ferramenta GUY aproxima a métrica de Complexidade Ciclomática da estrutura concreta do código analisado.
+A análise qualitativa do protótipo indica que o GUY atende ao objetivo central do trabalho: apoiar a compreensão do fluxo lógico de programas por meio de uma representação visual interativa do GFC. Diferentemente de ferramentas voltadas principalmente a painéis de qualidade ou diagnósticos textuais, o GUY relaciona a métrica de Complexidade Ciclomática à estrutura concreta do código analisado.
 
 Entre os principais pontos positivos, destaca-se a integração direta com o VS Code. O desenvolvedor não precisa copiar o código para uma ferramenta externa, pois a análise é acionada no próprio editor. Além disso, o processamento local contribui para a privacidade do código-fonte e reduz a dependência de serviços externos. A possibilidade de gerar grafos a partir do arquivo inteiro, de uma seleção ou da função atual também torna a ferramenta flexível para diferentes contextos de uso.
 
@@ -663,4 +663,4 @@ Como limitação, a versão atual concentra-se em Python e em estruturas de cont
 
 Também há limitações relacionadas à visualização de grafos muito grandes. Embora a interface apresente avisos e o sistema oculte a listagem de caminhos independentes em grafos extensos para manter a responsividade, programas com muitas estruturas aninhadas podem gerar representações visualmente densas. Nesses casos, a análise por seleção ou por função tende a ser mais adequada do que a análise do arquivo completo.
 
-Os experimentos indicam que a ferramenta GUY gera grafos coerentes para estruturas fundamentais de controle de fluxo e apresenta métricas compatíveis com a teoria da Complexidade Ciclomática. Como trabalhos futuros, podem ser considerados o suporte a mais estruturas da linguagem Python, a exportação dos grafos para formatos externos, a inclusão de testes automatizados com exemplos de referência e a ampliação da ferramenta para outras linguagens de programação.
+Os experimentos indicam que o GUY gera grafos coerentes para estruturas fundamentais de controle de fluxo e apresenta métricas compatíveis com a teoria da Complexidade Ciclomática. Como trabalhos futuros, podem ser considerados o suporte a mais estruturas da linguagem Python, a exportação dos grafos para formatos externos, a inclusão de testes automatizados com exemplos de referência e a ampliação da ferramenta para outras linguagens de programação.

@@ -4,34 +4,34 @@
 \section{Engenharia de Software e Qualidade}
 
 %Contextualiza o papel da Engenharia de Software no desenvolvimento moderno, discutindo importância da qualidade, confiabilidade, impacto dos defeitos e relação entre complexidade do software e dificuldade de verificação manual.
-A Engenharia de Software compreende a aplicação de abordagens sistemáticas, disciplinadas e quantificáveis ao desenvolvimento, operação e manutenção de sistemas, visando conferir fluidez ao seu ciclo de vida \citeonline{Valente2020}. Diante da onipresença da computação na sociedade contemporânea, assegurar a confiabilidade e a estabilidade das aplicações torna-se uma exigência fundamental, e não apenas um diferencial técnico.
+A Engenharia de Software compreende a aplicação de abordagens sistemáticas, disciplinadas e quantificáveis ao desenvolvimento, à operação e à manutenção de sistemas \citeonline{Valente2020}. Como a computação está presente em grande parte das atividades contemporâneas, assegurar a confiabilidade e a estabilidade das aplicações tornou-se uma exigência fundamental, e não apenas um diferencial técnico.
 
 Embora os níveis de complexidade e os riscos envolvidos variem conforme o domínio, a aplicação de princípios de engenharia permanece indispensável. Essa necessidade é evidenciada em sistemas de segurança crítica, nos quais falhas de software podem resultar em consequências catastróficas. Um exemplo histórico notável é o caso do acelerador linear Therac-25, cujos erros de programação causaram acidentes fatais por superexposição à radiação \citeonline{turner1993investigation}.
 
-Contudo, a relevância da qualidade não se restringe a cenários de alto risco; ainda que um sistema de gestão de uma padaria não possua a mesma complexidade ou criticidade de um sistema bancário, médico ou militar, ambos compartilham a necessidade de longevidade e robustez. Em qualquer escala, o software deve ser construído para ser durável, garantindo que a experiência do usuário e a integridade dos processos não sejam comprometidas.
+A relevância da qualidade, porém, não se restringe a cenários de alto risco. Mesmo que um sistema de gestão de uma padaria não tenha a mesma complexidade ou criticidade de um sistema bancário, médico ou militar, ambos precisam ser confiáveis e sustentáveis ao longo do tempo. Em qualquer escala, o software deve preservar a experiência do usuário e a integridade dos processos que apoia.
 
-À vista disso, a manutenção de padrões de qualidade em projetos colaborativos configura-se como um desafio crescente. À medida que um sistema escala, a complexidade técnica e a densidade do código acompanham esse crescimento, tornando processos de verificação exclusivamente manuais inviáveis e altamente propensos a falhas humanas.
+A manutenção de padrões de qualidade em projetos colaborativos, portanto, torna-se um desafio crescente. À medida que um sistema evolui, a complexidade técnica e a densidade do código também aumentam, tornando processos de verificação exclusivamente manuais pouco viáveis e sujeitos a falhas humanas.
 
 \section{Teste de Software}
 
 %Apresenta conceitos fundamentais sobre testes, objetivos, limitações da inspeção manual e importância de detectar falhas antes da entrega. Explica a perspectiva de Myers e relaciona com a necessidade de suporte automatizado à verificação.
-Por sua vez, o teste de software busca, por meio de um conjunto finito de casos, verificar e validar (V\&V) se a aplicação atende aos requisitos esperados \cite{Valente2020}. Essa etapa representa um investimento significativo: cerca de 50\% do tempo e mais de 50\% do custo total do desenvolvimento de um sistema são consumidos pela atividade de testes \cite{Myers2014}.
+O teste de software busca, por meio de um conjunto finito de casos, verificar e validar (V\&V) se a aplicação atende aos requisitos esperados \cite{Valente2020}. Essa etapa representa um investimento significativo: cerca de 50\% do tempo e mais de 50\% do custo total do desenvolvimento de um sistema são consumidos pela atividade de testes \cite{Myers2014}.
 
-Esse processo inicia-se de forma granular, focando em componentes individuais ou pequenos módulos para identificar falhas lógicas e de dados. Após essa validação inicial, estes são integrados ao sistema para a realização de testes de ordem superior, cujo objetivo é assegurar que o software atenda plenamente aos requisitos do cliente (Validação) \citeonline{Sommerville2019}. Entretanto, vale destacar a perspectiva de \citeonline{Myers2014}, que define o teste não como o processo de demonstrar que o software funciona, mas sim como o processo de executá-lo com a intenção explícita de encontrar falhas. Sob essa ótica, um ``teste bem-sucedido'' é aquele que revela um erro ainda não descoberto. Diante de sistemas de crescente complexidade, a aplicação manual dessa filosofia torna-se exaustiva e sujeita a vieses cognitivos, reforçando a necessidade de suporte automatizado para garantir uma cobertura de verificação eficaz e sistemática.
+Esse processo inicia-se em componentes individuais ou pequenos módulos, com o objetivo de identificar falhas lógicas e de dados. Após essa validação inicial, os componentes são integrados ao sistema para testes de ordem superior, cujo objetivo é assegurar que o software atenda aos requisitos do cliente \citeonline{Sommerville2019}. \citeonline{Myers2014} destaca que o teste não deve ser entendido como uma forma de demonstrar que o software funciona, mas como um processo de executá-lo com a intenção explícita de encontrar falhas. Nessa perspectiva, um ``teste bem-sucedido'' é aquele que revela um erro ainda não descoberto. Em sistemas cada vez mais complexos, aplicar essa abordagem apenas de forma manual torna-se exaustivo e sujeito a vieses, reforçando a necessidade de apoio automatizado.
 
 \subsection{Teste Estrutural (Caixa Branca)}
 
 %Descreve os princípios do teste estrutural, destacando sua análise da lógica interna do programa. Mostra por que ele é relevante para identificar caminhos independentes, estruturas condicionais e decisões do código.
-Por sua vez, o teste estrutural, também conhecido como teste de caixa branca, foca na análise da lógica interna do programa \cite{Delamaro2013}. Ao contrário do teste de caixa preta, que observa apenas se as entradas e saídas correspondem ao esperado, esta técnica exige acesso ao código-fonte para avaliar caminhos de execução, \textit{loops} e condições lógicas.
+O teste estrutural, também conhecido como teste de caixa branca, concentra-se na análise da lógica interna do programa \cite{Delamaro2013}. Ao contrário do teste de caixa preta, que observa se entradas e saídas correspondem ao esperado, essa técnica exige acesso ao código-fonte para avaliar caminhos de execução, \textit{loops} e condições lógicas.
 
 Sua relevância reside na capacidade de orientar a verificação das estruturas internas do programa. Isso inclui apoiar a identificação de instruções, desvios lógicos (verdadeiro e falso), laços de repetição e caminhos independentes que devem ser considerados durante o planejamento dos testes.
 
 \subsubsection{Grafo de Fluxo de Controle (GFC)}
 
 %Explica o que é o GFC, seus elementos (nós, arestas, desvios), como representa a lógica interna de um programa e sua importância para análise estrutural. Introduz o uso do grafo em ferramentas de teste e análise estática.
-O Grafo de Fluxo de Controle (GFC) é a representação gráfica fundamental para a análise estrutural. Ele modela a lógica do programa como um grafo dirigido, em que os \textbf{nós} representam blocos de processamento sequencial (sem desvios) e as \textbf{arestas} representam o fluxo de controle entre esses nós.
+O Grafo de Fluxo de Controle (GFC) é uma representação gráfica usada na análise estrutural. Ele modela a lógica do programa como um grafo dirigido, em que os \textbf{nós} representam blocos de processamento sequencial, sem desvios, e as \textbf{arestas} representam o fluxo de controle entre esses nós.
 
-Elementos cruciais do GFC incluem os nós de predicado, que correspondem a pontos de decisão no código (como \texttt{if} ou \texttt{while}) de onde partem múltiplas arestas (desvios). Ferramentas de teste e análise estática utilizam o GFC para calcular caminhos independentes e determinar a complexidade lógica do algoritmo, transformando o código textual em uma estrutura matemática navegável.
+Entre os elementos do GFC estão os nós de predicado, que correspondem a pontos de decisão no código, como \texttt{if} ou \texttt{while}, dos quais partem múltiplas arestas. Ferramentas de teste e análise estática utilizam o GFC para calcular caminhos independentes e determinar a complexidade lógica do algoritmo, transformando o código textual em uma estrutura matemática navegável.
 
 \pagebreak
 
@@ -53,7 +53,7 @@ A partir da análise do Código \ref{lst:verifica_status}, é possível mapear a
 \subsubsection{Complexidade Ciclomática - V(G)}
 
 %Detalha a métrica proposta por McCabe, apresentando fórmula, interpretação, relação com quantidade de caminhos independentes e justificativa para sua adoção como indicador de complexidade lógica.
-A Complexidade Ciclomática é uma métrica de software desenvolvida por Thomas McCabe em 1976. Ela quantifica a complexidade lógica de um programa contando o número de caminhos linearmente independentes através do seu Grafo de Fluxo de Controle \citeonline{McCabe1976}.
+A Complexidade Ciclomática é uma métrica de software desenvolvida por Thomas McCabe em 1976. Ela quantifica a complexidade lógica de um programa a partir do número de caminhos linearmente independentes em seu Grafo de Fluxo de Controle \citeonline{McCabe1976}.
 
 A métrica é calculada pela fórmula $V(G) = E - N + 2P$, em que $E$ é o número de arestas, $N$ é o número de nós e $P$ é o número de componentes conexos do grafo. Em grafos com apenas um componente conexo, essa expressão simplifica-se para $V(G) = E - N + 2$. O valor resultante $V(G)$ indica o número mínimo de casos de teste necessários para cobrir todos os caminhos independentes do código. McCabe sugere que módulos com complexidade superior a 10 são mais propensos a erros e difíceis de manter, justificando o uso dessa métrica como um indicador crítico de qualidade e testabilidade \citeonline{McCabe1976}.
 
@@ -78,28 +78,28 @@ Substituindo pelos valores extraídos do grafo:
     V(G) = 4 - 4 + 2(1) = 2
 \]
 
-O resultado $V(G) = 2$ indica que existem dois caminhos linearmente independentes no código: (1) o caminho onde a condição é verdadeira e (2) o caminho onde a condição é falsa. Este valor confirma a baixa complexidade do algoritmo e serve como base para determinar que são necessários, no mínimo, dois casos de teste para cobrir toda a lógica desta função.
+O resultado $V(G) = 2$ indica que existem dois caminhos linearmente independentes no código: (1) o caminho em que a condição é verdadeira e (2) o caminho em que a condição é falsa. Esse valor confirma a baixa complexidade do algoritmo e indica que são necessários, no mínimo, dois casos de teste para cobrir a lógica da função.
 
 
 
 \section{Análise Estática de Código}
 
 %Introduz o conceito de análise sem execução (análise estática), justificando por que é adequada para inspeção estrutural. Diferencia análise estática de análise dinâmica e apresenta aplicações práticas.
-A análise estática de código refere-se ao exame do software sem a necessidade de executá-lo. Esta técnica é particularmente adequada para a inspeção estrutural, pois permite varrer toda a base de código em busca de padrões sintáticos, violações de regras e métricas de complexidade em tempo de desenvolvimento.
+A análise estática de código consiste no exame do software sem executá-lo. Essa técnica é adequada para a inspeção estrutural, pois permite verificar a base de código em busca de padrões sintáticos, violações de regras e métricas de complexidade ainda durante o desenvolvimento.
 
 Diferencia-se da análise dinâmica, que requer a execução do programa com dados de teste reais para observar comportamentos em tempo de execução (como uso de memória e falhas). Aplicações práticas da análise estática incluem a detecção precoce de bugs, verificação de conformidade com guias de estilo (linting) e o cálculo automático de métricas como a complexidade ciclomática, permitindo feedback imediato ao desenvolvedor.
 
 \subsection{Processamento Léxico e Sintático}
 
 %Aborda conceitos de compiladores aplicados ao seu trabalho: tokenização, identificação de estruturas, análise sintática simplificada e como essas etapas são utilizadas na construção do GFC.
-Para construir o GFC e realizar a análise estática, a ferramenta proposta utiliza conceitos de compiladores. O processo inicia-se com a \textbf{tokenização} (análise léxica), que quebra o código-fonte em unidades mínimas de significado (tokens) \citeonline{Cooper2012}.
+Para construir o GFC e realizar a análise estática, o GUY utiliza conceitos de compiladores. O processo inicia-se com a \textbf{tokenização} (análise léxica), que divide o código-fonte em unidades mínimas de significado (tokens) \citeonline{Cooper2012}.
 
 Em seguida, realiza-se a identificação de estruturas através da \textbf{análise sintática}, que organiza esses \textit{tokens} em uma Árvore Sintática Abstrata (AST). A AST é uma representação hierárquica que expõe a estrutura gramatical do código \citeonline{Aho1995}. É percorrendo a AST que a ferramenta identifica onde começam e terminam os blocos lógicos (funções, loops, condicionais) para, a partir disso, desenhar os nós e arestas do GFC e calcular a complexidade.
 
 \section{Tecnologias e Linguagens Adotadas}
 
 %Apresenta as tecnologias que podem ser aplicadas no desenvolvimento da ferramenta web: frameworks front-end, back-end, bibliotecas de parsing, libs de visualização de grafos, e justificativas técnicas para as escolhas.
-A ferramenta proposta nesta pesquisa adota uma arquitetura de extensão para o \textit{Visual Studio Code} (VS Code). A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar o processo de análise estática e coordenar a comunicação com a interface. Para a camada visual, o framework \textbf{React.js} é utilizado em uma \textit{Webview}, permitindo a renderização interativa do Grafo de Fluxo de Controle \citeonline{react_docs}.
+O GUY adota uma arquitetura de extensão para o \textit{Visual Studio Code} (VS Code). A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar a análise estática e coordenar a comunicação com a interface. Na camada visual, o framework \textbf{React.js} é utilizado em uma \textit{Webview}, permitindo a renderização interativa do Grafo de Fluxo de Controle \citeonline{react_docs}.
 
 Para o processamento de código e análise sintática (\textit{parsing}), a arquitetura foi projetada visando a extensibilidade e o suporte a múltiplos paradigmas de programação, com foco inicial em código Python e possibilidade de expansão futura para outras linguagens. Para isso, adota-se preferencialmente o \textbf{Tree-sitter} \citeonline{TreeSitterWeb}, uma ferramenta moderna de geração de analisadores que pode ser utilizada com \textit{WebAssembly} para executar com desempenho adequado no ambiente local da extensão. Como alternativa consolidada no meio acadêmico e na construção de compiladores, considera-se também a utilização do \textbf{ANTLR} (\textit{Another Tool for Language Recognition}) \cite{ANTLRWeb}.
 
@@ -127,7 +127,7 @@ A pesquisa bibliográfica identificou ferramentas e algoritmos que, assim como a
 \subsection{VEIL (\textit{Vertical Execution-order Informed Layout})}
 O VEIL é um algoritmo de desenho de grafos proposto recentemente por \citeonline{veil}, desenvolvido para alinhar a visualização de Grafos de Fluxo de Controle (GFC) com a estrutura mental de leitura de código-fonte. A abordagem utiliza análise de dominadores para aplicar dois novos critérios estéticos: o \textit{Happens-Before} (C10), que garante que nós executados posteriormente sejam desenhados verticalmente abaixo de seus predecessores; e o \textit{Edge Direction Grouping} (C11), que agrupa arestas de retorno (loops) à esquerda e desvios condicionais à direita do grafo \citeonline{veil}.
 
-A principal distinção reside no escopo: o VEIL é um algoritmo de otimização de layout visual para compiladores e ferramentas de análise, focado em "como desenhar" o grafo para maximizar a legibilidade. A ferramenta proposta neste trabalho, por outro lado, utiliza a visualização do GFC como meio pedagógico para ensinar \textbf{Métricas de Teste} (como a Complexidade Ciclomática), permitindo que o estudante interaja com o código e veja o cálculo da métrica em tempo real, algo que não é o foco primário do VEIL.
+A principal distinção está no escopo. O VEIL é um algoritmo de otimização de layout visual para compiladores e ferramentas de análise, focado em "como desenhar" o grafo para maximizar a legibilidade. O GUY, por outro lado, utiliza a visualização do GFC como apoio ao estudo de métricas de teste, como a Complexidade Ciclomática, permitindo que o estudante interaja com o código e observe o cálculo da métrica no próprio ambiente de desenvolvimento.
 
 \subsection{CodeSurfer}
 O CodeSurfer, desenvolvido pela GrammaTech, é uma ferramenta de alta precisão para análise estática e navegação em código-fonte complexo (C/C++) \citeonline{codesurfer}. Diferente de IDEs comuns, ele constrói uma rede de dependências completa do software, permitindo que o desenvolvedor visualize e navegue pelo Grafo de Fluxo de Controle e pelo Grafo de Dependência de Dados de qualquer função.
@@ -137,4 +137,4 @@ A distinção em relação ao trabalho proposto é o público-alvo e a complexid
 \subsection{Code2Flow}
 O Code2Flow é uma ferramenta comercial amplamente utilizada para converter pseudocódigo e códigos de diversas linguagens em fluxogramas interativos \citeonline{code2flow}. Seu foco principal é a documentação de processos e a comunicação lógica entre gerentes e desenvolvedores, permitindo a criação rápida de diagramas a partir de texto.
 
-Apesar de sua excelência na geração visual, o Code2Flow foca na representação de processos de negócio e lógica geral, muitas vezes abstraindo detalhes técnicos necessários para o teste estrutural. Diferente da ferramenta proposta, ele não calcula explicitamente a Complexidade Ciclomática nem foca no ensino de critérios de cobertura de teste, servindo mais como uma ferramenta de diagramação do que de engenharia de software aplicada.
+Apesar da qualidade da geração visual, o Code2Flow foca na representação de processos de negócio e lógica geral, muitas vezes abstraindo detalhes técnicos necessários ao teste estrutural. Diferente do GUY, ele não calcula explicitamente a Complexidade Ciclomática nem se concentra no ensino de critérios de cobertura de teste, servindo mais como ferramenta de diagramação do que como apoio à análise estrutural de código.
