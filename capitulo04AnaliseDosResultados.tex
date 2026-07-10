@@ -89,6 +89,8 @@ Essa proposta atende aos principais requisitos definidos para a ferramenta: exec
   \label{fig:casos_uso_GUY}
 \end{figure}
 
+O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Desenvolvedor}, responsável por acionar a extensão, visualizar o GFC e navegar do grafo para o código. Os casos de uso exibidos são: acionar extensão, analisar código-fonte localmente, visualizar GFC, calcular \(V(G)\) e navegar do grafo para o código. A relação entre o ator e a ferramenta ocorre diretamente nos casos de uso associados à interação do usuário. O caso de uso ``Acionar extensão'' inclui a análise local do código-fonte; a análise local, por sua vez, inclui a visualização do GFC e o cálculo de \(V(G)\). O diagrama também mostra que a navegação do grafo para o código estende a visualização do GFC, indicando uma interação complementar à visualização principal.
+
 \begin{figure}[H]
   \centering
     \caption{Diagrama de cenários (sequência) da Ferramenta GUY.}
@@ -96,6 +98,8 @@ Essa proposta atende aos principais requisitos definidos para a ferramenta: exec
   \fonte{Elaborada pelo autor.}
   \label{fig:cenarios_GUY}
 \end{figure}
+
+O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro participantes: Desenvolvedor, VS Code, Extensão GUY e Painel lateral. No primeiro cenário, o desenvolvedor abre um arquivo de código-fonte no VS Code, aciona a extensão com o editor em foco, a extensão analisa o código localmente, abre o painel lateral e o painel exibe ao usuário o GFC e o valor de \(V(G)\). No segundo cenário, o desenvolvedor seleciona um vértice ou uma aresta do GFC no painel, o painel envia o elemento selecionado à extensão, a extensão identifica o trecho correspondente no código, solicita ao VS Code o deslocamento do cursor para a região relacionada e o editor destaca o trecho correspondente. O resultado final representado é a visualização inicial do grafo com a métrica e, em seguida, a navegação interativa entre o grafo e o código-fonte.
 
 
 \section{Implementação da Ferramenta GUY}
@@ -556,6 +560,16 @@ A adaptação ao tema do VS Code fica no CSS da Webview. Em vez de fixar cores p
 \section{Validação da Ferramenta GUY}
 
 A validação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{app/src/examples/}. Os experimentos têm como objetivo verificar se a extensão representa corretamente diferentes estruturas de controle em Python e se as métricas exibidas são coerentes com o grafo construído. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
+
+A Figura \ref{fig:vscode_grafo_GUY} mostra o GFC gerado pelo GUY no VS Code, com a visualização apresentada em painel lateral, conforme o fluxo de uso adotado nos experimentos.
+
+\begin{figure}[H]
+    \centering
+    \caption{GFC gerado pelo GUY no VS Code.}
+    \includegraphics[width=0.85\linewidth]{imagens/vscode-grafo.png}
+    \fonte{Elaborada pelo autor.}
+    \label{fig:vscode_grafo_GUY}
+\end{figure}
 
 \subsection{Experimento I: Código com Laço e Condicionais}
 
