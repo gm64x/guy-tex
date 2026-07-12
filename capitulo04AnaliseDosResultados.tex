@@ -413,7 +413,7 @@ A interface também possui um limite de complexidade configurável. Por padrão,
 
 A visualização do GFC é apresentada em uma Webview lateral. O grafo é renderizado com nós, arestas direcionadas e rótulos que indicam o tipo de transição, como \texttt{true}, \texttt{false}, \texttt{loop}, \texttt{return}, \texttt{break} e \texttt{continue}. A interface oferece controles para ajustar a visualização, centralizar o grafo, redefinir o zoom e ampliar ou reduzir a escala.
 
-A barra lateral da Webview apresenta as métricas calculadas, a fórmula de Complexidade Ciclomática aplicada ao grafo gerado, a lista de nós, a lista de arestas, as funções encontradas e os caminhos independentes. Ao selecionar um nó, uma aresta ou um caminho, a extensão envia uma mensagem da Webview para o VS Code e destaca o trecho correspondente no editor. Essa interação atende ao objetivo educacional da ferramenta, pois permite relacionar diretamente a estrutura visual do fluxo de controle com o código-fonte analisado.
+A barra lateral da Webview apresenta as métricas calculadas, a fórmula de Complexidade Ciclomática aplicada ao grafo gerado, a lista de nós, a lista de arestas, as funções encontradas e os caminhos independentes. Ao selecionar um nó, uma aresta ou um caminho, a extensão envia uma mensagem da Webview para o VS Code e destaca o trecho correspondente no editor. Essa interação foi projetada para apoiar a compreensão do fluxo de controle, pois permite relacionar diretamente a representação visual do grafo com o código-fonte analisado.
 
 A janela lateral é criada no módulo \texttt{webviewPanel.ts}. O painel é aberto ao lado do editor, permite execução de scripts e registra o canal de mensagens usado pela interface React.
 
@@ -559,7 +559,7 @@ A adaptação ao tema do VS Code fica no CSS da Webview. Em vez de fixar cores p
 
 \section{Validação da Ferramenta GUY}
 
-A validação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{app/src/examples/}. Os experimentos têm como objetivo verificar se a extensão representa corretamente diferentes estruturas de controle em Python e se as métricas exibidas são coerentes com o grafo construído. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
+A verificação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{app/src/examples/}. Os três exemplos foram escolhidos por reunir estruturas de controle tratadas pela versão atual do analisador. Em cada experimento, a representação produzida foi examinada em relação ao código de entrada, e os valores de \(V(G)\) foram recalculados a partir das quantidades de nós, arestas e componentes do grafo. Esse procedimento permite verificar a coerência dos resultados nos cenários selecionados, mas não constitui uma avaliação abrangente da ferramenta. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
 
 A Figura \ref{fig:vscode_grafo_GUY} mostra o GFC gerado pelo GUY no VS Code, com a visualização apresentada em painel lateral, conforme o fluxo de uso adotado nos experimentos.
 
@@ -606,7 +606,7 @@ A Complexidade Ciclomática resultante é \(V(G) = 15 - 13 + 2 \times 1 = 4\). E
 
 \subsection{Experimento II: Código Condicional Simples}
 
-O segundo experimento utiliza o arquivo \texttt{conditional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
+O segundo experimento utiliza o arquivo \texttt{conditional.py}. O objetivo é verificar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
 
 \begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento II.}, label={lst:experimento2_codigo}]
 x = 10
@@ -666,7 +666,7 @@ A Complexidade Ciclomática calculada é \(V(G) = 10 - 9 + 2 \times 1 = 3\). O r
 
 \section{Análise Qualitativa da Ferramenta GUY}
 
-A análise qualitativa do protótipo indica que o GUY atende ao objetivo central do trabalho: apoiar a compreensão do fluxo lógico de programas por meio de uma representação visual interativa do GFC. Diferentemente de ferramentas voltadas principalmente a painéis de qualidade ou diagnósticos textuais, o GUY relaciona a métrica de Complexidade Ciclomática à estrutura concreta do código analisado.
+A análise qualitativa do protótipo mostra que o GUY reúne os recursos previstos no objetivo central do trabalho: geração do GFC, cálculo da Complexidade Ciclomática e navegação entre o grafo e o código-fonte. Diferentemente das ferramentas correlatas examinadas, voltadas principalmente a painéis de qualidade ou diagnósticos textuais, o GUY concentra a interação na representação visual do fluxo de controle.
 
 Entre os principais pontos positivos, destaca-se a integração direta com o VS Code. O desenvolvedor não precisa copiar o código para uma ferramenta externa, pois a análise é acionada no próprio editor. Além disso, o processamento local contribui para a privacidade do código-fonte e reduz a dependência de serviços externos. A possibilidade de gerar grafos a partir do arquivo inteiro, de uma seleção ou da função atual também torna a ferramenta flexível para diferentes contextos de uso.
 
@@ -676,4 +676,6 @@ Como limitação, a versão atual concentra-se em Python e em estruturas de cont
 
 Também há limitações relacionadas à visualização de grafos muito grandes. Embora a interface apresente avisos e o sistema oculte a listagem de caminhos independentes em grafos extensos para manter a responsividade, programas com muitas estruturas aninhadas podem gerar representações visualmente densas. Nesses casos, a análise por seleção ou por função tende a ser mais adequada do que a análise do arquivo completo.
 
-Os experimentos indicam que o GUY gera grafos coerentes para estruturas fundamentais de controle de fluxo e apresenta métricas compatíveis com a teoria da Complexidade Ciclomática. Como trabalhos futuros, podem ser considerados o suporte a mais estruturas da linguagem Python, a exportação dos grafos para formatos externos, a inclusão de testes automatizados com exemplos de referência e a ampliação da ferramenta para outras linguagens de programação.
+A avaliação foi restrita a três exemplos pequenos e controlados. Não foram analisados projetos reais de maior porte, nem foi conduzido um estudo com usuários para medir usabilidade, compreensão dos grafos ou contribuição efetiva para o planejamento de testes. Assim, os resultados permitem discutir o funcionamento do protótipo nos cenários escolhidos, mas não devem ser generalizados para todo tipo de programa Python ou contexto de uso.
+
+Nos limites dessa avaliação, os grafos e as métricas produzidos foram coerentes com as estruturas fundamentais de controle de fluxo presentes nos exemplos. A ampliação do conjunto de testes, a comparação com resultados de referência e a avaliação com usuários são necessárias para produzir evidências mais abrangentes sobre a ferramenta.
