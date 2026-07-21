@@ -36,6 +36,9 @@ latexmkrc
 _build/
 _dist/
 
+# Local agent instructions
+.agents/
+
 # OS files
 .DS_Store
 Thumbs.db
