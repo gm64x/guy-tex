@@ -588,6 +588,20 @@ while x < 10:
 print(x)
 \end{lstlisting}
 
+A Figura \ref{fig:gfc_experimento_i} apresenta o GFC produzido
+pelo GUY para o código com laço, condicionais, \texttt{continue}
+e \texttt{break}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+        width=\linewidth,
+    ]{imagens/gfc-experimento-i.png}
+    \caption{GFC gerado pelo GUY no Experimento I.}
+    \fonte{Elaborada pelo autor.}
+    \label{fig:gfc_experimento_i}
+\end{figure}
+
 Ao analisar esse código, a ferramenta GUY identifica três pontos de decisão: a condição do \texttt{while} e os dois comandos \texttt{if}. O comando \texttt{continue} é representado por uma aresta que retorna para a condição do laço, enquanto o comando \texttt{break} é representado por uma aresta que conduz ao ponto posterior ao laço.
 
 \begin{table}[H]
@@ -621,6 +635,18 @@ print("fim")
 
 Nesse caso, a ferramenta cria um nó de decisão para a condição \texttt{x > 5}, duas saídas para representar os ramos verdadeiro e falso e um nó de junção antes da continuidade do fluxo para o comando final.
 
+A Figura \ref{fig:gfc_experimento_ii} apresenta o GFC produzido pelo GUY para o código com uma estrutura condicional simples, composta pelos fluxos verdadeiro e falso.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+        width=\linewidth,
+    ]{imagens/gfc-experimento-ii.png}
+    \caption{GFC gerado pelo GUY no Experimento II.}
+    \fonte{Elaborada pelo autor.}
+    \label{fig:gfc_experimento_ii}
+\end{figure}
+
 \begin{table}[H]
     \centering
     \caption{Métricas obtidas no Experimento II.}
@@ -649,6 +675,20 @@ def calculate_total(items):
 \end{lstlisting}
 
 Ao posicionar o cursor dentro da função e executar o comando \texttt{GUY: Generate CFG from Current Function}, a extensão restringe a análise ao corpo da função selecionada. O grafo resultante contém a inicialização da variável, a condição de iteração do \texttt{for}, a decisão interna do \texttt{if}, o retorno ao laço e o comando \texttt{return} conectado ao nó de saída.
+
+A Figura \ref{fig:gfc_experimento_iii} apresenta o GFC produzido pelo GUY para o código que combina declaração de função, laço de repetição e estrutura condicional.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[
+        width=\linewidth,
+        trim={10 20 10 20},
+        clip
+    ]{imagens/gfc-experimento-iii.png}
+    \caption{GFC gerado pelo GUY no Experimento III.}
+    \fonte{Elaborada pelo autor.}
+    \label{fig:gfc_experimento_iii}
+\end{figure}
 
 \begin{table}[H]
     \centering
