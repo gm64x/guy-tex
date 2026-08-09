@@ -5,7 +5,7 @@ set -euo pipefail
 DEBUG="${DEBUG:-false}"
 
 # Inputs
-DIAGRAMS_DIR="${1:-imagens/diagrams}"
+DIAGRAMS_DIR="${1:-imagens/diagramas}"
 CHANGED_FILES_LIST="${2:-.changed_files_list}"
 
 mkdir -p "$DIAGRAMS_DIR"

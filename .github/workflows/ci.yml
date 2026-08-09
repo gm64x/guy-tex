@@ -1,7 +1,7 @@
 name: CI — Build & Release
 
 env:
-  DIAGRAMS_DIR: imagens/diagrams
+  DIAGRAMS_DIR: imagens/diagramas
   MERMAID_CLI_VERSION: "11"
   PLANTUML_JAR_URL: "https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar"
 
