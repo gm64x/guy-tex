@@ -13,7 +13,7 @@ da Boa Vista, na modalidade de relatório técnico.
 
 ```text
 main.tex                 documento raiz
-pretextuais/             capa, folha de rosto, modelos, anexos e resumo
+pretextuais/             capa, folha de rosto, documentos institucionais e resumo
 capitulos/               conteúdo textual do relatório
 referencias.bib          referências bibliográficas
 estrutura.sty            configuração do modelo
@@ -64,8 +64,8 @@ as versões oficiais estiverem disponíveis, substitua os arquivos existentes,
 mantendo exatamente estes caminhos e nomes:
 
 ```text
-pretextuais/modelos/fichaCatalografica.pdf
-pretextuais/modelos/ataDefesa.pdf
+pretextuais/institucionais/fichaCatalografica.pdf
+pretextuais/institucionais/ataDefesa.pdf
 ```
 
 ## Modelo institucional
