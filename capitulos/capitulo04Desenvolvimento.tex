@@ -3,14 +3,13 @@
 
 \section{Análise das Ferramentas Disponíveis no Mercado}
 
-%Lista e descreve brevemente ferramentas existentes (SonarQube, CodeClimate, PMD, ESLint, etc.).
 Existem diversas ferramentas voltadas à qualidade de código, com objetivos distintos dos adotados pelo GUY para representar grafos de fluxo de controle.
 
 Esta seção apresenta três ferramentas utilizadas na análise de código e discute suas funcionalidades, limitações e diferenças em relação ao GUY.
 
 \subsection{SonarQube}
 
-A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de código aberto (\textit{open source}) voltada à inspeção contínua da qualidade do código. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \citeonline{sonarqube}.
+A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de análise da qualidade do código; sua edição Community é distribuída como software de código aberto. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \citeonline{sonarqube}.
 \begin{figure}[H]
     \centering
     \caption{Captura de tela da interface do SonarQube.}
@@ -21,14 +20,14 @@ A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de 
 
 
 
-A plataforma exibe potenciais \textit{bugs}, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece \textit{dashboards}, histórico de análises e integração com IDEs \citeonline{campbell2013sonarqube}.
+A plataforma exibe potenciais defeitos, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece painéis, histórico de análises e integração com IDEs \citeonline{campbell2013sonarqube}.
 
 Apesar de possuir uma versão gratuita, algumas funcionalidades avançadas e recursos gerenciais são comerciais. A ferramenta também pode gerar falsos positivos e exige configuração adequada para o contexto de cada projeto. Para o escopo deste trabalho, a principal limitação é que, embora calcule complexidade ciclomática, o SonarQube apresenta os dados principalmente em painéis e relatórios, sem priorizar a visualização gráfica e interativa do Grafo de Fluxo de Controle (GFC).
 
 
 \subsection{Codacy}
 
-O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática, gratuita para projetos de código aberto, voltada à melhoria da qualidade do software, ao aumento da cobertura de testes e à prevenção de falhas de segurança \citeonline{ardito2020tool}. Em vez de se concentrar apenas em métricas matemáticas, a ferramenta prioriza a identificação prática de \textit{bugs} e comportamentos indefinidos em diferentes linguagens de programação \citeonline{ardito2020tool}.
+O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática voltada à avaliação de qualidade de software. A configuração e os analisadores utilizados podem variar conforme o projeto; por isso, suas funcionalidades devem ser descritas de acordo com a versão ou o plano efetivamente analisado.
 
 \begin{figure}[H]
     \centering
@@ -38,13 +37,13 @@ O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise está
     \fonte{Documentação oficial do Codacy (2026).}
 \end{figure}
 
-O Codacy consolida estatísticas sobre propensão a erros, estilo e segurança em um \textit{dashboard}, atribuindo ao projeto uma nota geral que varia de "A" (alta qualidade) a "F" (baixa qualidade) \citeonline{ardito2020tool, imbugwa2021case}. Estudos relatam sua integração a projetos e discutem sua configuração em contextos específicos \citeonline{imbugwa2021case, rahmawati2023analisis}; esses relatos não constituem uma avaliação de usabilidade realizada neste trabalho.
+O Codacy consolida estatísticas sobre propensão a erros, estilo e segurança em um painel. Estudos relatam sua integração a projetos e discutem sua configuração em contextos específicos \citeonline{imbugwa2021case, rahmawati2023analisis}; esses relatos não constituem uma avaliação de usabilidade realizada neste trabalho.
 
 Como limitação, a agregação das métricas na nota final nem sempre deixa claro o peso de cada fator avaliado \citeonline{ardito2020tool, imbugwa2021case}. A análise também depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \citeonline{imbugwa2021case}. Embora avalie categorias de complexidade \citeonline{ardito2020tool}, seus resultados permanecem concentrados em notas e painéis, sem fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
 
 \subsection{ESLint}
 
-O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática amplamente utilizada, projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. A ferramenta destaca-se por sua flexibilidade, permitindo a adoção de regras e \textit{presets} da comunidade \citeonline{tomasdottir2020adoption}.
+O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. A ferramenta permite adotar regras e \textit{presets} da comunidade \citeonline{tomasdottir2020adoption}.
 
 \begin{figure}[H]
     \centering
@@ -56,7 +55,7 @@ O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugáv
 
 Além de oferecer correção automática (\textit{auto-fix}) e um ecossistema extensível \citeonline{rafnsson2020fixing, bhutani2024analysing}, o ESLint pode ser integrado a IDEs e \textit{pipelines} de integração contínua para apresentar diagnósticos durante o desenvolvimento \citeonline{bhutani2024analysing, murugaraj_automated, tomasdottir2017why}.
 
-Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \citeonline{rafnsson2020fixing}. Sua eficácia também esbarra na natureza dinâmica do JavaScript, não sendo capaz de prever todos os erros em tempo de execução \citeonline{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; esse excesso de avisos frequentemente resulta em uma ``fadiga de alertas'', levando os desenvolvedores a ignorarem os reportes ou a perderem a confiança na análise \citeonline{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
+Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \citeonline{rafnsson2020fixing}. Sua análise não cobre comportamentos que dependem da execução do programa ou de suas dependências externas \citeonline{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; o excesso de avisos pode contribuir para a ``fadiga de alertas'' e reduzir a confiança na análise \citeonline{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
 
 Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \citeonline{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
 
@@ -102,7 +101,7 @@ Esta seção formaliza os requisitos definidos para a versão avaliada do GUY. R
 
 \section{Prototipagem e \textit{Design} da Ferramenta GUY}
 
-O usuário aciona a extensão com o editor de código aberto e em foco. Em resposta, a ferramenta abre uma janela lateral, de forma semelhante a uma pré-visualização de Markdown, apresentando o Grafo de Fluxo de Controle (GFC) e o cálculo da Complexidade Ciclomática, representada por \(V(G)\).
+O usuário aciona a extensão com o editor de código aberto e em foco. Em resposta, a ferramenta abre uma janela lateral, de forma semelhante a uma pré-visualização de Markdown, apresentando o Grafo de Fluxo de Controle (GFC) e o cálculo da Complexidade Ciclomática, representado por \(V(G)\).
 Nessa visualização, o usuário pode selecionar vértices e arestas do grafo para navegar diretamente até os trechos correspondentes do código-fonte, estabelecendo uma relação interativa entre a representação visual e a implementação analisada.
 
 Essa proposta materializa os requisitos descritos nas Tabelas \ref{tab:requisitos_funcionais_guy} e \ref{tab:requisitos_nao_funcionais_guy}: execução local; apresentação do GFC em conjunto com o valor de \(V(G)\); e interação entre os elementos do grafo e as regiões correspondentes do código. Os fluxos são detalhados nas Figuras \ref{fig:casos_uso_GUY} e \ref{fig:cenarios_GUY}.
@@ -131,10 +130,6 @@ O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro parti
 
 \section{Implementação da Ferramenta GUY}
 \label{sec:implementacao_guy}
-% Desenvolvimento e configuração no VS Code - pode criar subseções
-
-% LEMBRETE: GUY -> Graphing Utility for Your code
-
 A ferramenta foi desenvolvida em \textit{TypeScript} como uma extensão para o editor de código VS Code, com o código completo disponível no GitHub em \url{https://github.com/gm64x/GUY-vscode}. Seu objetivo é integrar a análise de fluxo de controle diretamente ao ambiente de desenvolvimento. O nome GUY deriva de \textit{Graphing Utility for Your code} e, em sua versão atual, tem como foco a análise de arquivos Python.
 
 A extensão utiliza a API do VS Code para registrar comandos, acessar o editor ativo e abrir a visualização lateral por meio de uma \texttt{Webview}. Nessa interface, o desenvolvedor pode navegar entre os elementos do grafo e as linhas correspondentes do código-fonte. A interface visual do GFC foi construída com \texttt{React} e \texttt{@xyflow/react}, enquanto a organização automática dos nós utiliza a biblioteca \texttt{@dagrejs/dagre}. Além disso, a análise sintática do código Python é realizada pelo \texttt{Tree-sitter} por meio de \texttt{WebAssembly}.
@@ -179,9 +174,6 @@ A configuração inicial da extensão está disponível no arquivo \texttt{packa
 
 O mesmo arquivo também define opções de uso da extensão, como abertura automática da pré-visualização, direção do layout do grafo, exibição do painel de métricas, destaque de código ao selecionar nós e limite considerado alto para a Complexidade Ciclomática.
 
-% Explicar com trechos de código
-
-% Adicionar o link do GitHub com o código completo
 \subsection{Estrutura geral da extensão}
 
 A implementação está organizada em módulos com responsabilidades separadas. O arquivo \texttt{src/extension.ts} registra os comandos da extensão e coordena o fluxo principal de execução. Os módulos do diretório \texttt{src/core/} concentram a análise do código-fonte, a construção do GFC, o cálculo das métricas e a identificação de caminhos independentes. Já os módulos em \texttt{src/vscode/} tratam da integração com o editor, incluindo a criação da janela lateral e o destaque de trechos do código. A interface React da pré-visualização fica em \texttt{src/webview/}.
@@ -469,7 +461,7 @@ A visualização do GFC é apresentada em uma Webview lateral. O grafo é render
 
 A barra lateral da Webview apresenta as métricas calculadas, a fórmula de Complexidade Ciclomática aplicada ao grafo gerado, a lista de nós, a lista de arestas, as funções encontradas e os caminhos independentes. Ao selecionar um nó, uma aresta ou um caminho, a extensão envia uma mensagem da Webview para o VS Code e destaca o trecho correspondente no editor. Essa interação estabelece uma correspondência verificável entre a estrutura visual do fluxo de controle e o intervalo do código analisado; seus efeitos sobre compreensão ou aprendizagem não foram avaliados neste trabalho.
 
-A janela lateral é criada no módulo \texttt{webviewPanel.ts}. O painel é aberto ao lado do editor, permite execução de scripts e registra o canal de mensagens usado pela interface React.
+A janela lateral é criada no módulo \texttt{webviewPanel.ts}. O painel é aberto ao lado do editor, carrega os scripts da interface e registra o canal de mensagens usado pela interface React.
 
 \begin{lstlisting}[language=TypeScript, numbers=left, caption={Criação da Webview lateral no VS Code.}, label={lst:guy_webview_panel}]
 this.panel = vscode.window.createWebviewPanel(
@@ -635,4 +627,3 @@ A análise das ferramentas correlatas apresentadas no trabalho -- SonarQube, Cod
 \end{enumerate}
 
 Os resultados da validação são apresentados no Capítulo \ref{cap:05}.
-
