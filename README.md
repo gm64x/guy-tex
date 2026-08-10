@@ -16,8 +16,8 @@ main.tex                 documento raiz
 pretextuais/             capa, folha de rosto, documentos institucionais e resumo
 capitulos/               conteúdo textual do relatório
 referencias.bib          referências bibliográficas
-estrutura.sty            configuração do modelo
-abntex2-custom/          estilo bibliográfico institucional
+.config/estrutura.sty    configuração do modelo
+.config/abntex2-alf.bst  estilo bibliográfico institucional
 fontes/                  códigos usados nos exemplos
 imagens/                 figuras, experimentos e diagramas
 .github/                 automação de validação e publicação
