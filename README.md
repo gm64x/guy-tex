@@ -13,7 +13,7 @@ da Boa Vista, na modalidade de relatório técnico.
 
 ```text
 main.tex                 documento raiz
-pretextuais/             capa, folha de rosto, anexos e resumo
+pretextuais/             capa, folha de rosto, modelos, anexos e resumo
 capitulos/               conteúdo textual do relatório
 referencias.bib          referências bibliográficas
 estrutura.sty            configuração do modelo
@@ -59,17 +59,14 @@ rótulos LaTeX, evitando números de seção ou figura escritos manualmente.
 
 ## Documentos institucionais
 
-A ficha catalográfica e a ata de defesa são opcionais enquanto não houver
-versões oficiais. Para incluí-las, adicione os arquivos exatamente nestes
-caminhos:
+O repositório inclui modelos da ficha catalográfica e da ata de defesa. Quando
+as versões oficiais estiverem disponíveis, substitua os arquivos existentes,
+mantendo exatamente estes caminhos e nomes:
 
 ```text
-fichaCatalografica/fichaCatalografica.pdf
-ataDefesa/ataDefesa.pdf
+pretextuais/modelos/fichaCatalografica.pdf
+pretextuais/modelos/ataDefesa.pdf
 ```
-
-Na ausência deles, o documento é compilado sem páginas de exemplo ou dados
-institucionais fictícios.
 
 ## Modelo institucional
 
