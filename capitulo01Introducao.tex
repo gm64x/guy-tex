@@ -10,6 +10,20 @@ As técnicas de teste de caixa branca, ou teste estrutural, contribuem para essa
 O GFC também serve de base para métricas estruturais, com destaque para a Complexidade Ciclomática. Introduzida por \citeonline{McCabe1976}, essa métrica permite mensurar a complexidade lógica de um módulo e estimar o número de caminhos linearmente independentes que podem orientar a definição de casos de teste.
 
 
+\section{Problema de Pesquisa}
+\label{sec:problema_pesquisa}
+
+Embora o GFC e a Complexidade Ciclomática ofereçam uma forma sistemática de representar e mensurar o fluxo de controle, ainda é necessário verificar se uma ferramenta integrada ao editor consegue produzir essas representações de forma coerente para código Python. Assim, a questão investigada neste trabalho é: \textit{dado um arquivo, uma seleção ou uma função em Python, o GUY consegue construir um GFC e calcular a Complexidade Ciclomática de modo consistente com as estruturas de controle presentes no trecho analisado?}
+
+Essa questão é verificável por meio da comparação entre os grafos e os valores de $V(G)$ produzidos pela ferramenta e uma reconstrução manual baseada nas estruturas dos exemplos analisados. O escopo da pergunta é técnico: não se pretende medir usabilidade, aprendizagem, desempenho em projetos reais ou efeitos sobre a qualidade do software.
+
+
+\section{Delimitação da Pesquisa}
+\label{sec:delimitacao_pesquisa}
+
+Este trabalho delimita-se à análise estática de código Python realizada localmente no VS Code. Os experimentos apresentados exercitam comandos sequenciais, funções, condicionais, laços, \texttt{return}, \texttt{break} e \texttt{continue}. O estudo concentra-se na construção do GFC, no cálculo da Complexidade Ciclomática e na navegação entre os elementos do grafo e os intervalos correspondentes do código-fonte. Não fazem parte desta avaliação a execução do programa, a cobertura obtida por testes, outras linguagens ou a validação experimental de recursos Python como exceções, chamadas entre funções, recursão, geradores e programação assíncrona.
+
+
 
 \section{Justificativa}
 
@@ -19,13 +33,13 @@ A garantia da qualidade de software tornou-se um fator crítico na indústria de
 
 Estudos sobre redução de defeitos indicam que o custo para corrigir uma falha após a entrega tende a ser maior do que durante o desenvolvimento. Ao mesmo tempo, a complexidade dos sistemas modernos dificulta a detecção manual de erros lógicos.
 
-Diante desse problema, este trabalho propõe o GUY, uma extensão para o VS Code voltada à geração automática de Grafos de Fluxo de Controle e ao cálculo da Complexidade Ciclomática. A proposta busca apoiar analistas, engenheiros e programadores na verificação estrutural de código-fonte.
+Diante desse problema, este trabalho propõe o GUY, uma extensão para o VS Code voltada à geração automática de Grafos de Fluxo de Controle e ao cálculo da Complexidade Ciclomática para código Python. A proposta oferece uma representação visual e uma métrica estrutural para os trechos analisados.
 
 
 \section{Objetivos}
 
 \subsection{Objetivo Geral}
-O objetivo desta pesquisa é desenvolver o GUY, uma extensão para o \textit{Visual Studio Code} (VS Code) destinada à análise estrutural de código-fonte e à geração automática do Grafo de Fluxo de Controle (GFC). A ferramenta fornece uma base visual e analítica para auxiliar desenvolvedores na mensuração da complexidade lógica e no planejamento de testes estruturais.
+O objetivo desta pesquisa é desenvolver e avaliar tecnicamente o GUY, uma extensão para o \textit{Visual Studio Code} (VS Code), com foco inicial em Python, destinada à análise estática e à geração automática do Grafo de Fluxo de Controle (GFC). A avaliação verifica a correspondência entre as estruturas de controle analisadas, o grafo produzido e a Complexidade Ciclomática calculada.
 
 \subsection{Objetivos Específicos}
 Para alcançar o objetivo geral, foram definidos os seguintes objetivos específicos:
@@ -37,3 +51,9 @@ Para alcançar o objetivo geral, foram definidos os seguintes objetivos específ
 	\item Desenvolver uma extensão para o editor VS Code para que o usuário tenha acesso à ferramenta localmente;
 	\item Validar a ferramenta por meio da comparação entre os grafos e valores de complexidade gerados e os resultados esperados para os códigos analisados.
 \end{itemize}
+
+
+\section{Organização do Trabalho}
+\label{sec:organizacao_trabalho}
+
+Além desta introdução, o trabalho está organizado em quatro capítulos. O Capítulo \ref{cap:02} apresenta os conceitos de teste estrutural, GFC, Complexidade Ciclomática e os fundamentos técnicos relacionados à análise. O Capítulo \ref{cap:03} descreve o método da pesquisa, o processo de desenvolvimento e os critérios da validação. O Capítulo \ref{cap:04} detalha a implementação do GUY, os experimentos e os resultados obtidos. Por fim, o Capítulo \ref{cap:05} sintetiza as conclusões, as limitações e as recomendações para trabalhos futuros.
