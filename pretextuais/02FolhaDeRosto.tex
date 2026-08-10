@@ -41,7 +41,12 @@
 
 			}}\\
 			\hline%                                        todas em letras minúsculas, separadas por ponto e vírgula (;)
-		\multicolumn{2}{|l|}{\specialcell{Palavras-chave:\\ \imprimirpalavraschave}} & \getpagerefnumber{LastPage}\\
+		\multicolumn{2}{|l|}{%
+			\parbox[c]{4in}{%
+				\centering Palavras-chave:\\
+				\raggedright\imprimirpalavraschave%
+			}%
+		} & \getpagerefnumber{LastPage}\\
 		\hline
 	\end{tabular}
 \end{table}
