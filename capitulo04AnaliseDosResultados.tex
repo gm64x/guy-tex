@@ -75,7 +75,7 @@ Esta seção formaliza os requisitos definidos para a versão avaliada do GUY. R
         \textbf{ID} & \textbf{Requisito} & \textbf{Evidência} & \textbf{Estado} \\ \hline
         RF01 & Gerar o GFC de um arquivo Python ativo. & \texttt{extension.ts}, \texttt{parser.ts} e Experimentos I--II. & Implementado. \\ \hline
         RF02 & Restringir a análise a uma seleção ou à função atual. & Comandos registrados e Experimento III. & Implementado. \\ \hline
-        RF03 & Calcular nós, arestas, decisões, componentes e (V(G)). & \texttt{metrics.ts} e Tabelas \ref{tab:experimento1_guy}--\ref{tab:experimento3_guy}. & Implementado. \\ \hline
+        RF03 & Calcular nós, arestas, decisões, componentes e \(V(G)\). & \texttt{metrics.ts} e Tabelas \ref{tab:experimento1_guy}--\ref{tab:experimento3_guy}. & Implementado. \\ \hline
         RF04 & Apresentar o GFC e suas métricas no painel lateral. & \texttt{webviewPanel.ts} e Figuras \ref{fig:gfc_experimento_i}--\ref{fig:gfc_experimento_iii}. & Implementado. \\ \hline
         RF05 & Relacionar seleções no grafo aos intervalos do código-fonte. & \texttt{editorNavigation.ts}. & Implementado. \\ \hline
         RF06 & Enumerar uma base de caminhos até o limite configurado. & \texttt{paths.ts} e validação manual dos três experimentos. & Implementado com limite. \\ \hline
@@ -407,7 +407,7 @@ A ferramenta também oferece dois modos de visualização. No modo simplificado,
 \subsection{Convenção de modelagem do GFC}
 \label{sec:convencao_modelagem_gfc}
 
-No GUY, um nó representa uma unidade de fluxo criada a partir de um comando, de uma condição ou de um ponto sintético de conexão. No modo detalhado, comandos sequenciais são mantidos individualmente; no modo simplificado, uma cadeia adjacente sem desvio pode ser condensada. Os nós sintéticos e todas as arestas incidentes também integram os totais (N) e (E) usados no cálculo de (V(G)).
+No GUY, um nó representa uma unidade de fluxo criada a partir de um comando, de uma condição ou de um ponto sintético de conexão. No modo detalhado, comandos sequenciais são mantidos individualmente; no modo simplificado, uma cadeia adjacente sem desvio pode ser condensada. Os nós sintéticos e todas as arestas incidentes também integram os totais \(N\) e \(E\) usados no cálculo de \(V(G)\).
 
 \begin{table}[H]
     \centering
@@ -428,7 +428,7 @@ No GUY, um nó representa uma unidade de fluxo criada a partir de um comando, de
     \label{tab:convencao_modelagem_gfc}
 \end{table}
 
-A compactação do modo simplificado contrai apenas cadeias sequenciais: ao substituir uma cadeia por um nó, elimina o mesmo número de nós e de arestas internas. Portanto, (E-N), os pontos de decisão e (P) permanecem inalterados, preservando (V(G)). A granularidade visual e os totais absolutos de (N) e (E), contudo, podem diferir entre os modos. Por essa razão, toda comparação de contagens deve informar o modo utilizado.
+A compactação do modo simplificado contrai apenas cadeias sequenciais: ao substituir uma cadeia por um nó, elimina o mesmo número de nós e de arestas internas. Portanto, \(E-N\), os pontos de decisão e \(P\) permanecem inalterados, preservando \(V(G)\). A granularidade visual e os totais absolutos de \(N\) e \(E\), contudo, podem diferir entre os modos. Por essa razão, toda comparação de contagens deve informar o modo utilizado.
 
 \subsection{Métricas e caminhos independentes}
 
@@ -617,7 +617,7 @@ A adaptação ao tema do VS Code fica no CSS da Webview. Em vez de fixar cores p
 
 A validação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{src/examples/}. Os experimentos verificam se a extensão representa diferentes estruturas de controle em Python e se as métricas exibidas coincidem com uma reconstrução manual baseada na convenção da Seção \ref{sec:convencao_modelagem_gfc}. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
 
-Antes da execução, cada código foi percorrido manualmente para identificar comandos, decisões, pontos sintéticos e ligações de desvio. Dessa reconstrução foram obtidos (N), (E), o número de decisões e (P); em seguida, (V(G)) foi calculado de forma independente por (E-N+2P). O resultado foi classificado como conforme somente quando os valores esperados e exibidos coincidiram. A lista de caminhos foi conferida verificando-se início em \texttt{Entry}, término em \texttt{Exit}, validade das arestas e a introdução, por cada caminho adicional, de pelo menos uma aresta de decisão ainda não usada na base selecionada. Essa conferência caracteriza uma base operacional para os exemplos, não a enumeração de todos os caminhos de execução possíveis.
+Antes da execução, cada código foi percorrido manualmente para identificar comandos, decisões, pontos sintéticos e ligações de desvio. Dessa reconstrução foram obtidos \(N\), \(E\), o número de decisões e \(P\); em seguida, \(V(G)\) foi calculado de forma independente por \(E-N+2P\). O resultado foi classificado como conforme somente quando os valores esperados e exibidos coincidiram. A lista de caminhos foi conferida verificando-se início em \texttt{Entry}, término em \texttt{Exit}, validade das arestas e a introdução, por cada caminho adicional, de pelo menos uma aresta de decisão ainda não usada na base selecionada. Essa conferência caracteriza uma base operacional para os exemplos, não a enumeração de todos os caminhos de execução possíveis.
 
 A Figura \ref{fig:vscode_grafo_GUY} apresenta apenas a organização geral do painel lateral usado durante a validação. As evidências específicas e legíveis de cada código são mostradas separadamente nas Figuras \ref{fig:gfc_experimento_i}, \ref{fig:gfc_experimento_ii} e \ref{fig:gfc_experimento_iii}; a captura introdutória não substitui essas três evidências.
 
