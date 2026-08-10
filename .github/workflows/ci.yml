@@ -1,5 +1,9 @@
 name: CI — Validate & Publish
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   DIAGRAMS_DIR: imagens/diagramas
   MERMAID_CLI_VERSION: "11"
@@ -57,7 +61,9 @@ jobs:
     outputs:
       diagrams_changed: ${{ steps.detect.outputs.diagrams_changed }}
       plantuml_changed: ${{ steps.detect.outputs.plantuml_changed }}
+      mermaid_changed: ${{ steps.detect.outputs.mermaid_changed }}
       latex_changed: ${{ steps.detect.outputs.latex_changed }}
+      compile_needed: ${{ steps.detect.outputs.compile_needed }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
@@ -87,10 +93,6 @@ jobs:
             MERMAID=true; PLANTUML=true; LATEX=true
             RENDER_ALL=true
           fi
-          if [[ "$LATEX" == "true" ]]; then
-            MERMAID=true; PLANTUML=true
-            RENDER_ALL=true
-          fi
           if [[ "${{ inputs.render_images_only }}" == "true" ]]; then
             MERMAID=true; PLANTUML=true; LATEX=false
             RENDER_ALL=true
@@ -101,21 +103,32 @@ jobs:
 
           DIAGRAMS=false
           [[ "$MERMAID" == true || "$PLANTUML" == true ]] && DIAGRAMS=true
+
+          COMPILE=false
+          if [[ "${{ inputs.render_images_only }}" != "true" ]] && \
+             [[ "$LATEX" == true || "$DIAGRAMS" == true ]]; then
+            COMPILE=true
+          fi
+
           echo "diagrams_changed=$DIAGRAMS" >> "$GITHUB_OUTPUT"
+          echo "mermaid_changed=$MERMAID" >> "$GITHUB_OUTPUT"
           echo "plantuml_changed=$PLANTUML" >> "$GITHUB_OUTPUT"
           echo "latex_changed=$LATEX" >> "$GITHUB_OUTPUT"
+          echo "compile_needed=$COMPILE" >> "$GITHUB_OUTPUT"
       - name: Publish change list
         uses: actions/upload-artifact@v4
         with:
           name: change-list
           path: changed-files.txt
           if-no-files-found: error
+          retention-days: 1
 
   diagrams:
     name: Render diagrams
     needs: detect
     if: needs.detect.outputs.diagrams_changed == 'true'
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     permissions:
       contents: write
     steps:
@@ -128,15 +141,28 @@ jobs:
         with:
           name: change-list
       - name: Setup Node.js
+        if: needs.detect.outputs.mermaid_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
-      - name: Install Chrome for Mermaid
+          node-version: "22"
+      - name: Cache Mermaid packages
+        if: needs.detect.outputs.mermaid_changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: mermaid-${{ runner.os }}-${{ env.MERMAID_CLI_VERSION }}
+          restore-keys: mermaid-${{ runner.os }}-
+      - name: Locate Chrome for Mermaid
+        if: needs.detect.outputs.mermaid_changed == 'true'
+        shell: bash
         run: |
           set -euo pipefail
-          npx --yes @puppeteer/browsers@latest install chrome-headless-shell@148.0.7778.97
-          BROWSER_PATH="$(find "$GITHUB_WORKSPACE" "$HOME/.cache/puppeteer" -type f \( -name chrome-headless-shell -o -name chrome \) 2>/dev/null | head -n 1 || true)"
-          test -n "$BROWSER_PATH" || { echo "::error::Chrome binary not found"; exit 1; }
+          BROWSER_PATH="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [[ -z "$BROWSER_PATH" ]]; then
+            npx --yes @puppeteer/browsers@latest install chrome-headless-shell@stable
+            BROWSER_PATH="$(find "$HOME/.cache/puppeteer" -type f -name chrome-headless-shell -print -quit 2>/dev/null || true)"
+          fi
+          test -n "$BROWSER_PATH" || { echo "::error::Chrome is not available on the runner"; exit 1; }
           echo "PUPPETEER_EXECUTABLE_PATH=$BROWSER_PATH" >> "$GITHUB_ENV"
       - name: Setup Java
         if: needs.detect.outputs.plantuml_changed == 'true'
@@ -146,9 +172,13 @@ jobs:
           java-version: "17"
       - name: Setup Graphviz
         if: needs.detect.outputs.plantuml_changed == 'true'
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y graphviz
+          set -euo pipefail
+          if ! command -v dot >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends graphviz
+          fi
           echo "GRAPHVIZ_DOT=$(command -v dot)" >> "$GITHUB_ENV"
       - name: Render diagram images
         run: |
@@ -160,6 +190,7 @@ jobs:
           name: rendered-diagrams
           path: ${{ env.DIAGRAMS_DIR }}/*.png
           if-no-files-found: error
+          retention-days: 1
       - name: Commit rendered diagrams
         if: github.event_name != 'pull_request'
         run: |
@@ -174,8 +205,9 @@ jobs:
   latex:
     name: Compile LaTeX
     needs: [detect, diagrams]
-    if: ${{ always() && needs.detect.outputs.latex_changed == 'true' && (needs.diagrams.result == 'success' || needs.diagrams.result == 'skipped') }}
+    if: ${{ always() && needs.detect.outputs.compile_needed == 'true' && (needs.diagrams.result == 'success' || needs.diagrams.result == 'skipped') }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     permissions:
       contents: read
     steps:
@@ -203,36 +235,19 @@ jobs:
             main.log
             main.toc
           if-no-files-found: warn
-      - name: Stage compiled PDF
-        uses: actions/upload-artifact@v4
-        with:
-          name: latex-output
-          path: main.pdf
-          if-no-files-found: error
-
-  artifact:
-    name: Publish PDF artifact
-    needs: [detect, latex]
-    if: ${{ always() && needs.detect.outputs.latex_changed == 'true' && needs.latex.result == 'success' }}
-    runs-on: ubuntu-latest
-    permissions: {}
-    steps:
-      - name: Download compiled PDF
-        uses: actions/download-artifact@v4
-        with:
-          name: latex-output
-          path: artifact
+          retention-days: 7
       - name: Upload compiled PDF
         uses: actions/upload-artifact@v4
         with:
           name: compiled-thesis
-          path: artifact/main.pdf
+          path: main.pdf
           if-no-files-found: error
+          retention-days: 14
 
   release:
     name: Create release
-    needs: [detect, artifact]
-    if: ${{ always() && needs.detect.outputs.latex_changed == 'true' && needs.artifact.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish == true) }}
+    needs: [detect, latex]
+    if: ${{ always() && needs.detect.outputs.compile_needed == 'true' && needs.latex.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish == true) }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
