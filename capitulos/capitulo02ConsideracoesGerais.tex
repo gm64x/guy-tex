@@ -6,7 +6,7 @@
 %Contextualiza o papel da Engenharia de Software no desenvolvimento moderno, discutindo importância da qualidade, confiabilidade, impacto dos defeitos e relação entre complexidade do software e dificuldade de verificação manual.
 A Engenharia de Software compreende a aplicação de abordagens sistemáticas, disciplinadas e quantificáveis ao desenvolvimento, à operação e à manutenção de sistemas \citeonline{Valente2020}. Como a computação está presente em grande parte das atividades contemporâneas, assegurar a confiabilidade e a estabilidade das aplicações tornou-se uma exigência fundamental, e não apenas um diferencial técnico.
 
-Embora os níveis de complexidade e os riscos envolvidos variem conforme o domínio, a aplicação de princípios de engenharia permanece indispensável. Essa necessidade é evidenciada em sistemas de segurança crítica, nos quais falhas de software podem resultar em consequências catastróficas. Um exemplo histórico notável é o caso do acelerador linear Therac-25, cujos erros de programação causaram acidentes fatais por superexposição à radiação \citeonline{turner1993investigation}.
+Embora os níveis de complexidade e os riscos envolvidos variem conforme o domínio, a aplicação de princípios de engenharia permanece indispensável. Essa necessidade é evidenciada em sistemas de segurança crítica, nos quais falhas de software podem resultar em consequências catastróficas. Um exemplo histórico notável é o caso do acelerador linear Therac-25, cujas falhas de software e de projeto contribuíram para acidentes de superexposição à radiação, alguns deles fatais \citeonline{turner1993investigation}.
 
 A relevância da qualidade, porém, não se restringe a cenários de alto risco. Mesmo que um sistema de gestão de uma padaria não tenha a mesma complexidade ou criticidade de um sistema bancário, médico ou militar, ambos precisam ser confiáveis e sustentáveis ao longo do tempo. Em qualquer escala, o software deve preservar a experiência do usuário e a integridade dos processos que apoia.
 
@@ -15,9 +15,9 @@ A manutenção de padrões de qualidade em projetos colaborativos, portanto, tor
 \section{Teste de Software}
 
 %Apresenta conceitos fundamentais sobre testes, objetivos, limitações da inspeção manual e importância de detectar falhas antes da entrega. Explica a perspectiva de Myers e relaciona com a necessidade de suporte automatizado à verificação.
-O teste de software busca, por meio de um conjunto finito de casos, verificar e validar (V\&V) se a aplicação atende aos requisitos esperados \cite{Valente2020}. Essa etapa representa um investimento significativo: cerca de 50\% do tempo e mais de 50\% do custo total do desenvolvimento de um sistema são consumidos pela atividade de testes \cite{Myers2014}.
+O teste de software busca, por meio de um conjunto finito de casos, verificar e validar (V\&V) se a aplicação atende aos requisitos esperados \cite{Valente2020}. Essa etapa representa um investimento significativo e pode consumir parcela expressiva do tempo e do custo total do desenvolvimento de um sistema \cite{Myers2014}.
 
-Esse processo inicia-se em componentes individuais ou pequenos módulos, com o objetivo de identificar falhas lógicas e de dados. Após essa validação inicial, os componentes são integrados ao sistema para testes de ordem superior, cujo objetivo é assegurar que o software atenda aos requisitos do cliente \citeonline{Sommerville2019}. \citeonline{Myers2014} destaca que o teste não deve ser entendido como uma forma de demonstrar que o software funciona, mas como um processo de executá-lo com a intenção explícita de encontrar falhas. Nessa perspectiva, um ``teste bem-sucedido'' é aquele que revela um erro ainda não descoberto. Em sistemas cada vez mais complexos, aplicar essa abordagem apenas de forma manual torna-se exaustivo e sujeito a vieses, reforçando a necessidade de apoio automatizado.
+Esse processo inicia-se em componentes individuais ou pequenos módulos, com o objetivo de identificar falhas lógicas e de dados. Após essa validação inicial, os componentes são integrados ao sistema para testes de ordem superior, cujo objetivo é assegurar que o software atenda aos requisitos do cliente \citeonline{Sommerville2019}. \citeonline{Myers2014} destaca que o teste não deve ser entendido apenas como uma forma de demonstrar que o software funciona, mas como um processo orientado à busca de falhas. Nessa perspectiva, um teste pode ser considerado bem-sucedido quando revela um erro ainda não descoberto. Em sistemas cada vez mais complexos, aplicar essa abordagem apenas de forma manual torna-se exaustivo e sujeito a vieses, reforçando a necessidade de apoio automatizado.
 
 \subsection{Teste Estrutural (Caixa Branca)}
 
@@ -99,7 +99,7 @@ Em seguida, realiza-se a identificação de estruturas através da \textbf{anál
 \section{Tecnologias e Linguagens Adotadas}
 
 %Apresenta as tecnologias que podem ser aplicadas no desenvolvimento da ferramenta web: frameworks front-end, back-end, bibliotecas de parsing, libs de visualização de grafos, e justificativas técnicas para as escolhas.
-O GUY adota uma arquitetura de extensão para o \textit{Visual Studio Code} (VS Code). A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar a análise estática e coordenar a comunicação com a interface. Na camada visual, a biblioteca React é utilizada em uma \textit{Webview}. A visualização do GFC é implementada com \texttt{@xyflow/react}, e o posicionamento dos nós é apoiado por \texttt{@dagrejs/dagre} \citeonline{react_docs,xyflowReactWeb,dagreWeb}.
+O GUY adota uma arquitetura de extensão para o \textit{Visual Studio Code} (VS Code) \citeonline{microsoft_vscode}. A lógica principal executa no \textit{Extension Host}, utilizando Node.js e TypeScript para acessar o arquivo aberto no editor, acionar a análise estática e coordenar a comunicação com a interface. Na camada visual, a biblioteca React é utilizada em uma \textit{Webview}. A visualização do GFC é implementada com \texttt{@xyflow/react}, e o posicionamento dos nós é apoiado por \texttt{@dagrejs/dagre} \citeonline{react_docs,xyflowReactWeb,dagreWeb}.
 
 Para o processamento de código e a análise sintática (\textit{parsing}), a implementação utiliza o \textbf{Tree-sitter} com a gramática de Python \citeonline{TreeSitterWeb}. O resultado é percorrido para identificar as estruturas necessárias à construção do GFC. O ANTLR é uma alternativa de geração de analisadores considerada na fundamentação, mas não integra a implementação descrita neste trabalho \cite{ANTLRWeb}.
 
@@ -114,8 +114,6 @@ A troca da gramática, por si só, não fornece suporte a uma nova linguagem: ca
 %Plataforma líder em inspeção contínua da qualidade do código \citeonline{sonarqube}. Realiza análise estática para detectar bugs e ``code smells'' em várias linguagens. Embora calcule a complexidade ciclomática, exibe os dados de forma tabular em dashboards, sem focar na visualização gráfica do fluxo de controle do algoritmo.
 
 %\subsection{CodeClimate}
-%Ferramenta automatizada de revisão de código que se integra aos repositórios (como GitHub) \citeonline{codeclimate}. Foca na manutenibilidade, atribuindo notas (GPA) ao código baseadas em métricas como duplicação e complexidade. Seu foco é gerencial e de integração contínua, não educacional.
-
 %\subsection{ESLint}
 %Linter plugável para JavaScript \citeonline{eslint}. Identifica e reporta padrões no código, ajudando a evitar erros e manter a consistência. Possui regras para alertar quando a complexidade ciclomática excede um limite, mas atua como um verificador textual linha-a-linha, sem representação visual do fluxo.
 
