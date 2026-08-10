@@ -621,20 +621,10 @@ A Figura \ref{fig:vscode_grafo_GUY} apresenta apenas a organização geral do pa
 
 \subsection{Experimento I: Código com Laço e Condicionais}
 
-O primeiro experimento utiliza o arquivo \texttt{loop\_break\_continue.py}. O objetivo é verificar se a ferramenta representa corretamente um laço \texttt{while} contendo duas estruturas condicionais internas, uma com \texttt{continue} e outra com \texttt{break}. Esse cenário é importante porque envolve desvios que alteram o fluxo normal da iteração.
+O primeiro experimento utiliza o arquivo \texttt{cap04-loop.py}. O objetivo é verificar se a ferramenta representa corretamente um laço \texttt{while} contendo duas estruturas condicionais internas, uma com \texttt{continue} e outra com \texttt{break}. Esse cenário é importante porque envolve desvios que alteram o fluxo normal da iteração.
 
-\begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento I.}, label={lst:experimento1_codigo}]
-x = 0
-
-while x < 10:
-    x += 1
-    if x == 3:
-        continue
-    if x == 8:
-        break
-
-print(x)
-\end{lstlisting}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento I.}]{fontes/cap04-loop.py}
+\label{lst:experimento1_codigo}
 
 A Figura \ref{fig:gfc_experimento_i} apresenta o GFC produzido
 pelo GUY para o código com laço, condicionais, \texttt{continue}
@@ -673,18 +663,10 @@ Na reconstrução manual foram contados: \texttt{Entry}; inicialização; condi�
 
 \subsection{Experimento II: Código Condicional Simples}
 
-O segundo experimento utiliza o arquivo \texttt{conditional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
+O segundo experimento utiliza o arquivo \texttt{cap04-condicional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
 
-\begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento II.}, label={lst:experimento2_codigo}]
-x = 10
-
-if x > 5:
-    print("maior")
-else:
-    print("menor")
-
-print("fim")
-\end{lstlisting}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento II.}]{fontes/cap04-condicional.py}
+\label{lst:experimento2_codigo}
 
 Nesse caso, a ferramenta cria um nó de decisão para a condição \texttt{x > 5}, duas saídas para representar os ramos verdadeiro e falso e um nó de junção antes da continuidade do fluxo para o comando final.
 
@@ -721,16 +703,10 @@ A Complexidade Ciclomática calculada é \(V(G) = 8 - 8 + 2 \times 1 = 2\), repr
 
 \subsection{Experimento III: Código com Função, Laço e Condicional}
 
-O terceiro experimento utiliza o arquivo \texttt{functions.py}, analisando especificamente a função \texttt{calculate\_total}. O objetivo é verificar o comando de geração do GFC a partir da função atual, bem como a representação combinada de laço \texttt{for}, condicional \texttt{if} e retorno de valor.
+O terceiro experimento utiliza o arquivo \texttt{cap04-total.py}, analisando especificamente a função \texttt{calculate\_total}. O objetivo é verificar o comando de geração do GFC a partir da função atual, bem como a representação combinada de laço \texttt{for}, condicional \texttt{if} e retorno de valor.
 
-\begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento III.}, label={lst:experimento3_codigo}]
-def calculate_total(items):
-    total = 0
-    for item in items:
-        if item > 0:
-            total += item
-    return total
-\end{lstlisting}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento III.}]{fontes/cap04-total.py}
+\label{lst:experimento3_codigo}
 
 Ao posicionar o cursor dentro da função e executar o comando \texttt{GUY: Generate CFG from Current Function}, a extensão restringe a análise ao corpo da função selecionada. O grafo resultante contém a inicialização da variável, a condição de iteração do \texttt{for}, a decisão interna do \texttt{if}, o retorno ao laço e o comando \texttt{return} conectado ao nó de saída.
 
