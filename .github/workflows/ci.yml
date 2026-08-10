@@ -68,17 +68,17 @@ jobs:
           set -euo pipefail
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
-            git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}" > .changed_files_list
+            git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}" > changed-files.txt
           elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
-            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > .changed_files_list
+            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > changed-files.txt
           else
-            git ls-files > .changed_files_list
+            git ls-files > changed-files.txt
           fi
 
-          MERMAID=$(grep -Eq '\.mmd$' .changed_files_list && echo true || echo false)
-          PLANTUML=$(grep -Eq '\.(plantuml|puml|uml)$' .changed_files_list && echo true || echo false)
-          LATEX=$(grep -Eq '\.(tex|bib|sty|cls)$' .changed_files_list && echo true || echo false)
-          CI_CONFIG=$(grep -Eq '^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$' .changed_files_list && echo true || echo false)
+          MERMAID=$(grep -Eq '\.mmd$' changed-files.txt && echo true || echo false)
+          PLANTUML=$(grep -Eq '\.(plantuml|puml|uml)$' changed-files.txt && echo true || echo false)
+          LATEX=$(grep -Eq '\.(tex|bib|sty|cls)$' changed-files.txt && echo true || echo false)
+          CI_CONFIG=$(grep -Eq '^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$' changed-files.txt && echo true || echo false)
           RENDER_ALL=false
 
           if [[ "${{ inputs.force_all }}" == "true" || "$CI_CONFIG" == "true" ]]; then
@@ -94,7 +94,7 @@ jobs:
             RENDER_ALL=true
           fi
           if [[ "$RENDER_ALL" == "true" ]]; then
-            : > .changed_files_list
+            : > changed-files.txt
           fi
 
           DIAGRAMS=false
@@ -106,7 +106,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: change-list
-          path: .changed_files_list
+          path: changed-files.txt
           if-no-files-found: error
 
   diagrams:
@@ -151,7 +151,7 @@ jobs:
       - name: Render diagram images
         run: |
           chmod +x .github/scripts/render_diagrams.sh
-          ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" .changed_files_list
+          ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" changed-files.txt
       - name: Upload rendered diagrams
         uses: actions/upload-artifact@v4
         with:
