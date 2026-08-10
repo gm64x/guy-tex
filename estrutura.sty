@@ -162,14 +162,16 @@
 
 \definecolor{blue}{RGB}{41,5,195}
 
-\makeatletter
 \hypersetup{
 	%pagebackref=true,
-	pdftitle={\@title},
-	pdfauthor={\@author},
-	pdfsubject={\imprimirpreambulo},
-	pdfcreator={\@author},
-	pdfkeywords={Engenharia de Software}{Análise de Código}{Grafo de Fluxo de Controle}{Complexidade Ciclomática},
+	pdftitle={\imprimirtitulo},
+	pdfauthor={\imprimirautor},
+	pdfsubject={Relatório técnico sobre geração e análise de Grafos de Fluxo de Controle},
+	pdfcreator={LaTeX com abnTeX2},
+	pdfkeywords={grafo de fluxo de controle, complexidade ciclomática, teste estrutural, VS Code},
+	pdflang={pt-BR},
+	unicode=true,
+	pdfencoding=auto,
 	colorlinks=true,       		% false: boxed links; true: colored links
 	linkcolor=black,          	% color of internal links
 	citecolor=black,       		% color of links to bibliography
@@ -177,7 +179,6 @@
 	urlcolor=black,
 	bookmarksdepth=4
 }
-\makeatother
 
 \widowpenalty=10000
 \clubpenalty=10000
