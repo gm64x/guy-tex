@@ -1,21 +1,7 @@
 \chapter{Metodologia}
 \label{cap:03}
 
-Este capítulo apresenta o método da pesquisa e o processo de desenvolvimento da extensão GUY. Primeiro, delimita-se o objeto de análise e a forma de avaliação; em seguida, descrevem-se as atividades de construção da ferramenta, sem confundir o procedimento de pesquisa com as decisões de implementação.
-
-\section{Método da Pesquisa}
-\label{sec:metodo_pesquisa}
-
-Trata-se de uma pesquisa aplicada, de caráter exploratório e descritivo, conduzida por meio da construção e da avaliação técnica de uma ferramenta de análise estática. O objeto de análise é o código Python apresentado ao GUY no VS Code, nos escopos de arquivo, seleção ou função atual. A avaliação não envolve a execução dos programas: verifica a correspondência entre as estruturas de controle reconhecidas, o GFC construído e o valor da Complexidade Ciclomática.
-
-Para a validação, foram utilizados os três arquivos de exemplo disponíveis em \texttt{src/examples/}, que representam diferentes combinações de estruturas de controle em Python. Para cada exemplo, os nós, as arestas, as decisões, os componentes e os caminhos independentes foram confrontados com uma reconstrução manual baseada na convenção de modelagem do GFC e com a fórmula de $V(G)$. Portanto, os resultados sustentam conclusões apenas para esses exemplos e para o escopo implementado.
-
-\section{Ambiente de Avaliação e Reprodutibilidade}
-\label{sec:ambiente_avaliacao}
-
-Os registros experimentais foram produzidos em 24 de julho de 2026 com a versão \texttt{v0.1.1c} do GUY, correspondente ao commit \texttt{96afe6a4a9896624025d1b082048f6f2141c40d6} do repositório \texttt{gm64x/guy-vscode}. Esse estado era a versão funcional mais recente disponível no GitHub antes da inclusão das capturas no documento. O ambiente utilizou Visual Studio Code 1.127 e Node.js 24.18.0 LTS. Os testes foram realizados no Windows 11, versão 24H2 (build 26100), e no Ubuntu 26.04 LTS (Resolute Raccoon).
-
-O arquivo de dependências travadas dessa versão registra React 19.2.7, \texttt{@xyflow/react} 12.11.0, \texttt{@dagrejs/dagre} 3.0.0, Tree-sitter 0.22.4, \texttt{tree-sitter-python} 0.23.6 e \texttt{web-tree-sitter} 0.26.9. A identificação conjunta da tag, do commit, do ambiente e das dependências relaciona os resultados apresentados à versão efetivamente avaliada, ainda que versões posteriores da extensão possuam funcionalidades adicionais.
+Este capítulo apresenta a metodologia utilizada no desenvolvimento da extensão GUY, desde a definição do escopo da pesquisa até a implementação e validação da ferramenta.
 
 \section{Panorama Geral da Pesquisa}
 Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que estudantes e profissionais gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no \textit{Visual Studio Code} (VS Code). Com isso, a extensão apoia o estudo da lógica interna do código e o planejamento de testes estruturais durante o desenvolvimento.
@@ -34,4 +20,32 @@ A ferramenta é acionada a partir do arquivo de código-fonte aberto no editor. 
 
 Com o GFC estruturado, o usuário passa a visualizar os caminhos independentes do algoritmo. Essa visualização integrada oferece a estudantes, desenvolvedores e analistas de qualidade (\textit{testers}) os fluxos que podem orientar o estudo e a elaboração de casos de teste estruturais.
 
-As decisões de construção são detalhadas no Capítulo \ref{cap:04}, enquanto o protocolo de validação e os resultados experimentais são apresentados no Capítulo \ref{cap:05}.
+
+\section{Etapas para o Desenvolvimento da Ferramenta Proposta}
+
+O desenvolvimento do GUY seguiu uma abordagem de pesquisa aplicada, de caráter exploratório e descritivo, associada à construção experimental de uma ferramenta de apoio à análise estrutural de código. As principais fases do projeto estão sumarizadas na Figura \ref{fig:fluxo_met_GUY}.
+
+\begin{figure}[H]
+\centering
+\caption{Fluxo das etapas metodológicas para o desenvolvimento.}
+% Placeholder para o desenho do grafo
+\includegraphics[width=0.35\linewidth]{imagens/fluxos/fluxo_met_guy.png}
+
+\fonte{Elaborada pelo autor.}
+\label{fig:fluxo_met_GUY}
+
+\end{figure}
+
+A metodologia relaciona fundamentação teórica, levantamento de requisitos, concepção da solução, implementação e validação. O fluxo apresentado na Figura \ref{fig:fluxo_met_GUY} inicia-se pela investigação de ferramentas correlatas, passa pela definição dos requisitos e da arquitetura da solução e termina com a codificação e a avaliação das funcionalidades.
+
+A análise das ferramentas existentes permitiu identificar limitações que serviram de base para os requisitos do GUY. Em seguida, a prototipagem orientou a implementação, e os resultados foram avaliados por meio da comparação entre os grafos e valores de complexidade gerados pela ferramenta e os resultados esperados para os exemplos analisados. Cada bloco apresentado na Figura \ref{fig:fluxo_met_GUY} representa uma etapa do projeto, detalhada a seguir:
+
+\begin{enumerate}
+\item \textbf{Análise das Ferramentas Disponíveis no Mercado:} foram analisadas soluções comerciais e \textit{open source} similares, considerando funcionalidades, custos, usabilidade e limitações em relação à visualização de GFCs.
+\item \textbf{Levantamento de Requisitos:} foram definidos os requisitos funcionais e não funcionais necessários para a extensão, incluindo execução local, geração do grafo, cálculo de métricas e integração com o editor.
+\item \textbf{Prototipagem e \textit{Design}:} foram elaborados os \textit{wireframes} e a organização da interface, considerando a visualização do grafo em uma janela lateral do VS Code.
+\item \textbf{Implementação (Codificação):} a extensão foi desenvolvida com Node.js e TypeScript no \textit{Extension Host} do VS Code, utilizando React para a interface gráfica interativa em \textit{Webview}.
+\item \textbf{Validação e Testes:} foram realizadas verificações funcionais e comparações entre os resultados gerados pela ferramenta e os grafos e valores de complexidade esperados para os códigos analisados.
+\end{enumerate}
+
+As decisões de construção são detalhadas no Capítulo \ref{cap:04}, com o detalhamento da implementação do GUY e da validação das funcionalidades desenvolvidas.
