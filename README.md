@@ -88,3 +88,19 @@ A implementação da ferramenta está no repositório `gm64x/guy-vscode`. O repo
 ## Status
 
 Documento acadêmico em desenvolvimento. O conteúdo e os resultados devem ser considerados definitivos somente após revisão do autor e do orientador.
+
+## Modelo institucional
+
+Este TCC é apresentado na modalidade de Relatório Técnico, conforme
+orientação da coordenação do Bacharelado em Ciência da Computação do
+IFSP — Câmpus São João da Boa Vista.
+
+Foi utilizado o template institucional:
+
+- Template LaTeX — Relatório Técnico — IFSP-SBV
+- Versão: 1.6.5
+- Data: 17/11/2025
+- Desenvolvido por: Prof. Dr. David Buzatto
+
+Para este trabalho, a modalidade Relatório Técnico foi adotada considerando
+que o principal produto desenvolvido no TCC é um software.
