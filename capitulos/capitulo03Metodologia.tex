@@ -10,6 +10,13 @@ Trata-se de uma pesquisa aplicada, de caráter exploratório e descritivo, condu
 
 Para a validação, foram utilizados os três arquivos de exemplo disponíveis em \texttt{src/examples/}, que representam diferentes combinações de estruturas de controle em Python. Para cada exemplo, os nós, as arestas, as decisões, os componentes e os caminhos independentes foram confrontados com uma reconstrução manual baseada na convenção de modelagem do GFC e com a fórmula de $V(G)$. Portanto, os resultados sustentam conclusões apenas para esses exemplos e para o escopo implementado.
 
+\section{Ambiente de Avaliação e Reprodutibilidade}
+\label{sec:ambiente_avaliacao}
+
+Os registros experimentais foram produzidos em 24 de julho de 2026 com a versão \texttt{v0.1.1c} do GUY, correspondente ao commit \texttt{96afe6a4a9896624025d1b082048f6f2141c40d6} do repositório \texttt{gm64x/guy-vscode}. Esse estado era a versão funcional mais recente disponível no GitHub antes da inclusão das capturas no documento. O ambiente utilizou Visual Studio Code 1.127 e Node.js 24.18.0 LTS. Os testes foram realizados no Windows 11, versão 24H2 (build 26100), e no Ubuntu 26.04 LTS (Resolute Raccoon).
+
+O arquivo de dependências travadas dessa versão registra React 19.2.7, \texttt{@xyflow/react} 12.11.0, \texttt{@dagrejs/dagre} 3.0.0, Tree-sitter 0.22.4, \texttt{tree-sitter-python} 0.23.6 e \texttt{web-tree-sitter} 0.26.9. A identificação conjunta da tag, do commit, do ambiente e das dependências relaciona os resultados apresentados à versão efetivamente avaliada, ainda que versões posteriores da extensão possuam funcionalidades adicionais.
+
 \section{Panorama Geral da Pesquisa}
 Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que estudantes e profissionais gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no \textit{Visual Studio Code} (VS Code). Com isso, a extensão apoia o estudo da lógica interna do código e o planejamento de testes estruturais durante o desenvolvimento.
 
