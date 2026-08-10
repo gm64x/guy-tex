@@ -17,6 +17,7 @@ on:
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "pretextuais/institucionais/*.pdf"
       - ".github/workflows/ci.yml"
       - ".github/scripts/render_diagrams.sh"
   pull_request:
@@ -29,6 +30,7 @@ on:
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "pretextuais/institucionais/*.pdf"
       - ".github/workflows/ci.yml"
       - ".github/scripts/render_diagrams.sh"
   workflow_dispatch:
@@ -77,7 +79,7 @@ jobs:
 
           MERMAID=$(grep -Eq '\.mmd$' changed-files.txt && echo true || echo false)
           PLANTUML=$(grep -Eq '\.(plantuml|puml|uml)$' changed-files.txt && echo true || echo false)
-          LATEX=$(grep -Eq '\.(tex|bib|sty|cls)$' changed-files.txt && echo true || echo false)
+          LATEX=$(grep -Eq '\.(tex|bib|sty|cls)$|^pretextuais/institucionais/.*\.pdf$' changed-files.txt && echo true || echo false)
           CI_CONFIG=$(grep -Eq '^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$' changed-files.txt && echo true || echo false)
           RENDER_ALL=false
 
