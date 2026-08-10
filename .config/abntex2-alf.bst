@@ -1212,7 +1212,7 @@ FUNCTION {format.journal}
 }
 
 
-%generates the first label in \abntrefinfo to be used with \citeonline
+%generates the first label in \abntrefinfo to be used with \cite
 FUNCTION {format.names.for.label1} %abnt-alf only
 { 's := "" 't :=
    #1 'nameptr :=  s num.names$ 'numnames :=
@@ -2086,7 +2086,7 @@ FUNCTION {search.reprinted}
 ITERATE {search.reprinted}
 FUNCTION {abntreprintinfo}
 {"\providecommand{\abntreprintinfo}[1]{%" write$ newline$
- " \citeonline{#1}}" write$ newline$}
+ " \cite{#1}}" write$ newline$}
 EXECUTE {abntreprintinfo}
 ITERATE {presort}
 SORT
