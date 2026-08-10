@@ -9,7 +9,7 @@ Esta seção apresenta três ferramentas utilizadas na análise de código e dis
 
 \subsection{SonarQube}
 
-A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de análise da qualidade do código; sua edição Community é distribuída como software de código aberto. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \citeonline{sonarqube}.
+A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de análise da qualidade do código; sua edição Community é distribuída como software de código aberto. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \cite{sonarqube}.
 \begin{figure}[H]
     \centering
     \caption{Captura de tela da interface do SonarQube.}
@@ -20,7 +20,7 @@ A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de 
 
 
 
-A plataforma exibe potenciais defeitos, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece painéis, histórico de análises e integração com IDEs \citeonline{campbell2013sonarqube}.
+A plataforma exibe potenciais defeitos, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece painéis, histórico de análises e integração com IDEs \cite{campbell2013sonarqube}.
 
 Apesar de possuir uma versão gratuita, algumas funcionalidades avançadas e recursos gerenciais são comerciais. A ferramenta também pode gerar falsos positivos e exige configuração adequada para o contexto de cada projeto. Para o escopo deste trabalho, a principal limitação é que, embora calcule complexidade ciclomática, o SonarQube apresenta os dados principalmente em painéis e relatórios, sem priorizar a visualização gráfica e interativa do Grafo de Fluxo de Controle (GFC).
 
@@ -37,13 +37,13 @@ O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise está
     \fonte{Documentação oficial do Codacy (2026).}
 \end{figure}
 
-O Codacy consolida estatísticas sobre propensão a erros, estilo e segurança em um painel. Estudos relatam sua integração a projetos e discutem sua configuração em contextos específicos \citeonline{imbugwa2021case, rahmawati2023analisis}; esses relatos não constituem uma avaliação de usabilidade realizada neste trabalho.
+O Codacy consolida estatísticas sobre propensão a erros, estilo e segurança em um painel. Estudos relatam sua integração a projetos e discutem sua configuração em contextos específicos \cite{imbugwa2021case, rahmawati2023analisis}; esses relatos não constituem uma avaliação de usabilidade realizada neste trabalho.
 
-Como limitação, a agregação das métricas na nota final nem sempre deixa claro o peso de cada fator avaliado \citeonline{ardito2020tool, imbugwa2021case}. A análise também depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \citeonline{imbugwa2021case}. Embora avalie categorias de complexidade \citeonline{ardito2020tool}, seus resultados permanecem concentrados em notas e painéis, sem fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
+Como limitação, a agregação das métricas na nota final nem sempre deixa claro o peso de cada fator avaliado \cite{ardito2020tool, imbugwa2021case}. A análise também depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \cite{imbugwa2021case}. Embora avalie categorias de complexidade \cite{ardito2020tool}, seus resultados permanecem concentrados em notas e painéis, sem fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
 
 \subsection{ESLint}
 
-O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. A ferramenta permite adotar regras e \textit{presets} da comunidade \citeonline{tomasdottir2020adoption}.
+O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \cite{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \cite{tomasdottir2017why}. A ferramenta permite adotar regras e \textit{presets} da comunidade \cite{tomasdottir2020adoption}.
 
 \begin{figure}[H]
     \centering
@@ -53,11 +53,11 @@ O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugáv
     \label{fig:eslint_playground_demo}
 \end{figure}
 
-Além de oferecer correção automática (\textit{auto-fix}) e um ecossistema extensível \citeonline{rafnsson2020fixing, bhutani2024analysing}, o ESLint pode ser integrado a IDEs e \textit{pipelines} de integração contínua para apresentar diagnósticos durante o desenvolvimento \citeonline{bhutani2024analysing, murugaraj_automated, tomasdottir2017why}.
+Além de oferecer correção automática (\textit{auto-fix}) e um ecossistema extensível \cite{rafnsson2020fixing, bhutani2024analysing}, o ESLint pode ser integrado a IDEs e \textit{pipelines} de integração contínua para apresentar diagnósticos durante o desenvolvimento \cite{bhutani2024analysing, murugaraj_automated, tomasdottir2017why}.
 
-Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \citeonline{rafnsson2020fixing}. Sua análise não cobre comportamentos que dependem da execução do programa ou de suas dependências externas \citeonline{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; o excesso de avisos pode contribuir para a ``fadiga de alertas'' e reduzir a confiança na análise \citeonline{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
+Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \cite{rafnsson2020fixing}. Sua análise não cobre comportamentos que dependem da execução do programa ou de suas dependências externas \cite{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; o excesso de avisos pode contribuir para a ``fadiga de alertas'' e reduzir a confiança na análise \cite{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
 
-Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \citeonline{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
+Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \cite{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
 
 
 \section{Levantamento de Requisitos da Ferramenta GUY}
