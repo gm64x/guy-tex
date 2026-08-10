@@ -11,7 +11,7 @@ Trata-se de uma pesquisa aplicada, de caráter exploratório e descritivo, condu
 Para a validação, foram utilizados os três arquivos de exemplo disponíveis em \texttt{src/examples/}, que representam diferentes combinações de estruturas de controle em Python. Para cada exemplo, os nós, as arestas, as decisões, os componentes e os caminhos independentes foram confrontados com uma reconstrução manual baseada na convenção de modelagem do GFC e com a fórmula de $V(G)$. Portanto, os resultados sustentam conclusões apenas para esses exemplos e para o escopo implementado.
 
 \section{Panorama Geral da Pesquisa}
-Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que programadores gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no \textit{Visual Studio Code} (VS Code). Com isso, a extensão apoia a compreensão da lógica interna do código e o planejamento de testes estruturais durante o desenvolvimento.
+Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que estudantes e profissionais gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no \textit{Visual Studio Code} (VS Code). Com isso, a extensão apoia o estudo da lógica interna do código e o planejamento de testes estruturais durante o desenvolvimento.
 
 \begin{figure}[htbp]
 \centering
@@ -25,6 +25,6 @@ Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que programadores ge
 
 A ferramenta é acionada a partir do arquivo de código-fonte aberto no editor. Em seguida, o núcleo de processamento do GUY executa a análise estática local, mapeia as estruturas lógicas do algoritmo e constrói a representação visual do Grafo de Fluxo de Controle. Essa representação permite identificar os nós de decisão e os caminhos de execução possíveis no trecho analisado.
 
-Com o GFC estruturado, o desenvolvedor passa a visualizar os caminhos independentes do algoritmo. Essa visualização integrada auxilia desenvolvedores e analistas de qualidade (\textit{testers}) na identificação dos fluxos que podem orientar a elaboração de casos de teste estruturais.
+Com o GFC estruturado, o usuário passa a visualizar os caminhos independentes do algoritmo. Essa visualização integrada oferece a estudantes, desenvolvedores e analistas de qualidade (\textit{testers}) os fluxos que podem orientar o estudo e a elaboração de casos de teste estruturais.
 
 As decisões de construção são detalhadas no Capítulo \ref{cap:04}, enquanto o protocolo de validação e os resultados experimentais são apresentados no Capítulo \ref{cap:05}.

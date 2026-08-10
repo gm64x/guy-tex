@@ -115,7 +115,7 @@ Essa proposta materializa os requisitos descritos nas Tabelas \ref{tab:requisito
   \label{fig:casos_uso_GUY}
 \end{figure}
 
-O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Desenvolvedor}, responsável por acionar a extensão, visualizar o GFC e navegar do grafo para o código. Os casos de uso exibidos são: acionar extensão, analisar código-fonte localmente, visualizar GFC, calcular \(V(G)\) e navegar do grafo para o código. A relação entre o ator e a ferramenta ocorre diretamente nos casos de uso associados à interação do usuário. O caso de uso ``Acionar extensão'' inclui a análise local do código-fonte; a análise local, por sua vez, inclui a visualização do GFC e o cálculo de \(V(G)\). O diagrama também mostra que a navegação do grafo para o código estende a visualização do GFC, indicando uma interação complementar à visualização principal.
+O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Usuário}, que pode ser estudante ou profissional e é responsável por acionar a extensão, visualizar o GFC e navegar do grafo para o código. Os casos de uso exibidos são: acionar extensão, analisar código-fonte localmente, visualizar GFC, calcular \(V(G)\) e navegar do grafo para o código. A relação entre o ator e a ferramenta ocorre diretamente nos casos de uso associados à interação do usuário. O caso de uso ``Acionar extensão'' inclui a análise local do código-fonte; a análise local, por sua vez, inclui a visualização do GFC e o cálculo de \(V(G)\). O diagrama também mostra que a navegação do grafo para o código estende a visualização do GFC, indicando uma interação complementar à visualização principal.
 
 \begin{figure}[H]
   \centering
@@ -125,7 +125,7 @@ O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Desenvolv
   \label{fig:cenarios_GUY}
 \end{figure}
 
-O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro participantes: Desenvolvedor, VS Code, Extensão GUY e Painel lateral. No primeiro cenário, o desenvolvedor abre um arquivo de código-fonte no VS Code, aciona a extensão com o editor em foco, a extensão analisa o código localmente, abre o painel lateral e o painel exibe ao usuário o GFC e o valor de \(V(G)\). No segundo cenário, o desenvolvedor seleciona um vértice ou uma aresta do GFC no painel, o painel envia o elemento selecionado à extensão, a extensão identifica o trecho correspondente no código, solicita ao VS Code o deslocamento do cursor para a região relacionada e o editor destaca o trecho correspondente. O resultado final representado é a visualização inicial do grafo com a métrica e, em seguida, a navegação interativa entre o grafo e o código-fonte.
+O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro participantes: Usuário, VS Code, Extensão GUY e Painel lateral. No primeiro cenário, o usuário abre um arquivo de código-fonte no VS Code, aciona a extensão com o editor em foco, a extensão analisa o código localmente, abre o painel lateral e o painel exibe o GFC e o valor de \(V(G)\). No segundo cenário, o usuário seleciona um vértice ou uma aresta do GFC no painel, o painel envia o elemento selecionado à extensão, a extensão identifica o trecho correspondente no código, solicita ao VS Code o deslocamento do cursor para a região relacionada e o editor destaca o trecho correspondente. O resultado final representado é a visualização inicial do grafo com a métrica e, em seguida, a navegação interativa entre o grafo e o código-fonte.
 
 
 \section{Implementação da Ferramenta GUY}
