@@ -1,4 +1,8 @@
-name: CI — Build & Release
+name: CI — Validate & Publish
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   DIAGRAMS_DIR: imagens/diagramas
@@ -17,6 +21,7 @@ on:
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "pretextuais/institucionais/*.pdf"
       - ".github/workflows/ci.yml"
       - ".github/scripts/render_diagrams.sh"
   pull_request:
@@ -26,6 +31,10 @@ on:
       - "**/*.puml"
       - "**/*.uml"
       - "**/*.tex"
+      - "**/*.bib"
+      - "**/*.sty"
+      - "**/*.cls"
+      - "pretextuais/institucionais/*.pdf"
       - ".github/workflows/ci.yml"
       - ".github/scripts/render_diagrams.sh"
   workflow_dispatch:
@@ -44,196 +53,215 @@ on:
         default: false
 
 jobs:
-  build:
-    name: Build & Release
+  detect:
+    name: Detect changes
     runs-on: ubuntu-latest
-    timeout-minutes: 20
     permissions:
-      contents: write
-      pull-requests: read
-
+      contents: read
+    outputs:
+      diagrams_changed: ${{ steps.detect.outputs.diagrams_changed }}
+      plantuml_changed: ${{ steps.detect.outputs.plantuml_changed }}
+      mermaid_changed: ${{ steps.detect.outputs.mermaid_changed }}
+      latex_changed: ${{ steps.detect.outputs.latex_changed }}
+      compile_needed: ${{ steps.detect.outputs.compile_needed }}
     steps:
-      - name: Checkout
+      - name: Checkout source
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Detect Changes
+      - name: Classify changed files
         id: detect
+        shell: bash
         run: |
           set -euo pipefail
-          echo "::group::Change Detection"
-
-          CHANGED=""
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
-            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+            git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}" > changed-files.txt
           elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
-            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})
+            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > changed-files.txt
           else
-            CHANGED=$(git ls-files)
+            git ls-files > changed-files.txt
           fi
 
-          echo "$CHANGED" > .changed_files_list
+          MERMAID=$(grep -Eq '\.mmd$' changed-files.txt && echo true || echo false)
+          PLANTUML=$(grep -Eq '\.(plantuml|puml|uml)$' changed-files.txt && echo true || echo false)
+          LATEX=$(grep -Eq '\.(tex|bib|sty|cls)$|^pretextuais/institucionais/.*\.pdf$' changed-files.txt && echo true || echo false)
+          CI_CONFIG=$(grep -Eq '^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$' changed-files.txt && echo true || echo false)
+          RENDER_ALL=false
 
-          MERMAID=$(grep -Eq "\.mmd$" .changed_files_list && echo "true" || echo "false")
-          PLANTUML=$(grep -Eq "\.(plantuml|puml|uml)$" .changed_files_list && echo "true" || echo "false")
-          LATEX=$(grep -Eq "\.(tex|bib|sty|cls)$" .changed_files_list && echo "true" || echo "false")
-          RENDER_ALL_DIAGRAMS="false"
-          CI_CONFIG=$(grep -Eq "^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$" .changed_files_list && echo "true" || echo "false")
-
-          if [[ "${{ inputs.force_all }}" == "true" ]]; then
-            MERMAID="true"
-            PLANTUML="true"
-            LATEX="true"
-            RENDER_ALL_DIAGRAMS="true"
+          if [[ "${{ inputs.force_all }}" == "true" || "$CI_CONFIG" == "true" ]]; then
+            MERMAID=true; PLANTUML=true; LATEX=true
+            RENDER_ALL=true
           fi
-
-          if [[ "$CI_CONFIG" == "true" ]]; then
-            echo "CI workflow/script changed; forcing all stages."
-            MERMAID="true"
-            PLANTUML="true"
-            LATEX="true"
-            RENDER_ALL_DIAGRAMS="true"
-          fi
-
-          if [[ "$LATEX" == "true" ]]; then
-            MERMAID="true"
-            PLANTUML="true"
-            RENDER_ALL_DIAGRAMS="true"
-          fi
-
           if [[ "${{ inputs.render_images_only }}" == "true" ]]; then
-            MERMAID="true"
-            PLANTUML="true"
-            LATEX="false"
-            RENDER_ALL_DIAGRAMS="true"
+            MERMAID=true; PLANTUML=true; LATEX=false
+            RENDER_ALL=true
+          fi
+          if [[ "$RENDER_ALL" == "true" ]]; then
+            : > changed-files.txt
           fi
 
-          if [[ "$RENDER_ALL_DIAGRAMS" == "true" ]]; then
-            echo "" > .changed_files_list
+          DIAGRAMS=false
+          [[ "$MERMAID" == true || "$PLANTUML" == true ]] && DIAGRAMS=true
+
+          COMPILE=false
+          if [[ "${{ inputs.render_images_only }}" != "true" ]] && \
+             [[ "$LATEX" == true || "$DIAGRAMS" == true ]]; then
+            COMPILE=true
           fi
 
-          DIAGRAMS="false"
-          if [ "$MERMAID" = "true" ] || [ "$PLANTUML" = "true" ]; then
-            DIAGRAMS="true"
-          fi
+          echo "diagrams_changed=$DIAGRAMS" >> "$GITHUB_OUTPUT"
+          echo "mermaid_changed=$MERMAID" >> "$GITHUB_OUTPUT"
+          echo "plantuml_changed=$PLANTUML" >> "$GITHUB_OUTPUT"
+          echo "latex_changed=$LATEX" >> "$GITHUB_OUTPUT"
+          echo "compile_needed=$COMPILE" >> "$GITHUB_OUTPUT"
+      - name: Publish change list
+        uses: actions/upload-artifact@v4
+        with:
+          name: change-list
+          path: changed-files.txt
+          if-no-files-found: error
+          retention-days: 1
 
-          echo "mermaid_changed=$MERMAID" >> $GITHUB_OUTPUT
-          echo "plantuml_changed=$PLANTUML" >> $GITHUB_OUTPUT
-          echo "diagrams_changed=$DIAGRAMS" >> $GITHUB_OUTPUT
-          echo "latex_changed=$LATEX" >> $GITHUB_OUTPUT
-          echo "Found: Mermaid=$MERMAID, PlantUML=$PLANTUML, LaTeX=$LATEX, Diagrams=$DIAGRAMS"
-          echo "::endgroup::"
-
+  diagrams:
+    name: Render diagrams
+    needs: detect
+    if: needs.detect.outputs.diagrams_changed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download change list
+        uses: actions/download-artifact@v4
+        with:
+          name: change-list
       - name: Setup Node.js
-        if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
+        if: needs.detect.outputs.mermaid_changed == 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: "24"
-
-      - name: Install Chrome for Mermaid
-        if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
+          node-version: "22"
+      - name: Cache Mermaid packages
+        if: needs.detect.outputs.mermaid_changed == 'true'
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: mermaid-${{ runner.os }}-${{ env.MERMAID_CLI_VERSION }}
+          restore-keys: mermaid-${{ runner.os }}-
+      - name: Locate Chrome for Mermaid
+        if: needs.detect.outputs.mermaid_changed == 'true'
+        shell: bash
         run: |
           set -euo pipefail
-          npx --yes @puppeteer/browsers@latest install chrome-headless-shell@148.0.7778.97
-
-          echo "::group::Browser discovery"
-          echo "Searching for installed Chrome binary..."
-          BROWSER_PATH="$(find "$GITHUB_WORKSPACE" "$HOME/.cache/puppeteer" -type f \( -name chrome-headless-shell -o -name chrome \) 2>/dev/null | head -n 1 || true)"
-
-          if [ -z "$BROWSER_PATH" ]; then
-            echo "No browser found under workspace or Puppeteer cache."
-            find "$GITHUB_WORKSPACE" -maxdepth 6 -type f | sed -n '1,200p' || true
-            find "$HOME" -maxdepth 6 -type f 2>/dev/null | grep -E 'chrome-headless-shell|/chrome$' || true
-            echo "::error::Chrome binary not found after installation."
-            exit 1
+          BROWSER_PATH="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
+          if [[ -z "$BROWSER_PATH" ]]; then
+            npx --yes @puppeteer/browsers@latest install chrome-headless-shell@stable
+            BROWSER_PATH="$(find "$HOME/.cache/puppeteer" -type f -name chrome-headless-shell -print -quit 2>/dev/null || true)"
           fi
-
+          test -n "$BROWSER_PATH" || { echo "::error::Chrome is not available on the runner"; exit 1; }
           echo "PUPPETEER_EXECUTABLE_PATH=$BROWSER_PATH" >> "$GITHUB_ENV"
-          echo "Using browser: $BROWSER_PATH"
-          echo "::endgroup::"
-
       - name: Setup Java
-        if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
+        if: needs.detect.outputs.plantuml_changed == 'true'
         uses: actions/setup-java@v4
         with:
-          distribution: "temurin"
+          distribution: temurin
           java-version: "17"
-
       - name: Setup Graphviz
-        if: steps.detect.outputs.plantuml_changed == 'true' || inputs.render_images_only == 'true'
+        if: needs.detect.outputs.plantuml_changed == 'true'
+        shell: bash
         run: |
-          sudo apt-get update
-          sudo apt-get install -y graphviz
-          echo "GRAPHVIZ_DOT=$(command -v dot)" >> $GITHUB_ENV
-          dot -V
-
-      - name: Render Diagrams
-        if: steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true'
+          set -euo pipefail
+          if ! command -v dot >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y --no-install-recommends graphviz
+          fi
+          echo "GRAPHVIZ_DOT=$(command -v dot)" >> "$GITHUB_ENV"
+      - name: Render diagram images
         run: |
           chmod +x .github/scripts/render_diagrams.sh
-          ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" .changed_files_list
-
-      - name: Commit Diagrams
-        if: (steps.detect.outputs.diagrams_changed == 'true' || inputs.render_images_only == 'true') && github.event_name != 'pull_request'
+          ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" changed-files.txt
+      - name: Upload rendered diagrams
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-diagrams
+          path: ${{ env.DIAGRAMS_DIR }}/*.png
+          if-no-files-found: error
+          retention-days: 1
+      - name: Commit rendered diagrams
+        if: github.event_name != 'pull_request'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "$DIAGRAMS_DIR"/*.png || true
-
-          if ! git diff --staged --quiet; then
-            if [[ "$(git log -1 --pretty=%an)" != *"github-actions"* ]]; then
-              git commit -m "chore: auto-render diagrams [skip ci]"
-              git push
-            fi
+          if ! git diff --staged --quiet && [[ "$(git log -1 --pretty=%an)" != *"github-actions"* ]]; then
+            git commit -m "chore: auto-render diagrams [skip ci]"
+            git push
           fi
 
-      - name: Find Root TeX
-        id: findroot
-        if: steps.detect.outputs.latex_changed == 'true'
-        run: |
-          echo "::group::Root Discovery"
-          if ls "Template Latex - Relatorio Tecnico - IFSP - SBV.tex" >/dev/null 2>&1; then
-            ORIGINAL="Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
-          else
-            ORIGINAL=$(grep -l "\\begin{document}" *.tex | head -n 1 || echo "")
-          fi
-
-          if [ -z "$ORIGINAL" ]; then
-            echo "::error::No root LaTeX file found!"
-            exit 1
-          fi
-
-          ln -sf "$ORIGINAL" main.tex
-          echo "root_tex=main.tex" >> $GITHUB_OUTPUT
-          echo "Using: $ORIGINAL (linked to main.tex)"
-          echo "::endgroup::"
-
-      - name: Compile LaTeX
-        if: steps.findroot.outputs.root_tex != '' && steps.detect.outputs.latex_changed == 'true'
+  latex:
+    name: Compile LaTeX
+    needs: [detect, diagrams]
+    if: ${{ always() && needs.detect.outputs.compile_needed == 'true' && (needs.diagrams.result == 'success' || needs.diagrams.result == 'skipped') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Download rendered diagrams
+        if: needs.diagrams.result == 'success'
+        uses: actions/download-artifact@v4
+        with:
+          name: rendered-diagrams
+          path: ${{ env.DIAGRAMS_DIR }}
+      - name: Compile document
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: ${{ steps.findroot.outputs.root_tex }}
+          root_file: main.tex
           args: "-pdf -interaction=nonstopmode -halt-on-error"
-
-      - name: Upload PDF
-        if: steps.detect.outputs.latex_changed == 'true'
+      - name: Upload compilation diagnostics
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: latex-diagnostics
+          path: |
+            main.aux
+            main.blg
+            main.log
+            main.toc
+          if-no-files-found: warn
+          retention-days: 7
+      - name: Upload compiled PDF
         uses: actions/upload-artifact@v4
         with:
           name: compiled-thesis
           path: main.pdf
           if-no-files-found: error
+          retention-days: 14
 
-      - name: Create Release
-        if: |
-          success() &&
-          (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish == true) &&
-          steps.detect.outputs.latex_changed == 'true'
+  release:
+    name: Create release
+    needs: [detect, latex]
+    if: ${{ always() && needs.detect.outputs.compile_needed == 'true' && needs.latex.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish == true) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download release PDF artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: compiled-thesis
+          path: release
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: main.pdf
+          files: release/main.pdf
           generate_release_notes: true
           fail_on_unmatched_files: true

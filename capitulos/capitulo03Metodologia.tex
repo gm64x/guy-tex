@@ -1,19 +1,14 @@
 \chapter{Metodologia}
 \label{cap:03}
 
-% Este capítulo visa descrever a metodologia empregada no desenvolvimento do GUY - apresentando desde o Panorama Geral da Pesquisa até o desenvolvimento da aplicação em si.
-
 Este capítulo apresenta a metodologia utilizada no desenvolvimento da extensão GUY, desde a definição do escopo da pesquisa até a implementação e validação da ferramenta.
 
 \section{Panorama Geral da Pesquisa}
-% Elaborar uma ilustração visual, no esquema da Perspectiva do Produto do Documento de Visão e apresentar e explicar a figura aqui.
-% Esta figura tem que trazer o contexto principal da sua pesquisa, onde está inserido, envolvidos, benefícios, fluxo, etc...
-Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que programadores gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no \textit{Visual Studio Code} (VS Code). Com isso, a extensão apoia a compreensão da lógica interna do código e o planejamento de testes estruturais durante o desenvolvimento.
+Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que estudantes e profissionais gerem Grafos de Fluxo de Controle (GFCs) a partir do arquivo aberto no \textit{Visual Studio Code} (VS Code). Com isso, a extensão apoia o estudo da lógica interna do código e o planejamento de testes estruturais durante o desenvolvimento.
 
 \begin{figure}[htbp]
 \centering
 \caption{Fluxo de funcionamento da ferramenta proposta.}
-% Placeholder para o desenho do grafo
 \includegraphics[width=0.75\linewidth]{imagens/fluxos/fluxo_guy.png}
 
 \fonte{Elaborada pelo autor (2025).}
@@ -23,12 +18,11 @@ Como ilustrado na Figura \ref{fig:fluxo_GUY}, o GUY permite que programadores ge
 
 A ferramenta é acionada a partir do arquivo de código-fonte aberto no editor. Em seguida, o núcleo de processamento do GUY executa a análise estática local, mapeia as estruturas lógicas do algoritmo e constrói a representação visual do Grafo de Fluxo de Controle. Essa representação permite identificar os nós de decisão e os caminhos de execução possíveis no trecho analisado.
 
-Com o GFC estruturado, o desenvolvedor passa a visualizar os caminhos independentes do algoritmo. Essa visualização integrada auxilia desenvolvedores e analistas de qualidade (\textit{testers}) na identificação dos fluxos que podem orientar a elaboração de casos de teste estruturais.
-
+Com o GFC estruturado, o usuário passa a visualizar os caminhos independentes do algoritmo. Essa visualização integrada oferece a estudantes, desenvolvedores e analistas de qualidade (\textit{testers}) os fluxos que podem orientar o estudo e a elaboração de casos de teste estruturais.
 
 
 \section{Etapas para o Desenvolvimento da Ferramenta Proposta}
-% Elaborar uma figura de passo a passo para definir as etapas para o desenvolvimento e depois explicar detalhadamente como cada uma das etapas serão desenvolvidas.
+
 O desenvolvimento do GUY seguiu uma abordagem de pesquisa aplicada, de caráter exploratório e descritivo, associada à construção experimental de uma ferramenta de apoio à análise estrutural de código. As principais fases do projeto estão sumarizadas na Figura \ref{fig:fluxo_met_GUY}.
 
 \begin{figure}[H]
@@ -54,4 +48,4 @@ A análise das ferramentas existentes permitiu identificar limitações que serv
 \item \textbf{Validação e Testes:} foram realizadas verificações funcionais e comparações entre os resultados gerados pela ferramenta e os grafos e valores de complexidade esperados para os códigos analisados.
 \end{enumerate}
 
-Os resultados obtidos são apresentados no Capítulo 4, com o detalhamento da implementação do GUY e da validação das funcionalidades desenvolvidas.
+As decisões de construção são detalhadas no Capítulo \ref{cap:04}, com o detalhamento da implementação do GUY e da validação das funcionalidades desenvolvidas.

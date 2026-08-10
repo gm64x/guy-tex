@@ -1,90 +1,75 @@
 # GUY — Relatório Técnico em LaTeX
 
-Código-fonte do relatório técnico **“GUY: ferramenta de análise de códigos-fonte para gerar, automaticamente, o Grafo de Fluxo de Controle (GFC)”**, desenvolvido como trabalho do Bacharelado em Ciência da Computação do IFSP — Câmpus São João da Boa Vista.
+Documento acadêmico do **GUY**, uma extensão do Visual Studio Code que analisa
+código-fonte Python e gera o Grafo de Fluxo de Controle (GFC). O relatório foi
+desenvolvido no Bacharelado em Ciência da Computação do IFSP — Câmpus São João
+da Boa Vista, na modalidade de relatório técnico.
 
-- **Autor:** Gabriel Maia Miguel
-- **Orientador:** Prof. Dr. Breno Lisi Romano
-- **Área:** Engenharia de Software
-- **Documento:** Relatório Técnico conforme o modelo institucional baseado em `abnTeX2`
+- Autor: Gabriel Maia Miguel
+- Orientador: Prof. Dr. Breno Lisi Romano
+- Implementação: [gm64x/guy-vscode](https://github.com/gm64x/guy-vscode)
 
-## Sobre o trabalho
-
-O projeto GUY propõe uma ferramenta integrada ao Visual Studio Code para analisar código-fonte Python e gerar Grafos de Fluxo de Controle. O documento apresenta fundamentação teórica, metodologia, implementação, experimentos de validação, análise dos resultados e conclusões.
-
-## Arquivo principal
-
-O documento é compilado a partir de:
+## Organização
 
 ```text
-Template Latex - Relatorio Tecnico - IFSP - SBV.tex
+main.tex                 documento raiz
+pretextuais/             capa, folha de rosto, documentos institucionais e resumo
+capitulos/               conteúdo textual do relatório
+referencias.bib          referências bibliográficas
+.config/estrutura.sty    configuração do modelo
+.config/abntex2-alf.bst  estilo bibliográfico institucional
+fontes/                  códigos usados nos exemplos
+imagens/                 figuras, experimentos e diagramas
+.github/                 automação de validação e publicação
 ```
 
-Esse arquivo inclui os elementos pré-textuais e os capítulos separados:
+Novos capítulos devem ficar em `capitulos/` e ser incluídos por `main.tex`.
+Elementos anteriores ao texto devem ficar em `pretextuais/`. Arquivos auxiliares
+e PDFs gerados não devem ser versionados.
 
-- `01Capa.tex`
-- `02FolhaDeRosto.tex`
-- `03FichaCatalografica.tex`
-- `04AtaDefesa.tex`
-- `05Resumo.tex`
-- `capitulo01Introducao.tex`
-- `capitulo02ConsideracoesGerais.tex`
-- `capitulo03Metodologia.tex`
-- `capitulo04AnaliseDosResultados.tex`
-- `capitulo05ConclusoesRecomendacoes.tex`
-- `referencias.bib`
+## Validação e PDF
 
-## Requisitos
+O GitHub Actions é a fonte oficial da validação. O fluxo separa a execução em
+estágios para detectar mudanças, renderizar diagramas, compilar o LaTeX,
+publicar o PDF como artifact e, quando autorizado, criar uma release.
 
-É necessária uma distribuição LaTeX com os pacotes utilizados pelo projeto, incluindo:
+Em uma execução concluída, o PDF pode ser obtido na seção **Artifacts** com o
+nome `compiled-thesis`. Pull requests validam o documento sem publicar release.
+O acionamento manual permite forçar todos os estágios, renderizar somente as
+imagens ou autorizar a publicação.
 
-- `abnTeX2`;
-- suporte a BibTeX;
-- `latexmk` recomendado para automatizar as etapas de compilação.
+## Compilação local opcional
 
-Distribuições comuns:
-
-- TeX Live em Linux;
-- MiKTeX ou TeX Live em Windows;
-- MacTeX em macOS.
-
-## Compilação
-
-Com `latexmk`:
+Para inspeções locais, use uma distribuição com `abnTeX2`, BibTeX e `latexmk`:
 
 ```bash
-latexmk -pdf "Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
-```
-
-Para remover arquivos auxiliares:
-
-```bash
+latexmk -pdf main.tex
 latexmk -c
 ```
 
-Sem `latexmk`, execute a sequência tradicional:
+A aceitação do documento continua sendo determinada pelo CI, que executa a
+mesma entrada `main.tex` em ambiente reproduzível.
 
-```bash
-pdflatex "Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
-bibtex "Template Latex - Relatorio Tecnico - IFSP - SBV"
-pdflatex "Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
-pdflatex "Template Latex - Relatorio Tecnico - IFSP - SBV.tex"
+## Diagramas e imagens
+
+As fontes Mermaid e PlantUML ficam em `imagens/diagramas/`. O CI atualiza as
+imagens PNG correspondentes quando necessário. As demais figuras devem ser
+armazenadas na categoria apropriada dentro de `imagens/` e referenciadas por
+rótulos LaTeX, evitando números de seção ou figura escritos manualmente.
+
+## Documentos institucionais
+
+O repositório inclui modelos da ficha catalográfica e da ata de defesa. Quando
+as versões oficiais estiverem disponíveis, substitua os arquivos existentes,
+mantendo exatamente estes caminhos e nomes:
+
+```text
+pretextuais/institucionais/fichaCatalografica.pdf
+pretextuais/institucionais/ataDefesa.pdf
 ```
 
-O número de execuções pode variar até que referências, sumário, citações e numeração estejam estabilizados.
+## Modelo institucional
 
-## Organização de imagens
-
-Figuras utilizadas no relatório devem ser armazenadas na pasta `imagens/` e referenciadas pelos capítulos correspondentes. Antes da entrega, verifique:
-
-- se nenhuma figura ainda aponta para um placeholder;
-- se todas as imagens possuem legenda, fonte e rótulo;
-- se todas as referências cruzadas aparecem corretamente no PDF;
-- se não existem arquivos ausentes durante a compilação.
-
-## Relação com a aplicação
-
-A implementação da ferramenta está no repositório `gm64x/guy-vscode`. O repositório agregador `gm64x/bcc-guy` referencia tanto a aplicação quanto este documento por meio de submódulos Git.
-
-## Status
-
-Documento acadêmico em desenvolvimento. O conteúdo e os resultados devem ser considerados definitivos somente após revisão do autor e do orientador.
+O projeto utiliza o Template LaTeX — Relatório Técnico — IFSP-SBV, baseado em
+`abnTeX2`, versão 1.6.5 de 17/11/2025, desenvolvido pelo Prof. Dr. David Buzatto.
+O conteúdo permanece em revisão até a aprovação do autor e do orientador.

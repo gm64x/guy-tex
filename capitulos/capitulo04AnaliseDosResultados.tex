@@ -3,14 +3,13 @@
 
 \section{Análise das Ferramentas Disponíveis no Mercado}
 
-%Lista e descreve brevemente ferramentas existentes (SonarQube, CodeClimate, PMD, ESLint, etc.).
-Existem diversas ferramentas voltadas à qualidade de código, mas a maior parte delas não tem como foco a visualização educacional de grafos.
+Existem diversas ferramentas voltadas à qualidade de código, com objetivos distintos dos adotados pelo GUY para representar grafos de fluxo de controle.
 
 Esta seção apresenta três ferramentas utilizadas na análise de código e discute suas funcionalidades, limitações e diferenças em relação ao GUY.
 
 \subsection{SonarQube}
 
-A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de código aberto (\textit{open source}) voltada à inspeção contínua da qualidade do código. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \citeonline{sonarqube}.
+A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de análise da qualidade do código; sua edição Community é distribuída como software de código aberto. Em vez de apenas listar erros, ela permite analisar, rastrear e gerenciar a qualidade do software ao longo do tempo \cite{sonarqube}.
 \begin{figure}[H]
     \centering
     \caption{Captura de tela da interface do SonarQube.}
@@ -21,14 +20,14 @@ A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de 
 
 
 
-A plataforma exibe potenciais \textit{bugs}, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece \textit{dashboards}, histórico de análises e integração com IDEs \citeonline{campbell2013sonarqube}.
+A plataforma exibe potenciais defeitos, violações de convenções e boas práticas, além de medir cobertura de testes, duplicação de código e complexidade ciclomática. Também oferece painéis, histórico de análises e integração com IDEs \cite{campbell2013sonarqube}.
 
 Apesar de possuir uma versão gratuita, algumas funcionalidades avançadas e recursos gerenciais são comerciais. A ferramenta também pode gerar falsos positivos e exige configuração adequada para o contexto de cada projeto. Para o escopo deste trabalho, a principal limitação é que, embora calcule complexidade ciclomática, o SonarQube apresenta os dados principalmente em painéis e relatórios, sem priorizar a visualização gráfica e interativa do Grafo de Fluxo de Controle (GFC).
 
 
 \subsection{Codacy}
 
-O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática, gratuita para projetos de código aberto, voltada à melhoria da qualidade do software, ao aumento da cobertura de testes e à prevenção de falhas de segurança \citeonline{ardito2020tool}. Em vez de se concentrar apenas em métricas matemáticas, a ferramenta prioriza a identificação prática de \textit{bugs} e comportamentos indefinidos em diferentes linguagens de programação \citeonline{ardito2020tool}.
+O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise estática voltada à avaliação de qualidade de software. A configuração e os analisadores utilizados podem variar conforme o projeto; por isso, suas funcionalidades devem ser descritas de acordo com a versão ou o plano efetivamente analisado.
 
 \begin{figure}[H]
     \centering
@@ -38,13 +37,13 @@ O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise está
     \fonte{Documentação oficial do Codacy (2026).}
 \end{figure}
 
-O Codacy destaca-se pela interface amigável e pela facilidade de configuração e integração aos projetos \citeonline{imbugwa2021case, rahmawati2023analisis}. Como diferencial, consolida estatísticas sobre propensão a erros, estilo e segurança em um \textit{dashboard}, atribuindo ao projeto uma nota geral que varia de "A" (alta qualidade) a "F" (baixa qualidade) \citeonline{ardito2020tool, imbugwa2021case}.
+O Codacy consolida estatísticas sobre propensão a erros, estilo e segurança em um painel. Estudos relatam sua integração a projetos e discutem sua configuração em contextos específicos \cite{imbugwa2021case, rahmawati2023analisis}; esses relatos não constituem uma avaliação de usabilidade realizada neste trabalho.
 
-Como limitação, a agregação das métricas na nota final nem sempre deixa claro o peso de cada fator avaliado \citeonline{ardito2020tool, imbugwa2021case}. A análise também depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \citeonline{imbugwa2021case}. Embora avalie categorias de complexidade \citeonline{ardito2020tool}, seus resultados permanecem concentrados em notas e painéis, sem fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
+Como limitação, a agregação das métricas na nota final nem sempre deixa claro o peso de cada fator avaliado \cite{ardito2020tool, imbugwa2021case}. A análise também depende frequentemente de \textit{linters} de terceiros e pode gerar falsos positivos \cite{imbugwa2021case}. Embora avalie categorias de complexidade \cite{ardito2020tool}, seus resultados permanecem concentrados em notas e painéis, sem fornecer uma representação gráfica clara do fluxo lógico do algoritmo analisado.
 
 \subsection{ESLint}
 
-O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática amplamente utilizada, projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \citeonline{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \citeonline{tomasdottir2017why}. A ferramenta destaca-se por sua flexibilidade, permitindo a adoção de regras e \textit{presets} da comunidade \citeonline{tomasdottir2020adoption}.
+O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugável e uma ferramenta de análise estática projetada para JavaScript e extensível ao TypeScript por meio de \textit{plugins} \cite{eslint, tomasdottir2020adoption, bhutani2024analysing}. Sua função principal é examinar o código sem executá-lo, utilizando sua representação sintática para identificar padrões, impor convenções de estilo e sinalizar erros, ajudando a manter a consistência do projeto \cite{tomasdottir2017why}. A ferramenta permite adotar regras e \textit{presets} da comunidade \cite{tomasdottir2020adoption}.
 
 \begin{figure}[H]
     \centering
@@ -54,31 +53,58 @@ O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugáv
     \label{fig:eslint_playground_demo}
 \end{figure}
 
-Além de oferecer correção automática (auto-fix) e um ecossistema extensível \citeonline{rafnsson2020fixing, bhutani2024analysing}, o ESLint possui fácil integração com IDEs e pipelines de CI/CD, fornecendo \textit{feedback} em tempo real e atuando como um recurso educacional para os desenvolvedores \citeonline{bhutani2024analysing, murugaraj_automated, tomasdottir2017why}.
+Além de oferecer correção automática (\textit{auto-fix}) e um ecossistema extensível \cite{rafnsson2020fixing, bhutani2024analysing}, o ESLint pode ser integrado a IDEs e \textit{pipelines} de integração contínua para apresentar diagnósticos durante o desenvolvimento \cite{bhutani2024analysing, murugaraj_automated, tomasdottir2017why}.
 
-Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \citeonline{rafnsson2020fixing}. Sua eficácia também esbarra na natureza dinâmica do JavaScript, não sendo capaz de prever todos os erros em tempo de execução \citeonline{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; esse excesso de avisos frequentemente resulta em uma ``fadiga de alertas'', levando os desenvolvedores a ignorarem os reportes ou a perderem a confiança na análise \citeonline{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
+Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \cite{rafnsson2020fixing}. Sua análise não cobre comportamentos que dependem da execução do programa ou de suas dependências externas \cite{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; o excesso de avisos pode contribuir para a ``fadiga de alertas'' e reduzir a confiança na análise \cite{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
 
-Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \citeonline{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
+Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \cite{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
 
 
 \section{Levantamento de Requisitos da Ferramenta GUY}
 
-Esta seção apresenta os requisitos definidos para a ferramenta GUY.
+Esta seção formaliza os requisitos definidos para a versão avaliada do GUY. Requisitos descrevem comportamentos e propriedades observáveis; Tree-sitter, React, \texttt{@xyflow/react} e \texttt{@dagrejs/dagre} são decisões de implementação apresentadas na Seção \ref{sec:implementacao_guy}.
 
-O acesso à ferramenta ocorre diretamente no ambiente de desenvolvimento, por meio de uma extensão para o editor \textit{Visual Studio Code} (VS Code) \citeonline{microsoft_vscode}. Um requisito fundamental é que a análise estática seja executada localmente. Para isso, a proposta utiliza tecnologias como \textit{WebAssembly} e Tree-sitter, responsáveis por apoiar a construção da árvore sintática do código analisado.
+\begin{table}[H]
+    \centering
+    \small
+    \caption{Requisitos funcionais e rastreabilidade da ferramenta GUY.}
+    \begin{tabularx}{\linewidth}{p{0.10\linewidth} X p{0.22\linewidth} p{0.16\linewidth}}
+        \hline
+        \textbf{ID} & \textbf{Requisito} & \textbf{Evidência} & \textbf{Estado} \\ \hline
+        RF01 & Gerar o GFC de um arquivo Python ativo. & \texttt{extension.ts}, \texttt{parser.ts} e Experimentos I--II. & Implementado. \\ \hline
+        RF02 & Restringir a análise a uma seleção ou à função atual. & Comandos registrados e Experimento III. & Implementado. \\ \hline
+        RF03 & Calcular nós, arestas, decisões, componentes e \(V(G)\). & \texttt{metrics.ts} e Tabelas \ref{tab:experimento1_guy}--\ref{tab:experimento3_guy}. & Implementado. \\ \hline
+        RF04 & Apresentar o GFC e suas métricas no painel lateral. & \texttt{webviewPanel.ts} e Figuras \ref{fig:gfc_experimento_i}--\ref{fig:gfc_experimento_iii}. & Implementado. \\ \hline
+        RF05 & Relacionar seleções no grafo aos intervalos do código-fonte. & \texttt{editorNavigation.ts}. & Implementado. \\ \hline
+        RF06 & Enumerar uma base de caminhos até o limite configurado. & \texttt{paths.ts} e validação manual dos três experimentos. & Implementado com limite. \\ \hline
+        RF07 & Alternar entre visualizações simplificada e detalhada. & Comando \texttt{toggleGraphDetailMode}. & Implementado. \\ \hline
+    \end{tabularx}
+    \fonte{Elaborada pelo autor.}
+    \label{tab:requisitos_funcionais_guy}
+\end{table}
 
-Essa arquitetura mantém o processamento léxico e sintático no ambiente do usuário e evita o envio do código-fonte para servidores externos. Com isso, a extensão reduz riscos relacionados à privacidade e à propriedade intelectual, além de dispensar infraestrutura de nuvem para executar a análise.
-
-No aspecto funcional, a principal entrega do sistema é a renderização visual interativa do Grafo de Fluxo de Controle (GFC) após a análise do código-fonte. A interface deve permitir que o programador interaja com o grafo gerado, relacionando nós de decisão e arestas direcionadas às linhas correspondentes do arquivo aberto no editor. Em conjunto com essa visualização, a extensão deve calcular e exibir a métrica de Complexidade Ciclomática, usada como indicador da complexidade lógica e da testabilidade do código.
-
-Para apoiar a análise da qualidade estrutural do software, a extensão também deve indicar caminhos linearmente independentes no grafo. Esses dados auxiliam o programador na elaboração de casos de teste alinhados aos fluxos identificados.
+\begin{table}[H]
+    \centering
+    \small
+    \caption{Requisitos não funcionais e rastreabilidade da ferramenta GUY.}
+    \begin{tabularx}{\linewidth}{p{0.10\linewidth} X p{0.22\linewidth} p{0.16\linewidth}}
+        \hline
+        \textbf{ID} & \textbf{Requisito} & \textbf{Evidência} & \textbf{Estado} \\ \hline
+        RNF01 & Executar a análise no ambiente local, sem transmitir o código a um serviço do GUY. & Parser e construtor executados no processo da extensão. & Implementado. \\ \hline
+        RNF02 & Integrar-se ao VS Code e aos temas claro e escuro do editor. & API do VS Code e variáveis CSS nativas. & Implementado. \\ \hline
+        RNF03 & Informar falhas do analisador sem gerar um GFC por aproximação textual. & Diagnóstico de falha do Tree-sitter. & Implementado. \\ \hline
+        RNF04 & Limitar operações custosas e avisar sobre grafos extensos. & Limites de análise e de enumeração de caminhos. & Parcial; requer avaliação de escala. \\ \hline
+    \end{tabularx}
+    \fonte{Elaborada pelo autor.}
+    \label{tab:requisitos_nao_funcionais_guy}
+\end{table}
 
 \section{Prototipagem e \textit{Design} da Ferramenta GUY}
 
-O usuário aciona a extensão com o editor de código aberto e em foco. Em resposta, a ferramenta abre uma janela lateral, de forma semelhante a uma pré-visualização de Markdown, apresentando o Grafo de Fluxo de Controle (GFC) e o cálculo da Complexidade Ciclomática, representada por \(V(G)\).
+O usuário aciona a extensão com o editor de código aberto e em foco. Em resposta, a ferramenta abre uma janela lateral, de forma semelhante a uma pré-visualização de Markdown, apresentando o Grafo de Fluxo de Controle (GFC) e o cálculo da Complexidade Ciclomática, representado por \(V(G)\).
 Nessa visualização, o usuário pode selecionar vértices e arestas do grafo para navegar diretamente até os trechos correspondentes do código-fonte, estabelecendo uma relação interativa entre a representação visual e a implementação analisada.
 
-Essa proposta atende aos principais requisitos definidos para a ferramenta e detalhados nas Figuras 7 e 8: execução local, sem envio do código-fonte para servidores externos; apresentação do GFC em conjunto com o valor de \(V(G)\); e interação direta entre os elementos do grafo e as regiões correspondentes do código.
+Essa proposta materializa os requisitos descritos nas Tabelas \ref{tab:requisitos_funcionais_guy} e \ref{tab:requisitos_nao_funcionais_guy}: execução local; apresentação do GFC em conjunto com o valor de \(V(G)\); e interação entre os elementos do grafo e as regiões correspondentes do código. Os fluxos são detalhados nas Figuras \ref{fig:casos_uso_GUY} e \ref{fig:cenarios_GUY}.
 
 
 \begin{figure}[H]
@@ -89,7 +115,7 @@ Essa proposta atende aos principais requisitos definidos para a ferramenta e det
   \label{fig:casos_uso_GUY}
 \end{figure}
 
-O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Desenvolvedor}, responsável por acionar a extensão, visualizar o GFC e navegar do grafo para o código. Os casos de uso exibidos são: acionar extensão, analisar código-fonte localmente, visualizar GFC, calcular \(V(G)\) e navegar do grafo para o código. A relação entre o ator e a ferramenta ocorre diretamente nos casos de uso associados à interação do usuário. O caso de uso ``Acionar extensão'' inclui a análise local do código-fonte; a análise local, por sua vez, inclui a visualização do GFC e o cálculo de \(V(G)\). O diagrama também mostra que a navegação do grafo para o código estende a visualização do GFC, indicando uma interação complementar à visualização principal.
+O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Usuário}, que pode ser estudante ou profissional e é responsável por acionar a extensão, visualizar o GFC e navegar do grafo para o código. Os casos de uso exibidos são: acionar extensão, analisar código-fonte localmente, visualizar GFC, calcular \(V(G)\) e navegar do grafo para o código. A relação entre o ator e a ferramenta ocorre diretamente nos casos de uso associados à interação do usuário. O caso de uso ``Acionar extensão'' inclui a análise local do código-fonte; a análise local, por sua vez, inclui a visualização do GFC e o cálculo de \(V(G)\). O diagrama também mostra que a navegação do grafo para o código estende a visualização do GFC, indicando uma interação complementar à visualização principal.
 
 \begin{figure}[H]
   \centering
@@ -99,14 +125,11 @@ O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Desenvolv
   \label{fig:cenarios_GUY}
 \end{figure}
 
-O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro participantes: Desenvolvedor, VS Code, Extensão GUY e Painel lateral. No primeiro cenário, o desenvolvedor abre um arquivo de código-fonte no VS Code, aciona a extensão com o editor em foco, a extensão analisa o código localmente, abre o painel lateral e o painel exibe ao usuário o GFC e o valor de \(V(G)\). No segundo cenário, o desenvolvedor seleciona um vértice ou uma aresta do GFC no painel, o painel envia o elemento selecionado à extensão, a extensão identifica o trecho correspondente no código, solicita ao VS Code o deslocamento do cursor para a região relacionada e o editor destaca o trecho correspondente. O resultado final representado é a visualização inicial do grafo com a métrica e, em seguida, a navegação interativa entre o grafo e o código-fonte.
+O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro participantes: Usuário, VS Code, Extensão GUY e Painel lateral. No primeiro cenário, o usuário abre um arquivo de código-fonte no VS Code, aciona a extensão com o editor em foco, a extensão analisa o código localmente, abre o painel lateral e o painel exibe o GFC e o valor de \(V(G)\). No segundo cenário, o usuário seleciona um vértice ou uma aresta do GFC no painel, o painel envia o elemento selecionado à extensão, a extensão identifica o trecho correspondente no código, solicita ao VS Code o deslocamento do cursor para a região relacionada e o editor destaca o trecho correspondente. O resultado final representado é a visualização inicial do grafo com a métrica e, em seguida, a navegação interativa entre o grafo e o código-fonte.
 
 
 \section{Implementação da Ferramenta GUY}
-% Desenvolvimento e configuração no VS Code - pode criar subseções
-
-% LEMBRETE: GUY -> Graphing Utility for Your code
-
+\label{sec:implementacao_guy}
 A ferramenta foi desenvolvida em \textit{TypeScript} como uma extensão para o editor de código VS Code, com o código completo disponível no GitHub em \url{https://github.com/gm64x/GUY-vscode}. Seu objetivo é integrar a análise de fluxo de controle diretamente ao ambiente de desenvolvimento. O nome GUY deriva de \textit{Graphing Utility for Your code} e, em sua versão atual, tem como foco a análise de arquivos Python.
 
 A extensão utiliza a API do VS Code para registrar comandos, acessar o editor ativo e abrir a visualização lateral por meio de uma \texttt{Webview}. Nessa interface, o desenvolvedor pode navegar entre os elementos do grafo e as linhas correspondentes do código-fonte. A interface visual do GFC foi construída com \texttt{React} e \texttt{@xyflow/react}, enquanto a organização automática dos nós utiliza a biblioteca \texttt{@dagrejs/dagre}. Além disso, a análise sintática do código Python é realizada pelo \texttt{Tree-sitter} por meio de \texttt{WebAssembly}.
@@ -151,9 +174,6 @@ A configuração inicial da extensão está disponível no arquivo \texttt{packa
 
 O mesmo arquivo também define opções de uso da extensão, como abertura automática da pré-visualização, direção do layout do grafo, exibição do painel de métricas, destaque de código ao selecionar nós e limite considerado alto para a Complexidade Ciclomática.
 
-% Explicar com trechos de código
-
-% Adicionar o link do GitHub com o código completo
 \subsection{Estrutura geral da extensão}
 
 A implementação está organizada em módulos com responsabilidades separadas. O arquivo \texttt{src/extension.ts} registra os comandos da extensão e coordena o fluxo principal de execução. Os módulos do diretório \texttt{src/core/} concentram a análise do código-fonte, a construção do GFC, o cálculo das métricas e a identificação de caminhos independentes. Já os módulos em \texttt{src/vscode/} tratam da integração com o editor, incluindo a criação da janela lateral e o destaque de trechos do código. A interface React da pré-visualização fica em \texttt{src/webview/}.
@@ -375,6 +395,32 @@ No caso de laços, a ferramenta mantém uma pilha interna para associar corretam
 
 A ferramenta também oferece dois modos de visualização. No modo simplificado, comandos sequenciais adjacentes são compactados em um único nó, reduzindo a densidade visual do grafo. No modo detalhado, os comandos são preservados de forma mais granular, favorecendo uma análise mais próxima da estrutura linha a linha do código.
 
+\subsection{Convenção de modelagem do GFC}
+\label{sec:convencao_modelagem_gfc}
+
+No GUY, um nó representa uma unidade de fluxo criada a partir de um comando, de uma condição ou de um ponto sintético de conexão. No modo detalhado, comandos sequenciais são mantidos individualmente; no modo simplificado, uma cadeia adjacente sem desvio pode ser condensada. Os nós sintéticos e todas as arestas incidentes também integram os totais \(N\) e \(E\) usados no cálculo de \(V(G)\).
+
+\begin{table}[H]
+    \centering
+    \small
+    \caption{Convenção de representação das estruturas no GFC do GUY.}
+    \begin{tabularx}{\linewidth}{p{0.22\linewidth} X X}
+        \hline
+        \textbf{Elemento} & \textbf{Representação} & \textbf{Efeito no fluxo} \\ \hline
+        \texttt{Entry} e \texttt{Exit} & Nós sintéticos únicos de entrada e saída. & Delimitam os caminhos analisados e entram nas contagens de nós e arestas. \\ \hline
+        Comando sequencial & Um nó por comando no modo detalhado ou um nó para comandos adjacentes no modo simplificado. & Conecta-se por aresta \texttt{next}. \\ \hline
+        \texttt{if}/\texttt{elif}/\texttt{else} & Nó de condição, arestas \texttt{true}/\texttt{false} e nó sintético \texttt{merge}. & Separa os ramos e reúne as saídas que continuam após a decisão. \\ \hline
+        \texttt{for}/\texttt{while} & Nó de condição e nó sintético \texttt{after loop}. & Aresta \texttt{loop} retorna à condição; a saída falsa segue após o laço. \\ \hline
+        \texttt{return} & Nó de comando com aresta para \texttt{Exit}. & Encerra o caminho atual sem passar pelos comandos posteriores. \\ \hline
+        \texttt{break} & Nó de comando ligado a \texttt{after loop}. & Encerra o laço associado. \\ \hline
+        \texttt{continue} & Nó de comando ligado à condição do laço. & Inicia a iteração seguinte. \\ \hline
+    \end{tabularx}
+    \fonte{Elaborada pelo autor.}
+    \label{tab:convencao_modelagem_gfc}
+\end{table}
+
+A compactação do modo simplificado contrai apenas cadeias sequenciais: ao substituir uma cadeia por um nó, elimina o mesmo número de nós e de arestas internas. Portanto, \(E-N\), os pontos de decisão e \(P\) permanecem inalterados, preservando \(V(G)\). A granularidade visual e os totais absolutos de \(N\) e \(E\), contudo, podem diferir entre os modos. Por essa razão, toda comparação de contagens deve informar o modo utilizado.
+
 \subsection{Métricas e caminhos independentes}
 
 Após a construção do grafo, a ferramenta calcula métricas estruturais do GFC. A principal delas é a Complexidade Ciclomática, calculada pela expressão:
@@ -413,9 +459,9 @@ A interface também possui um limite de complexidade configurável. Por padrão,
 
 A visualização do GFC é apresentada em uma Webview lateral. O grafo é renderizado com nós, arestas direcionadas e rótulos que indicam o tipo de transição, como \texttt{true}, \texttt{false}, \texttt{loop}, \texttt{return}, \texttt{break} e \texttt{continue}. A interface oferece controles para ajustar a visualização, centralizar o grafo, redefinir o zoom e ampliar ou reduzir a escala.
 
-A barra lateral da Webview apresenta as métricas calculadas, a fórmula de Complexidade Ciclomática aplicada ao grafo gerado, a lista de nós, a lista de arestas, as funções encontradas e os caminhos independentes. Ao selecionar um nó, uma aresta ou um caminho, a extensão envia uma mensagem da Webview para o VS Code e destaca o trecho correspondente no editor. Essa interação atende ao objetivo educacional da ferramenta, pois permite relacionar diretamente a estrutura visual do fluxo de controle com o código-fonte analisado.
+A barra lateral da Webview apresenta as métricas calculadas, a fórmula de Complexidade Ciclomática aplicada ao grafo gerado, a lista de nós, a lista de arestas, as funções encontradas e os caminhos independentes. Ao selecionar um nó, uma aresta ou um caminho, a extensão envia uma mensagem da Webview para o VS Code e destaca o trecho correspondente no editor. Essa interação estabelece uma correspondência verificável entre a estrutura visual do fluxo de controle e o intervalo do código analisado; seus efeitos sobre compreensão ou aprendizagem não foram avaliados neste trabalho.
 
-A janela lateral é criada no módulo \texttt{webviewPanel.ts}. O painel é aberto ao lado do editor, permite execução de scripts e registra o canal de mensagens usado pela interface React.
+A janela lateral é criada no módulo \texttt{webviewPanel.ts}. O painel é aberto ao lado do editor, carrega os scripts da interface e registra o canal de mensagens usado pela interface React.
 
 \begin{lstlisting}[language=TypeScript, numbers=left, caption={Criação da Webview lateral no VS Code.}, label={lst:guy_webview_panel}]
 this.panel = vscode.window.createWebviewPanel(
@@ -556,12 +602,14 @@ A adaptação ao tema do VS Code fica no CSS da Webview. Em vez de fixar cores p
 }
 \end{lstlisting}
 
-
 \section{Validação da Ferramenta GUY}
+\label{sec:validacao_guy}
 
-A validação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{app/src/examples/}. Os experimentos têm como objetivo verificar se a extensão representa corretamente diferentes estruturas de controle em Python e se as métricas exibidas são coerentes com o grafo construído. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
+A validação inicial da ferramenta foi realizada com os arquivos de exemplo disponíveis em \texttt{src/examples/}. Os experimentos verificam se a extensão representa diferentes estruturas de controle em Python e se as métricas exibidas coincidem com uma reconstrução manual baseada na convenção da Seção \ref{sec:convencao_modelagem_gfc}. Todos os resultados apresentados nesta seção foram obtidos no modo de visualização simplificado.
 
-A Figura \ref{fig:vscode_grafo_GUY} mostra o GFC gerado pelo GUY no VS Code, com a visualização apresentada em painel lateral, conforme o fluxo de uso adotado nos experimentos.
+Antes da execução, cada código foi percorrido manualmente para identificar comandos, decisões, pontos sintéticos e ligações de desvio. Dessa reconstrução foram obtidos \(N\), \(E\), o número de decisões e \(P\); em seguida, \(V(G)\) foi calculado de forma independente por \(E-N+2P\). O resultado foi classificado como conforme somente quando os valores esperados e exibidos coincidiram. A lista de caminhos foi conferida verificando-se início em \texttt{Entry}, término em \texttt{Exit}, validade das arestas e a introdução, por cada caminho adicional, de pelo menos uma aresta de decisão ainda não usada na base selecionada. Essa conferência caracteriza uma base operacional para os exemplos, não a enumeração de todos os caminhos de execução possíveis.
+
+A Figura \ref{fig:vscode_grafo_GUY} apresenta apenas a organização geral do painel lateral usado durante a validação. As evidências específicas e legíveis de cada código são mostradas separadamente nas Figuras \ref{fig:gfc_experimento_i}, \ref{fig:gfc_experimento_ii} e \ref{fig:gfc_experimento_iii}; a captura introdutória não substitui essas três evidências.
 
 \begin{figure}[H]
     \centering
@@ -573,20 +621,10 @@ A Figura \ref{fig:vscode_grafo_GUY} mostra o GFC gerado pelo GUY no VS Code, com
 
 \subsection{Experimento I: Código com Laço e Condicionais}
 
-O primeiro experimento utiliza o arquivo \texttt{loop\_break\_continue.py}. O objetivo é verificar se a ferramenta representa corretamente um laço \texttt{while} contendo duas estruturas condicionais internas, uma com \texttt{continue} e outra com \texttt{break}. Esse cenário é importante porque envolve desvios que alteram o fluxo normal da iteração.
+O primeiro experimento utiliza o arquivo \texttt{cap04-loop.py}. O objetivo é verificar se a ferramenta representa corretamente um laço \texttt{while} contendo duas estruturas condicionais internas, uma com \texttt{continue} e outra com \texttt{break}. Esse cenário é importante porque envolve desvios que alteram o fluxo normal da iteração.
 
-\begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento I.}, label={lst:experimento1_codigo}]
-x = 0
-
-while x < 10:
-    x += 1
-    if x == 3:
-        continue
-    if x == 8:
-        break
-
-print(x)
-\end{lstlisting}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento I.}]{fontes/cap04-loop.py}
+\label{lst:experimento1_codigo}
 
 A Figura \ref{fig:gfc_experimento_i} apresenta o GFC produzido
 pelo GUY para o código com laço, condicionais, \texttt{continue}
@@ -606,32 +644,29 @@ Ao analisar esse código, a ferramenta GUY identifica três pontos de decisão: 
 
 \begin{table}[H]
     \centering
-    \caption{Métricas obtidas no Experimento I.}
-    \begin{tabular}{c | c | c | c | c | c}
+    \caption{Comparação entre métricas esperadas e obtidas no Experimento I.}
+    \begin{tabular}{l | c | c | c}
         \hline
-        \textbf{Nós} & \textbf{Arestas} & \textbf{Decisões} & \textbf{Componentes} & \textbf{\(V(G)\)} & \textbf{Caminhos independentes} \\ \hline
-        13 & 15 & 3 & 1 & 4 & 4 \\ \hline
+        \textbf{Métrica} & \textbf{Esperado} & \textbf{Obtido} & \textbf{Status} \\ \hline
+        Nós & 13 & 13 & Conforme \\ \hline
+        Arestas & 15 & 15 & Conforme \\ \hline
+        Decisões & 3 & 3 & Conforme \\ \hline
+        Componentes & 1 & 1 & Conforme \\ \hline
+        \(V(G)\) & 4 & 4 & Conforme \\ \hline
+        Caminhos da base & 4 & 4 & Conforme \\ \hline
     \end{tabular}
     \fonte{Elaborada pelo autor.}
     \label{tab:experimento1_guy}
 \end{table}
 
-A Complexidade Ciclomática resultante é \(V(G) = 15 - 13 + 2 \times 1 = 4\). Esse valor é coerente com a quantidade de decisões presentes no código, pois, para um único componente conexo, a expressão geral simplifica-se para \(V(G) = E - N + 2\). A complexidade também pode ser interpretada como o número de decisões acrescido de uma unidade.
+Na reconstrução manual foram contados: \texttt{Entry}; inicialização; condição do \texttt{while}; incremento; duas condições \texttt{if}; nós de \texttt{continue} e \texttt{break}; dois nós \texttt{merge}; \texttt{after loop}; impressão; e \texttt{Exit}, totalizando 13 nós. As 15 conexões incluem o retorno do \texttt{continue} à condição e a saída do \texttt{break} para \texttt{after loop}. Assim, \(V(G) = 15 - 13 + 2 \times 1 = 4\), resultado também compatível com três decisões acrescidas da região inicial para este grafo conectado.
 
 \subsection{Experimento II: Código Condicional Simples}
 
-O segundo experimento utiliza o arquivo \texttt{conditional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
+O segundo experimento utiliza o arquivo \texttt{cap04-condicional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
 
-\begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento II.}, label={lst:experimento2_codigo}]
-x = 10
-
-if x > 5:
-    print("maior")
-else:
-    print("menor")
-
-print("fim")
-\end{lstlisting}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento II.}]{fontes/cap04-condicional.py}
+\label{lst:experimento2_codigo}
 
 Nesse caso, a ferramenta cria um nó de decisão para a condição \texttt{x > 5}, duas saídas para representar os ramos verdadeiro e falso e um nó de junção antes da continuidade do fluxo para o comando final.
 
@@ -649,11 +684,16 @@ A Figura \ref{fig:gfc_experimento_ii} apresenta o GFC produzido pelo GUY para o 
 
 \begin{table}[H]
     \centering
-    \caption{Métricas obtidas no Experimento II.}
-    \begin{tabular}{c | c | c | c | c | c}
+    \caption{Comparação entre métricas esperadas e obtidas no Experimento II.}
+    \begin{tabular}{l | c | c | c}
         \hline
-        \textbf{Nós} & \textbf{Arestas} & \textbf{Decisões} & \textbf{Componentes} & \textbf{\(V(G)\)} & \textbf{Caminhos independentes} \\ \hline
-        8 & 8 & 1 & 1 & 2 & 2 \\ \hline
+        \textbf{Métrica} & \textbf{Esperado} & \textbf{Obtido} & \textbf{Status} \\ \hline
+        Nós & 8 & 8 & Conforme \\ \hline
+        Arestas & 8 & 8 & Conforme \\ \hline
+        Decisões & 1 & 1 & Conforme \\ \hline
+        Componentes & 1 & 1 & Conforme \\ \hline
+        \(V(G)\) & 2 & 2 & Conforme \\ \hline
+        Caminhos da base & 2 & 2 & Conforme \\ \hline
     \end{tabular}
     \fonte{Elaborada pelo autor.}
     \label{tab:experimento2_guy}
@@ -663,16 +703,10 @@ A Complexidade Ciclomática calculada é \(V(G) = 8 - 8 + 2 \times 1 = 2\), repr
 
 \subsection{Experimento III: Código com Função, Laço e Condicional}
 
-O terceiro experimento utiliza o arquivo \texttt{functions.py}, analisando especificamente a função \texttt{calculate\_total}. O objetivo é verificar o comando de geração do GFC a partir da função atual, bem como a representação combinada de laço \texttt{for}, condicional \texttt{if} e retorno de valor.
+O terceiro experimento utiliza o arquivo \texttt{cap04-total.py}, analisando especificamente a função \texttt{calculate\_total}. O objetivo é verificar o comando de geração do GFC a partir da função atual, bem como a representação combinada de laço \texttt{for}, condicional \texttt{if} e retorno de valor.
 
-\begin{lstlisting}[language=Python, numbers=left, caption={Código utilizado no Experimento III.}, label={lst:experimento3_codigo}]
-def calculate_total(items):
-    total = 0
-    for item in items:
-        if item > 0:
-            total += item
-    return total
-\end{lstlisting}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento III.}]{fontes/cap04-total.py}
+\label{lst:experimento3_codigo}
 
 Ao posicionar o cursor dentro da função e executar o comando \texttt{GUY: Generate CFG from Current Function}, a extensão restringe a análise ao corpo da função selecionada. O grafo resultante contém a inicialização da variável, a condição de iteração do \texttt{for}, a decisão interna do \texttt{if}, o retorno ao laço e o comando \texttt{return} conectado ao nó de saída.
 
@@ -692,28 +726,33 @@ A Figura \ref{fig:gfc_experimento_iii} apresenta o GFC produzido pelo GUY para o
 
 \begin{table}[H]
     \centering
-    \caption{Métricas obtidas no Experimento III.}
-    \begin{tabular}{c | c | c | c | c | c}
+    \caption{Comparação entre métricas esperadas e obtidas no Experimento III.}
+    \begin{tabular}{l | c | c | c}
         \hline
-        \textbf{Nós} & \textbf{Arestas} & \textbf{Decisões} & \textbf{Componentes} & \textbf{\(V(G)\)} & \textbf{Caminhos independentes} \\ \hline
-        9 & 10 & 2 & 1 & 3 & 3 \\ \hline
+        \textbf{Métrica} & \textbf{Esperado} & \textbf{Obtido} & \textbf{Status} \\ \hline
+        Nós & 9 & 9 & Conforme \\ \hline
+        Arestas & 10 & 10 & Conforme \\ \hline
+        Decisões & 2 & 2 & Conforme \\ \hline
+        Componentes & 1 & 1 & Conforme \\ \hline
+        \(V(G)\) & 3 & 3 & Conforme \\ \hline
+        Caminhos da base & 3 & 3 & Conforme \\ \hline
     \end{tabular}
     \fonte{Elaborada pelo autor.}
     \label{tab:experimento3_guy}
 \end{table}
 
-A Complexidade Ciclomática calculada é \(V(G) = 10 - 9 + 2 \times 1 = 3\). O resultado reflete os dois pontos de decisão presentes na função: a repetição do \texttt{for} e a condição \texttt{if item > 0}. Assim, a ferramenta fornece uma indicação objetiva da quantidade mínima de caminhos independentes que devem ser considerados em uma estratégia de teste baseada em fluxo de controle.
+A Complexidade Ciclomática calculada é \(V(G) = 10 - 9 + 2 \times 1 = 3\). O resultado reflete os dois pontos de decisão presentes na função: a repetição do \texttt{for} e a condição \texttt{if item > 0}. Os três caminhos selecionados formam uma base operacional para exercitar arestas de decisão distintas; isso não implica que três casos de teste sejam suficientes para satisfazer outros critérios de cobertura ou revelar todos os defeitos.
 
-\section{Análise Qualitativa da Ferramenta GUY}
+\section{Análise Qualitativa da Ferramenta}
 
-A análise qualitativa do protótipo indica que o GUY atende ao objetivo central do trabalho: apoiar a compreensão do fluxo lógico de programas por meio de uma representação visual interativa do GFC. Diferentemente de ferramentas voltadas principalmente a painéis de qualidade ou diagnósticos textuais, o GUY relaciona a métrica de Complexidade Ciclomática à estrutura concreta do código analisado.
+Nos três exemplos avaliados, observou-se correspondência entre as estruturas Python analisadas, os grafos exibidos e o cálculo de Complexidade Ciclomática. Nesses exemplos, o protótipo apresentou a métrica junto ao GFC e manteve ligações entre seus elementos e os intervalos do código-fonte.
 
-Entre os principais pontos positivos, destaca-se a integração direta com o VS Code. O desenvolvedor não precisa copiar o código para uma ferramenta externa, pois a análise é acionada no próprio editor. Além disso, o processamento local contribui para a privacidade do código-fonte e reduz a dependência de serviços externos. A possibilidade de gerar grafos a partir do arquivo inteiro, de uma seleção ou da função atual também torna a ferramenta flexível para diferentes contextos de uso.
+Como características observadas, a análise é acionada no VS Code, pode abranger arquivo, seleção ou função atual e não envia o código a um serviço mantido pelo GUY. Essa propriedade, isoladamente, não constitui uma avaliação completa de segurança, privacidade ou usabilidade.
 
-Outro aspecto positivo é a interação entre grafo e código-fonte. A seleção de nós, arestas e caminhos independentes na Webview destaca as regiões correspondentes no editor, favorecendo o entendimento da relação entre a sintaxe do programa e seu fluxo de execução. A alternância entre os modos simplificado e detalhado também é relevante: o modo simplificado reduz a complexidade visual em exemplos maiores, enquanto o modo detalhado permite uma inspeção mais granular.
+A seleção de nós, arestas e caminhos na Webview destaca as regiões correspondentes no editor. O modo simplificado reduz o número de elementos visuais ao condensar comandos sequenciais, enquanto o detalhado preserva maior granularidade. O efeito dessas funções sobre aprendizagem, produtividade ou facilidade de uso exige avaliação com usuários e não foi medido pelos experimentos técnicos.
 
 Como limitação, a versão atual concentra-se em Python e em estruturas de controle comuns, como condicionais, laços, retornos, \texttt{break} e \texttt{continue}. Casos mais avançados da linguagem, como exceções, chamadas entre funções, recursão, geradores, programação assíncrona e efeitos dinâmicos de execução, ainda não são representados de forma completa. Além disso, por se tratar de análise estática, a ferramenta não substitui a execução de testes nem garante a identificação de todos os comportamentos possíveis em tempo de execução.
 
-Também há limitações relacionadas à visualização de grafos muito grandes. Embora a interface apresente avisos e o sistema oculte a listagem de caminhos independentes em grafos extensos para manter a responsividade, programas com muitas estruturas aninhadas podem gerar representações visualmente densas. Nesses casos, a análise por seleção ou por função tende a ser mais adequada do que a análise do arquivo completo.
+Também há limitações relacionadas à visualização de grafos muito grandes. Embora a interface apresente avisos e o sistema oculte a listagem de caminhos independentes em grafos extensos para manter a responsividade, programas com muitas estruturas aninhadas podem gerar representações visualmente densas. Nesses casos, a análise por seleção ou por função pode reduzir a densidade visual em comparação com a análise do arquivo completo.
 
-Os experimentos indicam que o GUY gera grafos coerentes para estruturas fundamentais de controle de fluxo e apresenta métricas compatíveis com a teoria da Complexidade Ciclomática. Como trabalhos futuros, podem ser considerados o suporte a mais estruturas da linguagem Python, a exportação dos grafos para formatos externos, a inclusão de testes automatizados com exemplos de referência e a ampliação da ferramenta para outras linguagens de programação.
+Os resultados sustentam somente as estruturas e os três cenários efetivamente apresentados. Casos-limite, entradas inválidas, equivalência entre modos e comportamento sob grafos extensos precisam de uma matriz de testes própria antes de ampliar essas conclusões. As recomendações de evolução são consolidadas no Capítulo \ref{cap:conclusoes}.

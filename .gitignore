@@ -30,7 +30,11 @@ yarn.lock
 *.gls
 *.ist
 *.run.xml
+*.brf
 latexmkrc
+
+# Root-level LaTeX output
+/main.pdf
 
 # Build directories
 _build/

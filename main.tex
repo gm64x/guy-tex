@@ -14,7 +14,7 @@
    	brazil,
 ]{abntex2}
 
-\usepackage{estrutura}
+\usepackage{.config/estrutura}
 \usepackage{float}
 
 % ---
@@ -41,9 +41,10 @@
 
 \campus{São João da Boa Vista}
 \area{Engenharia de Software}
+\palavraschave{grafo de fluxo de controle; complexidade ciclomática; análise estática; teste estrutural}
 
 \local{São João da Boa Vista}
-\mes{MAR}
+\mes{AGO}
 \ano{2026}
 
 \instituicao{%
@@ -74,18 +75,18 @@
 \frenchspacing
 
 \pretextual
-\input{01Capa}
-\input{02FolhaDeRosto}
+\input{pretextuais/01Capa}
+\input{pretextuais/02FolhaDeRosto}
 
 % ---
 % Inserir a ficha catalográfica
 % ---
-\input{03FichaCatalografica}
+\input{pretextuais/03FichaCatalografica}
 
 % ---
 % Inserir ata de defesa
 % ---
-\input{04AtaDefesa}
+\input{pretextuais/04AtaDefesa}
 
 % ---
 % inserir o sumário
@@ -95,14 +96,14 @@
 \cleardoublepage
 % ---
 
-\input{05Resumo}
+\input{pretextuais/05Resumo}
 
 \textual
-\input{capitulo01Introducao}
-\input{capitulo02ConsideracoesGerais}
-\input{capitulo03Metodologia}
-\input{capitulo04AnaliseDosResultados}
-\input{capitulo05ConclusoesRecomendacoes}
+\input{capitulos/capitulo01Introducao}
+\input{capitulos/capitulo02ConsideracoesGerais}
+\input{capitulos/capitulo03Metodologia}
+\input{capitulos/capitulo04AnaliseDosResultados}
+\input{capitulos/capitulo05ConclusoesRecomendacoes}
 
 
 % ----------------------------------------------------------

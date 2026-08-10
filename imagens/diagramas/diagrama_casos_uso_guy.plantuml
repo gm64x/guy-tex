@@ -1,7 +1,7 @@
 @startuml
 left to right direction
 
-actor Desenvolvedor
+actor "Usuário" as Usuario
 
 rectangle "Ferramenta Guy" {
   usecase "Acionar extensão" as UC1
@@ -11,9 +11,9 @@ rectangle "Ferramenta Guy" {
   usecase "Navegar do grafo\npara o código" as UC5
 }
 
-Desenvolvedor --> UC1
-Desenvolvedor --> UC3
-Desenvolvedor --> UC5
+Usuario --> UC1
+Usuario --> UC3
+Usuario --> UC5
 
 UC1 .> UC2 : <<include>>
 UC2 .> UC3 : <<include>>

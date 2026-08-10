@@ -6,7 +6,7 @@ DEBUG="${DEBUG:-false}"
 
 # Inputs
 DIAGRAMS_DIR="${1:-imagens/diagramas}"
-CHANGED_FILES_LIST="${2:-.changed_files_list}"
+CHANGED_FILES_LIST="${2:-changed-files.txt}"
 
 mkdir -p "$DIAGRAMS_DIR"
 DIAGRAMS_DIR_ABS="$(cd "$DIAGRAMS_DIR" && pwd -P)"

@@ -30,7 +30,7 @@
 \RequirePackage[brazilian,hyperpageref]{backref}
 \RequirePackage[alf,abnt-emphasize=bf]{abntex2cite}
 
-\bibliographystyle{abntex2-custom/abntex2-alf.bst}
+\bibliographystyle{.config/abntex2-alf.bst}
 
 \definecolor{corComentario}{RGB}{150,150,150}
 \definecolor{corString}{RGB}{206,123,0}
@@ -111,6 +111,9 @@
 \newcommand{\area}[1]{\def \aarea {#1}}
 \newcommand{\imprimirarea}{\aarea}
 
+\newcommand{\palavraschave}[1]{\def \opalavraschave {#1}}
+\newcommand{\imprimirpalavraschave}{\opalavraschave}
+
 \newcommand{\aluno}[1]{\def \oaluno {#1}}
 \newcommand{\imprimiraluno}{\oaluno}
 
@@ -162,22 +165,25 @@
 
 \definecolor{blue}{RGB}{41,5,195}
 
-\makeatletter
+\AtBeginDocument{%
 \hypersetup{
 	%pagebackref=true,
-	pdftitle={\@title},
-	pdfauthor={\@author},
-	pdfsubject={\imprimirpreambulo},
-	pdfcreator={\@author},
-	pdfkeywords={Engenharia de Software}{Análise de Código}{Grafo de Fluxo de Controle}{Complexidade Ciclomática},
+	pdftitle={\imprimirtitulo},
+	pdfauthor={\imprimirautor},
+	pdfsubject={Relatório técnico sobre geração e análise de Grafos de Fluxo de Controle},
+	pdfcreator={LaTeX com abnTeX2},
+	pdfkeywords={grafo de fluxo de controle, complexidade ciclomática, análise estática, teste estrutural},
+	pdflang={pt-BR},
+	unicode=true,
+	pdfencoding=auto,
 	colorlinks=true,       		% false: boxed links; true: colored links
 	linkcolor=black,          	% color of internal links
 	citecolor=black,       		% color of links to bibliography
 	filecolor=black,      		% color of file links
 	urlcolor=black,
 	bookmarksdepth=4
+}%
 }
-\makeatother
 
 \widowpenalty=10000
 \clubpenalty=10000
