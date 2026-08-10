@@ -1,10 +1,8 @@
-%
-% Este é um exemplo de ficha catalográfica.
-%
-% A ficha catalográfica final deve ser requisitada pelo aluno e inserida neste
-% documento para a entrega da versão final.
-%
-
-\begin{fichacatalografica}
-    \includepdf{fichaCatalografica/exemploFichaCatalografica.pdf}
-\end{fichacatalografica}
+% A ficha catalográfica oficial deve ser salva como
+% fichaCatalografica/fichaCatalografica.pdf. Enquanto o arquivo não estiver
+% disponível, a página é omitida para impedir a inclusão de dados de exemplo.
+\IfFileExists{fichaCatalografica/fichaCatalografica.pdf}{%
+    \begin{fichacatalografica}
+        \includepdf{fichaCatalografica/fichaCatalografica.pdf}
+    \end{fichacatalografica}
+}{}

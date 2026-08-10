@@ -1,9 +1,8 @@
-%
-% Este é um exemplo da ata de defesa.
-%
-% A ata de defesa será fornecida pelo professor orientador após a defesa do trabalho
-% e o orientado será responsável em substituir o arquivo de exemplo pelo arquivo final.
-%
-\begin{folhadeaprovacao}
-	\includepdf[pages={1-}]{ataDefesa/exemploAtaDefesa.pdf}
-\end{folhadeaprovacao}
+% A Ata de Defesa oficial deve ser salva como ataDefesa/ataDefesa.pdf.
+% Enquanto o arquivo não estiver disponível, a página é omitida para impedir a
+% inclusão da camada de texto e dos metadados do documento de exemplo.
+\IfFileExists{ataDefesa/ataDefesa.pdf}{%
+    \begin{folhadeaprovacao}
+        \includepdf[pages={1-}]{ataDefesa/ataDefesa.pdf}
+    \end{folhadeaprovacao}
+}{}
