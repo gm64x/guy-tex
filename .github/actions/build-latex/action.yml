@@ -20,14 +20,41 @@ inputs:
   dockerfile:
     description: Optional Dockerfile path; defaults to the one bundled with this action
     default: ""
+  force-build:
+    description: Compile even when a PDF with the same repository hash is cached
+    default: "false"
 
 runs:
   using: composite
   steps:
+    - name: Hash repository inputs
+      id: repository-hash
+      shell: bash
+      run: |
+        set -euo pipefail
+        repository_hash="$({
+          printf '%s\0' \
+            "${{ inputs.root-file }}" \
+            "${{ inputs.output-name }}" \
+            "${{ inputs.pdf-version }}" \
+            "${{ inputs.dockerfile }}"
+          git ls-files -z | sort -z | xargs -0 sha256sum --
+        } | sha256sum | cut -d ' ' -f 1)"
+        echo "hash=$repository_hash" >> "$GITHUB_OUTPUT"
+
+    - name: Restore compiled PDF
+      id: pdf-cache
+      uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+      with:
+        path: ${{ inputs.output-dir }}/${{ inputs.output-name }}
+        key: ${{ inputs.cache-scope }}-${{ runner.os }}-${{ steps.repository-hash.outputs.hash }}
+
     - name: Set up Docker Buildx
+      if: inputs.force-build == 'true' || steps.pdf-cache.outputs.cache-hit != 'true'
       uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
 
     - name: Compile LaTeX
+      if: inputs.force-build == 'true' || steps.pdf-cache.outputs.cache-hit != 'true'
       uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
       with:
         context: .

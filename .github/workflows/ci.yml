@@ -112,6 +112,7 @@ jobs:
           diagrams-dir: ${{ env.DIAGRAMS_DIR }}
           mermaid: ${{ needs.changes.outputs.mermaid }}
           plantuml: ${{ needs.changes.outputs.plantuml }}
+          force-all: ${{ inputs.force_all || inputs.render_images_only }}
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: rendered-diagrams
@@ -127,7 +128,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # Only generated diagram PNGs are allowed in this commit. PDFs and
           # every build directory remain local/intermediate release data.
-          git add "$DIAGRAMS_DIR"/*.png
+          git add -A -- "$DIAGRAMS_DIR"
           if git diff --staged --name-only | grep -Eq '(^|/)\.pdf(/|$)'; then
             echo "::error::Build output was staged; refusing to commit it"
             git reset
@@ -154,6 +155,7 @@ jobs:
       - uses: ./.github/actions/build-latex
         with:
           output-dir: .pdf
+          force-build: ${{ inputs.force_all }}
       - name: Attach PDF to release
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2

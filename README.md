@@ -31,9 +31,11 @@ e PDFs gerados não devem ser versionados.
 ## Validação e PDF
 
 O GitHub Actions é a fonte oficial da validação. O fluxo detecta os arquivos
-afetados, renderiza diagramas apenas quando necessário, compila o LaTeX e
-publica o PDF como artifact e release. Actions de terceiros são fixadas por
-commit e o cache do BuildKit é compartilhado entre execuções.
+afetados, compara o SHA-256 de cada fonte de diagrama e renderiza somente os
+arquivos alterados. Antes de compilar, também calcula um hash das entradas do
+repositório e reutiliza o PDF em cache quando o conteúdo é idêntico. Actions de
+terceiros são fixadas por commit e o cache do BuildKit é compartilhado entre
+execuções que realmente precisam compilar.
 
 Em uma execução concluída na branch principal, o PDF é anexado diretamente à
 **Release** criada pelo workflow. Pull requests validam o documento sem
@@ -84,17 +86,22 @@ steps:
       output-name: main.pdf
 ```
 
-Ela configura o Buildx, reaproveita o cache do GitHub Actions, usa o Dockerfile
-versionado neste projeto e verifica se o PDF foi realmente gerado. Um
-Dockerfile próprio também pode ser informado pelo input `dockerfile`, desde que
-aceite os argumentos `LATEX_ROOT`, `OUTPUT_NAME` e `PDF_VERSION`.
+Ela primeiro tenta restaurar um PDF identificado pelo hash dos arquivos do
+repositório. Em caso de cache miss, configura o Buildx, reaproveita o cache de
+camadas do GitHub Actions, usa o Dockerfile versionado neste projeto e verifica
+se o PDF foi realmente gerado. O input `force-build: true` ignora o acerto do
+cache. Um Dockerfile próprio também pode ser informado pelo input `dockerfile`,
+desde que aceite os argumentos `LATEX_ROOT`, `OUTPUT_NAME` e `PDF_VERSION`.
 
 ## Diagramas e imagens
 
-As fontes Mermaid e PlantUML ficam em `fontes/imagens/diagramas/`. O CI atualiza as
-imagens PNG correspondentes quando necessário. As demais figuras devem ser
-armazenadas na categoria apropriada dentro de `fontes/imagens/` e referenciadas por
-rótulos LaTeX, evitando números de seção ou figura escritos manualmente.
+As fontes Mermaid e PlantUML ficam em `fontes/imagens/diagramas/`. O CI mantém
+em cache um manifesto com o SHA-256 de cada fonte e atualiza somente os PNGs
+novos ou alterados; saídas de fontes removidas também são excluídas. Mudanças na
+versão do renderizador ou no próprio script invalidam os hashes. As demais
+figuras devem ser armazenadas na categoria apropriada dentro de
+`fontes/imagens/` e referenciadas por rótulos LaTeX, evitando números de seção
+ou figura escritos manualmente.
 
 ## Documentos institucionais
 

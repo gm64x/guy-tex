@@ -6,10 +6,13 @@ DEBUG="${DEBUG:-false}"
 
 # Inputs
 DIAGRAMS_DIR="${1:-fontes/imagens/diagramas}"
-CHANGED_FILES_LIST="${2:-changed-files.txt}"
+HASH_MANIFEST="${2:-/tmp/diagram-cache/hashes.tsv}"
+FORCE_ALL="${3:-false}"
 
-mkdir -p "$DIAGRAMS_DIR"
+mkdir -p "$DIAGRAMS_DIR" "$(dirname "$HASH_MANIFEST")"
 DIAGRAMS_DIR_ABS="$(cd "$DIAGRAMS_DIR" && pwd -P)"
+NEW_HASH_MANIFEST="${HASH_MANIFEST}.new"
+: > "$NEW_HASH_MANIFEST"
 
 # Create a puppeteer config to bypass sandbox issues in Linux CI.
 # If the workflow provides PUPPETEER_EXECUTABLE_PATH, use it explicitly.
@@ -41,7 +44,8 @@ if [ "$DEBUG" = "true" ]; then
   echo "DEBUG mode ON"
   echo "DIAGRAMS_DIR=$DIAGRAMS_DIR"
   echo "DIAGRAMS_DIR_ABS=$DIAGRAMS_DIR_ABS"
-  echo "CHANGED_FILES_LIST=$CHANGED_FILES_LIST"
+  echo "HASH_MANIFEST=$HASH_MANIFEST"
+  echo "FORCE_ALL=$FORCE_ALL"
   echo "PLANTUML_JAR=$PLANTUML_JAR"
   echo "PLANTUML_JAR_URL=$PLANTUML_JAR_URL"
   echo "PUPPETEER_EXECUTABLE_PATH=${PUPPETEER_EXECUTABLE_PATH:-}"
@@ -227,63 +231,100 @@ has_plantuml_variant() {
   return 1
 }
 
-render_all_diagrams() {
-  echo "Scanning repository for .mmd and PlantUML files..."
-  find . -maxdepth 6 \( -name "*.mmd" -o -name "*.plantuml" -o -name "*.puml" -o -name "*.uml" \) -print0 |
-    while IFS= read -r -d '' f; do
-      case "$f" in
+output_for_source() {
+  local source="$1"
+  local filename
+  filename=$(basename "$source")
+  printf '%s/%s.png\n' "$DIAGRAMS_DIR" "${filename%.*}"
+}
+
+hash_diagram() {
+  local source="$1"
+  local renderer_version
+
+  case "$source" in
+    *.mmd) renderer_version="mermaid:${MERMAID_CLI_VERSION:-11}" ;;
+    *) renderer_version="plantuml:${PLANTUML_JAR_SHA256:-${PLANTUML_JAR_URL}}" ;;
+  esac
+
+  {
+    printf '%s\n' "$renderer_version"
+    sha256sum "$0" | cut -d ' ' -f 1
+    cat "$source"
+  } | sha256sum | cut -d ' ' -f 1
+}
+
+previous_hash_for() {
+  local source="$1"
+  [ -f "$HASH_MANIFEST" ] || return 0
+  awk -F '\t' -v source="$source" '$2 == source { print $1; exit }' "$HASH_MANIFEST"
+}
+
+record_hash() {
+  printf '%s\t%s\n' "$2" "$1" >> "$NEW_HASH_MANIFEST"
+}
+
+render_if_changed() {
+  local source="$1"
+  local current_hash previous_hash output
+  current_hash=$(hash_diagram "$source")
+  previous_hash=$(previous_hash_for "$source")
+  output=$(output_for_source "$source")
+
+  if [ "$FORCE_ALL" != "true" ] && [ "$current_hash" = "$previous_hash" ] && [ -s "$output" ]; then
+    echo "Unchanged: '$source'"
+    record_hash "$source" "$current_hash"
+    return 0
+  fi
+
+  case "$source" in
+    *.mmd) render_mermaid "$source" ;;
+    *.plantuml|*.puml|*.uml) render_plantuml "$source" ;;
+  esac
+  record_hash "$source" "$current_hash"
+}
+
+remove_orphaned_outputs() {
+  [ -f "$HASH_MANIFEST" ] || return 0
+
+  while IFS=$'\t' read -r _ source || [ -n "${source:-}" ]; do
+    [ -n "${source:-}" ] || continue
+    [ -f "$source" ] && continue
+
+    local filename base output replacement
+    filename=$(basename "$source")
+    base="${filename%.*}"
+    output="$DIAGRAMS_DIR/${base}.png"
+    replacement=$(git ls-files -- "*${base}.mmd" "*${base}.plantuml" "*${base}.puml" "*${base}.uml" | sed -n '1p')
+    if [ -z "$replacement" ] && [ -f "$output" ]; then
+      echo "Removing output whose source was deleted: '$output'"
+      rm -f "$output"
+    fi
+  done < "$HASH_MANIFEST"
+}
+
+render_diagrams() {
+  echo "Scanning repository and comparing diagram hashes..."
+  git ls-files -z -- '*.mmd' '*.plantuml' '*.puml' '*.uml' |
+    sort -z |
+    while IFS= read -r -d '' source; do
+      case "$source" in
         *.mmd)
-          dir=$(dirname "$f")
-          base=$(basename "$f" .mmd)
+          dir=$(dirname "$source")
+          base=$(basename "$source" .mmd)
           if has_plantuml_variant "$dir" "$base"; then
-            echo "::debug::Skipping '$f' because a PlantUML variant exists (prefer PlantUML)"
+            echo "::debug::Skipping '$source' because a PlantUML variant exists (prefer PlantUML)"
             continue
           fi
-          render_mermaid "$f"
-          ;;
-        *.plantuml|*.puml|*.uml)
-          render_plantuml "$f"
           ;;
       esac
+      render_if_changed "$source"
     done
 }
 
-if [ -s "$CHANGED_FILES_LIST" ] && grep -Eq "\.(mmd|plantuml|puml|uml)$" "$CHANGED_FILES_LIST"; then
-  echo "Using detected changed files list: $CHANGED_FILES_LIST"
-  while IFS= read -r f || [ -n "$f" ]; do
-    f="${f//$'\r'/}"
-    [ -z "$f" ] && continue
-    echo "Considering: '$f'"
-    case "$f" in
-      *.mmd)
-        dir=$(dirname "$f")
-        base=$(basename "$f" .mmd)
-        if has_plantuml_variant "$dir" "$base"; then
-          echo "::debug::Skipping '$f' because a PlantUML variant exists (prefer PlantUML)"
-          continue
-        fi
-        if [ -f "$f" ]; then
-          render_mermaid "$f"
-        else
-          echo "::debug::Skipping missing file: $f"
-        fi
-        ;;
-      *.plantuml|*.puml|*.uml)
-        if [ -f "$f" ]; then
-          render_plantuml "$f"
-        else
-          echo "::debug::Skipping missing file: $f"
-        fi
-        ;;
-      *)
-        echo "::debug::Ignoring non-diagram file: $f"
-        ;;
-    esac
-  done < "$CHANGED_FILES_LIST"
-else
-  echo "No diagram files in changed list; rendering all diagrams."
-  render_all_diagrams
-fi
+render_diagrams
+remove_orphaned_outputs
+mv "$NEW_HASH_MANIFEST" "$HASH_MANIFEST"
 
 echo "Done. Rendered files in: $DIAGRAMS_DIR"
 ls -la "$DIAGRAMS_DIR" || true
