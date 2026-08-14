@@ -1,0 +1,46 @@
+name: Build LaTeX PDF
+description: Compile a LaTeX project in a pinned container and export only its PDF
+
+inputs:
+  root-file:
+    description: Root TeX file, relative to the repository
+    default: main.tex
+  output-dir:
+    description: Directory that receives the compiled PDF
+    default: .pdf
+  output-name:
+    description: Name of the exported PDF
+    default: main.pdf
+  pdf-version:
+    description: PDF compatibility version passed to pdfTeX
+    default: "7"
+  cache-scope:
+    description: GitHub Actions cache scope
+    default: latex-build
+  dockerfile:
+    description: Optional Dockerfile path; defaults to the one bundled with this action
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@e468171a9de216ec08956ac3ada2f0791b6bd435 # v3.11.1
+
+    - name: Compile LaTeX
+      uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6.19.2
+      with:
+        context: .
+        file: ${{ inputs.dockerfile || format('{0}/../../../.config/infra/docker/Dockerfile', github.action_path) }}
+        push: false
+        build-args: |
+          LATEX_ROOT=${{ inputs.root-file }}
+          OUTPUT_NAME=${{ inputs.output-name }}
+          PDF_VERSION=${{ inputs.pdf-version }}
+        outputs: type=local,dest=${{ inputs.output-dir }}
+        cache-from: type=gha,scope=${{ inputs.cache-scope }}
+        cache-to: type=gha,mode=max,scope=${{ inputs.cache-scope }}
+
+    - name: Verify PDF
+      shell: bash
+      run: test -s "${{ inputs.output-dir }}/${{ inputs.output-name }}"

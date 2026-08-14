@@ -1,191 +1,118 @@
-name: CI — Validate & Publish
-
-concurrency:
-  group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  DIAGRAMS_DIR: imagens/diagramas
-  MERMAID_CLI_VERSION: "11"
-  PLANTUML_JAR_URL: "https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar"
+name: Build document
 
 on:
   push:
     branches: [main, master]
     paths:
-      - "**/*.mmd"
-      - "**/*.plantuml"
-      - "**/*.puml"
-      - "**/*.uml"
       - "**/*.tex"
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "**/*.mmd"
+      - "**/*.plantuml"
+      - "**/*.puml"
+      - "**/*.uml"
+      - "fontes/imagens/**"
       - "pretextuais/institucionais/*.pdf"
-      - ".github/workflows/ci.yml"
+      - ".config/infra/docker/Dockerfile*"
+      - ".github/actions/**"
       - ".github/scripts/render_diagrams.sh"
+      - ".github/workflows/ci.yml"
   pull_request:
     paths:
-      - "**/*.mmd"
-      - "**/*.plantuml"
-      - "**/*.puml"
-      - "**/*.uml"
       - "**/*.tex"
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "**/*.mmd"
+      - "**/*.plantuml"
+      - "**/*.puml"
+      - "**/*.uml"
+      - "fontes/imagens/**"
       - "pretextuais/institucionais/*.pdf"
-      - ".github/workflows/ci.yml"
+      - ".config/infra/docker/Dockerfile*"
+      - ".github/actions/**"
       - ".github/scripts/render_diagrams.sh"
+      - ".github/workflows/ci.yml"
   workflow_dispatch:
     inputs:
       force_all:
-        description: "Force all stages"
+        description: Render diagrams and compile the document
         type: boolean
         default: false
       force_publish:
-        description: "Force Release creation"
+        description: Publish the compiled PDF as a release
         type: boolean
         default: false
       render_images_only:
-        description: "Only render images and push them"
+        description: Render and commit diagrams without compiling
         type: boolean
         default: false
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+env:
+  DIAGRAMS_DIR: fontes/imagens/diagramas
+
 jobs:
-  detect:
-    name: Detect changes
+  changes:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      pull-requests: read
     outputs:
-      diagrams_changed: ${{ steps.detect.outputs.diagrams_changed }}
-      plantuml_changed: ${{ steps.detect.outputs.plantuml_changed }}
-      mermaid_changed: ${{ steps.detect.outputs.mermaid_changed }}
-      latex_changed: ${{ steps.detect.outputs.latex_changed }}
-      compile_needed: ${{ steps.detect.outputs.compile_needed }}
+      diagrams: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
+      mermaid: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
+      plantuml: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
+      latex: ${{ !inputs.render_images_only && (steps.paths.outputs.latex == 'true' || steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || steps.paths.outputs.build == 'true' || inputs.force_all) }}
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - id: paths
+        uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         with:
-          fetch-depth: 0
-      - name: Classify changed files
-        id: detect
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            git fetch --no-tags --prune --depth=1 origin "${{ github.base_ref }}"
-            git diff --name-only "origin/${{ github.base_ref }}...${{ github.sha }}" > changed-files.txt
-          elif [ "${{ github.event_name }}" = "push" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
-            git diff --name-only "${{ github.event.before }}" "${{ github.sha }}" > changed-files.txt
-          else
-            git ls-files > changed-files.txt
-          fi
-
-          MERMAID=$(grep -Eq '\.mmd$' changed-files.txt && echo true || echo false)
-          PLANTUML=$(grep -Eq '\.(plantuml|puml|uml)$' changed-files.txt && echo true || echo false)
-          LATEX=$(grep -Eq '\.(tex|bib|sty|cls)$|^pretextuais/institucionais/.*\.pdf$' changed-files.txt && echo true || echo false)
-          CI_CONFIG=$(grep -Eq '^\.github/(workflows/ci\.yml|scripts/render_diagrams\.sh)$' changed-files.txt && echo true || echo false)
-          RENDER_ALL=false
-
-          if [[ "${{ inputs.force_all }}" == "true" || "$CI_CONFIG" == "true" ]]; then
-            MERMAID=true; PLANTUML=true; LATEX=true
-            RENDER_ALL=true
-          fi
-          if [[ "${{ inputs.render_images_only }}" == "true" ]]; then
-            MERMAID=true; PLANTUML=true; LATEX=false
-            RENDER_ALL=true
-          fi
-          if [[ "$RENDER_ALL" == "true" ]]; then
-            : > changed-files.txt
-          fi
-
-          DIAGRAMS=false
-          [[ "$MERMAID" == true || "$PLANTUML" == true ]] && DIAGRAMS=true
-
-          COMPILE=false
-          if [[ "${{ inputs.render_images_only }}" != "true" ]] && \
-             [[ "$LATEX" == true || "$DIAGRAMS" == true ]]; then
-            COMPILE=true
-          fi
-
-          echo "diagrams_changed=$DIAGRAMS" >> "$GITHUB_OUTPUT"
-          echo "mermaid_changed=$MERMAID" >> "$GITHUB_OUTPUT"
-          echo "plantuml_changed=$PLANTUML" >> "$GITHUB_OUTPUT"
-          echo "latex_changed=$LATEX" >> "$GITHUB_OUTPUT"
-          echo "compile_needed=$COMPILE" >> "$GITHUB_OUTPUT"
-      - name: Publish change list
-        uses: actions/upload-artifact@v4
-        with:
-          name: change-list
-          path: changed-files.txt
-          if-no-files-found: error
-          retention-days: 1
+          filters: |
+            diagrams:
+              - '**/*.mmd'
+              - '**/*.plantuml'
+              - '**/*.puml'
+              - '**/*.uml'
+            rendering:
+              - '.github/actions/render-diagrams/**'
+              - '.github/scripts/render_diagrams.sh'
+            build:
+              - '.config/infra/docker/Dockerfile*'
+              - '.github/actions/build-latex/**'
+              - '.github/workflows/ci.yml'
+            latex:
+              - '**/*.tex'
+              - '**/*.bib'
+              - '**/*.sty'
+              - '**/*.cls'
+              - 'fontes/imagens/**'
+              - 'pretextuais/institucionais/*.pdf'
 
   diagrams:
-    name: Render diagrams
-    needs: detect
-    if: needs.detect.outputs.diagrams_changed == 'true'
+    needs: changes
+    if: needs.changes.outputs.diagrams == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
       contents: write
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
         with:
           fetch-depth: 0
-      - name: Download change list
-        uses: actions/download-artifact@v4
+      - uses: ./.github/actions/render-diagrams
         with:
-          name: change-list
-      - name: Setup Node.js
-        if: needs.detect.outputs.mermaid_changed == 'true'
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-      - name: Cache Mermaid packages
-        if: needs.detect.outputs.mermaid_changed == 'true'
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: mermaid-${{ runner.os }}-${{ env.MERMAID_CLI_VERSION }}
-          restore-keys: mermaid-${{ runner.os }}-
-      - name: Locate Chrome for Mermaid
-        if: needs.detect.outputs.mermaid_changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          BROWSER_PATH="$(command -v google-chrome-stable || command -v google-chrome || command -v chromium || true)"
-          if [[ -z "$BROWSER_PATH" ]]; then
-            npx --yes @puppeteer/browsers@latest install chrome-headless-shell@stable
-            BROWSER_PATH="$(find "$HOME/.cache/puppeteer" -type f -name chrome-headless-shell -print -quit 2>/dev/null || true)"
-          fi
-          test -n "$BROWSER_PATH" || { echo "::error::Chrome is not available on the runner"; exit 1; }
-          echo "PUPPETEER_EXECUTABLE_PATH=$BROWSER_PATH" >> "$GITHUB_ENV"
-      - name: Setup Java
-        if: needs.detect.outputs.plantuml_changed == 'true'
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-      - name: Setup Graphviz
-        if: needs.detect.outputs.plantuml_changed == 'true'
-        shell: bash
-        run: |
-          set -euo pipefail
-          if ! command -v dot >/dev/null 2>&1; then
-            sudo apt-get update
-            sudo apt-get install -y --no-install-recommends graphviz
-          fi
-          echo "GRAPHVIZ_DOT=$(command -v dot)" >> "$GITHUB_ENV"
-      - name: Render diagram images
-        run: |
-          chmod +x .github/scripts/render_diagrams.sh
-          ./.github/scripts/render_diagrams.sh "$DIAGRAMS_DIR" changed-files.txt
-      - name: Upload rendered diagrams
-        uses: actions/upload-artifact@v4
+          diagrams-dir: ${{ env.DIAGRAMS_DIR }}
+          mermaid: ${{ needs.changes.outputs.mermaid }}
+          plantuml: ${{ needs.changes.outputs.plantuml }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: rendered-diagrams
           path: ${{ env.DIAGRAMS_DIR }}/*.png
@@ -193,75 +120,46 @@ jobs:
           retention-days: 1
       - name: Commit rendered diagrams
         if: github.event_name != 'pull_request'
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "$DIAGRAMS_DIR"/*.png || true
-          if ! git diff --staged --quiet && [[ "$(git log -1 --pretty=%an)" != *"github-actions"* ]]; then
-            git commit -m "chore: auto-render diagrams [skip ci]"
-            git push
+          # Only generated diagram PNGs are allowed in this commit. PDFs and
+          # every build directory remain local/intermediate release data.
+          git add "$DIAGRAMS_DIR"/*.png
+          if git diff --staged --name-only | grep -Eq '(^|/)\.pdf(/|$)'; then
+            echo "::error::Build output was staged; refusing to commit it"
+            git reset
+            exit 1
           fi
+          git diff --staged --quiet && exit 0
+          git commit -m "chore: render diagrams [skip ci]"
+          git push
 
   latex:
-    name: Compile LaTeX
-    needs: [detect, diagrams]
-    if: ${{ always() && needs.detect.outputs.compile_needed == 'true' && (needs.diagrams.result == 'success' || needs.diagrams.result == 'skipped') }}
+    needs: [changes, diagrams]
+    if: always() && needs.changes.outputs.latex == 'true' && contains(fromJSON('["success","skipped"]'), needs.diagrams.result)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     permissions:
-      contents: read
+      contents: write
     steps:
-      - name: Checkout source
-        uses: actions/checkout@v4
-      - name: Download rendered diagrams
-        if: needs.diagrams.result == 'success'
-        uses: actions/download-artifact@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - if: needs.diagrams.result == 'success'
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
           name: rendered-diagrams
           path: ${{ env.DIAGRAMS_DIR }}
-      - name: Compile document
-        uses: xu-cheng/latex-action@v3
+      - uses: ./.github/actions/build-latex
         with:
-          root_file: main.tex
-          args: "-pdf -interaction=nonstopmode -halt-on-error"
-      - name: Upload compilation diagnostics
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: latex-diagnostics
-          path: |
-            main.aux
-            main.blg
-            main.log
-            main.toc
-          if-no-files-found: warn
-          retention-days: 7
-      - name: Upload compiled PDF
-        uses: actions/upload-artifact@v4
-        with:
-          name: compiled-thesis
-          path: main.pdf
-          if-no-files-found: error
-          retention-days: 14
-
-  release:
-    name: Create release
-    needs: [detect, latex]
-    if: ${{ always() && needs.detect.outputs.compile_needed == 'true' && needs.latex.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish == true) }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - name: Download release PDF artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: compiled-thesis
-          path: release
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+          output-dir: .pdf
+      - name: Attach PDF to release
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           tag_name: build-${{ github.run_number }}
           name: Release ${{ github.run_number }}
-          files: release/main.pdf
+          files: .pdf/main.pdf
           generate_release_notes: true
           fail_on_unmatched_files: true

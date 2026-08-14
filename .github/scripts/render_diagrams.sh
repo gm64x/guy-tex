@@ -5,7 +5,7 @@ set -euo pipefail
 DEBUG="${DEBUG:-false}"
 
 # Inputs
-DIAGRAMS_DIR="${1:-imagens/diagramas}"
+DIAGRAMS_DIR="${1:-fontes/imagens/diagramas}"
 CHANGED_FILES_LIST="${2:-changed-files.txt}"
 
 mkdir -p "$DIAGRAMS_DIR"
@@ -31,6 +31,7 @@ fi
 
 PLANTUML_JAR="${PLANTUML_JAR:-/tmp/plantuml.jar}"
 PLANTUML_JAR_URL="${PLANTUML_JAR_URL:-https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar}"
+PLANTUML_JAR_SHA256="${PLANTUML_JAR_SHA256:-}"
 
 echo "::group::Diagram Rendering"
 echo "Working directory: $(pwd)"
@@ -116,6 +117,10 @@ render_mermaid() {
 }
 
 ensure_plantuml_jar() {
+  if [ -f "$PLANTUML_JAR" ] && [ -n "$PLANTUML_JAR_SHA256" ]; then
+    echo "$PLANTUML_JAR_SHA256  $PLANTUML_JAR" | sha256sum --check --status || rm -f "$PLANTUML_JAR"
+  fi
+
   if [ ! -f "$PLANTUML_JAR" ]; then
     mkdir -p "$(dirname "$PLANTUML_JAR")" || true
     echo "Downloading PlantUML jar to $PLANTUML_JAR..."
@@ -123,6 +128,13 @@ ensure_plantuml_jar() {
       echo "::warning::Failed to download PlantUML jar from $PLANTUML_JAR_URL"
       return 1
     fi
+  fi
+
+  if [ -n "$PLANTUML_JAR_SHA256" ] && \
+     ! echo "$PLANTUML_JAR_SHA256  $PLANTUML_JAR" | sha256sum --check --status; then
+    echo "::error::PlantUML jar checksum does not match"
+    rm -f "$PLANTUML_JAR"
+    return 1
   fi
   return 0
 }

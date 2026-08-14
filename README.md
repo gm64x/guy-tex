@@ -13,13 +13,14 @@ da Boa Vista, na modalidade de relatório técnico.
 
 ```text
 main.tex                 documento raiz
-pretextuais/             capa, folha de rosto, documentos institucionais e resumo
 capitulos/               conteúdo textual do relatório
+pretextuais/             capa, folha de rosto, documentos institucionais e resumo
 referencias.bib          referências bibliográficas
-.config/estrutura.sty    configuração do modelo
-.config/abntex2-alf.bst  estilo bibliográfico institucional
-fontes/                  códigos usados nos exemplos
-imagens/                 figuras, experimentos e diagramas
+fontes/codigos/          códigos usados nos exemplos e experimentos
+fontes/imagens/          figuras, experimentos e diagramas
+.config/tex/             configuração e estilo bibliográfico do modelo
+.config/infra/docker/    build reproduzível do documento
+.pdf/                   saída local da compilação (não versionada)
 .github/                 automação de validação e publicação
 ```
 
@@ -29,32 +30,70 @@ e PDFs gerados não devem ser versionados.
 
 ## Validação e PDF
 
-O GitHub Actions é a fonte oficial da validação. O fluxo separa a execução em
-estágios para detectar mudanças, renderizar diagramas, compilar o LaTeX,
-publicar o PDF como artifact e, quando autorizado, criar uma release.
+O GitHub Actions é a fonte oficial da validação. O fluxo detecta os arquivos
+afetados, renderiza diagramas apenas quando necessário, compila o LaTeX e
+publica o PDF como artifact e release. Actions de terceiros são fixadas por
+commit e o cache do BuildKit é compartilhado entre execuções.
 
-Em uma execução concluída, o PDF pode ser obtido na seção **Artifacts** com o
-nome `compiled-thesis`. Pull requests validam o documento sem publicar release.
+Em uma execução concluída na branch principal, o PDF é anexado diretamente à
+**Release** criada pelo workflow. Pull requests validam o documento sem
+publicar release nem versionar o PDF.
 O acionamento manual permite forçar todos os estágios, renderizar somente as
 imagens ou autorizar a publicação.
 
-## Compilação local opcional
+## Compilação local
 
-Para inspeções locais, use uma distribuição com `abnTeX2`, BibTeX e `latexmk`:
+O build reproduzível usa Docker e exporta somente o PDF final:
 
 ```bash
-latexmk -pdf main.tex
-latexmk -c
+docker buildx build \
+  --file .config/infra/docker/Dockerfile \
+  --output type=local,dest=.pdf \
+  .
 ```
 
-A aceitação do documento continua sendo determinada pelo CI, que executa a
-mesma entrada `main.tex` em ambiente reproduzível.
+O resultado fica em `.pdf/main.pdf`. O mesmo Dockerfile é usado pelo CI,
+evitando diferenças entre a compilação local e a publicada pelo GitHub Actions.
+O estágio de compilação usa Debian por sua compatibilidade com os pacotes do
+TeX Live; o estágio entregue usa `scratch` e contém somente o PDF.
+
+O Dockerfile também aceita projetos com outro arquivo raiz ou nome de saída:
+
+```bash
+docker buildx build \
+  --build-arg LATEX_ROOT=relatorio.tex \
+  --build-arg OUTPUT_NAME=relatorio.pdf \
+  --file .config/infra/docker/Dockerfile \
+  --output type=local,dest=.pdf \
+  .
+```
+
+## Action reutilizável
+
+A Action de build pode ser usada em outro repositório LaTeX. Após publicar uma
+tag estável deste repositório, referencie-a assim (em projetos de terceiros,
+prefira trocar `v1` pelo SHA completo da versão revisada):
+
+```yaml
+steps:
+  - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+  - uses: gm64x/guy-tex/.github/actions/build-latex@v1
+    with:
+      root-file: main.tex
+      output-dir: .pdf
+      output-name: main.pdf
+```
+
+Ela configura o Buildx, reaproveita o cache do GitHub Actions, usa o Dockerfile
+versionado neste projeto e verifica se o PDF foi realmente gerado. Um
+Dockerfile próprio também pode ser informado pelo input `dockerfile`, desde que
+aceite os argumentos `LATEX_ROOT`, `OUTPUT_NAME` e `PDF_VERSION`.
 
 ## Diagramas e imagens
 
-As fontes Mermaid e PlantUML ficam em `imagens/diagramas/`. O CI atualiza as
+As fontes Mermaid e PlantUML ficam em `fontes/imagens/diagramas/`. O CI atualiza as
 imagens PNG correspondentes quando necessário. As demais figuras devem ser
-armazenadas na categoria apropriada dentro de `imagens/` e referenciadas por
+armazenadas na categoria apropriada dentro de `fontes/imagens/` e referenciadas por
 rótulos LaTeX, evitando números de seção ou figura escritos manualmente.
 
 ## Documentos institucionais

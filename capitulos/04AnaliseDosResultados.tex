@@ -13,7 +13,7 @@ A ferramenta SonarQube (Figura \ref{fig:sonarqube_screen}) é uma plataforma de 
 \begin{figure}[H]
     \centering
     \caption{Captura de tela da interface do SonarQube.}
-    \includegraphics[width=0.75\linewidth]{imagens/ferramentas/sonarqube.png}
+    \includegraphics[width=0.75\linewidth]{fontes/imagens/ferramentas/sonarqube.png}
     \fonte{Adaptado de SonarSource (2026).}
     \label{fig:sonarqube_screen}
 \end{figure}
@@ -32,7 +32,7 @@ O Codacy (Figura \ref{fig:codacy_dashboard}) é uma plataforma de análise está
 \begin{figure}[H]
     \centering
     \caption{Interface do painel de monitoramento do Codacy.}
-    \includegraphics[width=0.5\linewidth]{imagens/ferramentas/codacy.png}
+    \includegraphics[width=0.5\linewidth]{fontes/imagens/ferramentas/codacy.png}
     \label{fig:codacy_dashboard}
     \fonte{Documentação oficial do Codacy (2026).}
 \end{figure}
@@ -48,7 +48,7 @@ O ESLint (Figura \ref{fig:eslint_playground_demo}) é um \textit{linter} plugáv
 \begin{figure}[H]
     \centering
     \caption{Playground do ESLint exibindo a identificação de erros de sintaxe e estilo.}
-    \includegraphics[width=0.75\linewidth]{imagens/ferramentas/eslint.png}
+    \includegraphics[width=0.75\linewidth]{fontes/imagens/ferramentas/eslint.png}
     \fonte{Adaptado de ESLint (2026).}
     \label{fig:eslint_playground_demo}
 \end{figure}
@@ -58,7 +58,6 @@ Além de oferecer correção automática (\textit{auto-fix}) e um ecossistema ex
 Apesar dessas vantagens, a ferramenta possui limitações técnicas. A avaliação do ESLint é orientada principalmente à análise estática de arquivos e regras configuradas no projeto, o que limita a identificação de problemas que dependem de interações complexas entre módulos, execução real ou dependências externas \cite{rafnsson2020fixing}. Sua análise não cobre comportamentos que dependem da execução do programa ou de suas dependências externas \cite{tomasdottir2017why, bhutani2024analysing}. Além disso, a complexidade de configuração e a ausência de provas formais de correção podem gerar falsos positivos; o excesso de avisos pode contribuir para a ``fadiga de alertas'' e reduzir a confiança na análise \cite{tomasdottir2020adoption, rafnsson2020fixing, pfeiffer2022technical}.
 
 Para a análise da estrutura lógica, essa restrição é relevante. Embora possua regras para alertar quando a complexidade ciclomática de uma função excede um limite pré-estabelecido, o ESLint não tem como foco apresentar uma visualização interativa do fluxo de execução do algoritmo \cite{eslint}. Assim, a compreensão estrutural fica limitada a alertas e diagnósticos textuais, sem uma visualização gráfica do fluxo de controle.
-
 
 \section{Levantamento de Requisitos da Ferramenta GUY}
 
@@ -110,7 +109,7 @@ Essa proposta materializa os requisitos descritos nas Tabelas \ref{tab:requisito
 \begin{figure}[H]
   \centering
     \caption{Diagrama de casos de uso da Ferramenta GUY.}
-  \includegraphics[width=0.65\linewidth]{imagens/diagramas/diagrama_casos_uso_guy.png}
+  \includegraphics[width=0.65\linewidth]{fontes/imagens/diagramas/diagrama-casos-uso-guy.png}
   \fonte{Elaborada pelo autor.}
   \label{fig:casos_uso_GUY}
 \end{figure}
@@ -120,13 +119,12 @@ O diagrama da Figura \ref{fig:casos_uso_GUY} representa o ator \textit{Usuário}
 \begin{figure}[H]
   \centering
     \caption{Diagrama de cenários (sequência) da Ferramenta GUY.}
-  \includegraphics[width=0.85\linewidth]{imagens/diagramas/diagrama_cenarios_guy.png}
+  \includegraphics[width=0.85\linewidth]{fontes/imagens/diagramas/diagrama-cenarios-guy.png}
   \fonte{Elaborada pelo autor.}
   \label{fig:cenarios_GUY}
 \end{figure}
 
 O diagrama de sequência da Figura \ref{fig:cenarios_GUY} apresenta quatro participantes: Usuário, VS Code, Extensão GUY e Painel lateral. No primeiro cenário, o usuário abre um arquivo de código-fonte no VS Code, aciona a extensão com o editor em foco, a extensão analisa o código localmente, abre o painel lateral e o painel exibe o GFC e o valor de \(V(G)\). No segundo cenário, o usuário seleciona um vértice ou uma aresta do GFC no painel, o painel envia o elemento selecionado à extensão, a extensão identifica o trecho correspondente no código, solicita ao VS Code o deslocamento do cursor para a região relacionada e o editor destaca o trecho correspondente. O resultado final representado é a visualização inicial do grafo com a métrica e, em seguida, a navegação interativa entre o grafo e o código-fonte.
-
 
 \section{Implementação da Ferramenta GUY}
 \label{sec:implementacao_guy}
@@ -614,7 +612,7 @@ A Figura \ref{fig:vscode_grafo_GUY} apresenta apenas a organização geral do pa
 \begin{figure}[H]
     \centering
     \caption{GFC gerado pelo GUY no VS Code.}
-    \includegraphics[width=0.85\linewidth]{imagens/ferramentas/guy-vscode.png}
+    \includegraphics[width=0.85\linewidth]{fontes/imagens/ferramentas/guy-vscode.png}
     \fonte{Elaborada pelo autor.}
     \label{fig:vscode_grafo_GUY}
 \end{figure}
@@ -623,7 +621,7 @@ A Figura \ref{fig:vscode_grafo_GUY} apresenta apenas a organização geral do pa
 
 O primeiro experimento utiliza o arquivo \texttt{cap04-loop.py}. O objetivo é verificar se a ferramenta representa corretamente um laço \texttt{while} contendo duas estruturas condicionais internas, uma com \texttt{continue} e outra com \texttt{break}. Esse cenário é importante porque envolve desvios que alteram o fluxo normal da iteração.
 
-\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento I.}]{fontes/cap04-loop.py}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento I.}]{fontes/codigos/experimento-01-laco.py}
 \label{lst:experimento1_codigo}
 
 A Figura \ref{fig:gfc_experimento_i} apresenta o GFC produzido
@@ -634,7 +632,7 @@ e \texttt{break}.
     \centering
     \includegraphics[
         width=\linewidth,
-    ]{imagens/experimentos/gfc-experimento-i.png}
+    ]{fontes/imagens/experimentos/gfc-experimento-01.png}
     \caption{GFC gerado pelo GUY no Experimento I.}
     \fonte{Elaborada pelo autor.}
     \label{fig:gfc_experimento_i}
@@ -665,7 +663,7 @@ Na reconstrução manual foram contados: \texttt{Entry}; inicialização; condi�
 
 O segundo experimento utiliza o arquivo \texttt{cap04-condicional.py}. O objetivo é validar o comportamento da ferramenta diante de uma estrutura condicional simples, composta por um \texttt{if}, um \texttt{else} e uma instrução executada após a junção dos dois ramos.
 
-\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento II.}]{fontes/cap04-condicional.py}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento II.}]{fontes/codigos/experimento-02-condicional.py}
 \label{lst:experimento2_codigo}
 
 Nesse caso, a ferramenta cria um nó de decisão para a condição \texttt{x > 5}, duas saídas para representar os ramos verdadeiro e falso e um nó de junção antes da continuidade do fluxo para o comando final.
@@ -676,7 +674,7 @@ A Figura \ref{fig:gfc_experimento_ii} apresenta o GFC produzido pelo GUY para o 
     \centering
     \includegraphics[
         width=\linewidth,
-    ]{imagens/experimentos/gfc-experimento-ii.png}
+    ]{fontes/imagens/experimentos/gfc-experimento-02.png}
     \caption{GFC gerado pelo GUY no Experimento II.}
     \fonte{Elaborada pelo autor.}
     \label{fig:gfc_experimento_ii}
@@ -705,7 +703,7 @@ A Complexidade Ciclomática calculada é \(V(G) = 8 - 8 + 2 \times 1 = 2\), repr
 
 O terceiro experimento utiliza o arquivo \texttt{cap04-total.py}, analisando especificamente a função \texttt{calculate\_total}. O objetivo é verificar o comando de geração do GFC a partir da função atual, bem como a representação combinada de laço \texttt{for}, condicional \texttt{if} e retorno de valor.
 
-\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento III.}]{fontes/cap04-total.py}
+\lstinputlisting[language=Python, numbers=left, caption={Código utilizado no Experimento III.}]{fontes/codigos/experimento-03-completo.py}
 \label{lst:experimento3_codigo}
 
 Ao posicionar o cursor dentro da função e executar o comando \texttt{GUY: Generate CFG from Current Function}, a extensão restringe a análise ao corpo da função selecionada. O grafo resultante contém a inicialização da variável, a condição de iteração do \texttt{for}, a decisão interna do \texttt{if}, o retorno ao laço e o comando \texttt{return} conectado ao nó de saída.
@@ -718,7 +716,7 @@ A Figura \ref{fig:gfc_experimento_iii} apresenta o GFC produzido pelo GUY para o
         width=\linewidth,
         trim={10 20 10 20},
         clip
-    ]{imagens/experimentos/gfc-experimento-iii.png}
+    ]{fontes/imagens/experimentos/gfc-experimento-03.png}
     \caption{GFC gerado pelo GUY no Experimento III.}
     \fonte{Elaborada pelo autor.}
     \label{fig:gfc_experimento_iii}
