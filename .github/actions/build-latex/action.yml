@@ -32,13 +32,18 @@ runs:
       shell: bash
       run: |
         set -euo pipefail
+        dockerfile_path="${{ inputs.dockerfile }}"
+        if [ -z "$dockerfile_path" ]; then
+          dockerfile_path="${{ github.action_path }}/../../../.config/infra/docker/Dockerfile"
+        fi
         repository_hash="$({
           printf '%s\0' \
             "${{ inputs.root-file }}" \
             "${{ inputs.output-name }}" \
             "${{ inputs.pdf-version }}" \
-            "${{ inputs.dockerfile }}"
+            "$dockerfile_path"
           git ls-files -z | sort -z | xargs -0 sha256sum --
+          sha256sum "$dockerfile_path"
         } | sha256sum | cut -d ' ' -f 1)"
         echo "hash=$repository_hash" >> "$GITHUB_OUTPUT"
 
@@ -65,8 +70,8 @@ runs:
           OUTPUT_NAME=${{ inputs.output-name }}
           PDF_VERSION=${{ inputs.pdf-version }}
         outputs: type=local,dest=${{ inputs.output-dir }}
-        cache-from: type=gha,scope=${{ inputs.cache-scope }}
-        cache-to: type=gha,mode=max,scope=${{ inputs.cache-scope }}
+        cache-from: ${{ env.ACT == 'true' && '' || format('type=gha,scope={0}', inputs.cache-scope) }}
+        cache-to: ${{ env.ACT == 'true' && '' || format('type=gha,mode=max,scope={0}', inputs.cache-scope) }}
 
     - name: Verify PDF
       shell: bash

@@ -59,6 +59,19 @@ evitando diferenças entre a compilação local e a publicada pelo GitHub Action
 O estágio de compilação usa Debian por sua compatibilidade com os pacotes do
 TeX Live; o estágio entregue usa `scratch` e contém somente o PDF.
 
+Com [mise](https://mise.jdx.dev/) instalado, os checks locais ficam disponíveis:
+
+```bash
+mise install
+mise run lint       # actionlint + sintaxe Bash
+mise run build      # compilação pelo Docker
+mise run test       # lint + build
+mise run test:act   # simulação do workflow com act
+```
+
+`mise run test:act` exige Docker e uma imagem compatível com `act`. A simulação
+marca `ACT=true`, portanto não faz push de diagramas nem publica releases.
+
 O Dockerfile também aceita projetos com outro arquivo raiz ou nome de saída:
 
 ```bash

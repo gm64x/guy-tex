@@ -1,0 +1,19 @@
+[tools]
+actionlint = "latest"
+act = "latest"
+
+[tasks.lint]
+description = "Validate GitHub Actions and rendering script"
+run = "actionlint && bash -n .github/scripts/render_diagrams.sh"
+
+[tasks.build]
+description = "Build the PDF with the CI Dockerfile"
+run = "docker buildx build --file .config/infra/docker/Dockerfile --output type=local,dest=.pdf ."
+
+[tasks.test]
+description = "Run local static checks and the Docker build"
+depends = ["lint", "build"]
+
+[tasks."test:act"]
+description = "Simulate the LaTeX workflow locally with act"
+run = "act workflow_dispatch --job latex --input force_all=true --env ACT=true --artifact-server-path .act-artifacts"

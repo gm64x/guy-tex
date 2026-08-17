@@ -8,6 +8,8 @@ DEBUG="${DEBUG:-false}"
 DIAGRAMS_DIR="${1:-fontes/imagens/diagramas}"
 HASH_MANIFEST="${2:-/tmp/diagram-cache/hashes.tsv}"
 FORCE_ALL="${3:-false}"
+RENDER_MERMAID="${4:-true}"
+RENDER_PLANTUML="${5:-true}"
 
 mkdir -p "$DIAGRAMS_DIR" "$(dirname "$HASH_MANIFEST")"
 DIAGRAMS_DIR_ABS="$(cd "$DIAGRAMS_DIR" && pwd -P)"
@@ -310,12 +312,18 @@ render_diagrams() {
     while IFS= read -r -d '' source; do
       case "$source" in
         *.mmd)
+          [ "$RENDER_MERMAID" = "true" ] || continue
           dir=$(dirname "$source")
           base=$(basename "$source" .mmd)
           if has_plantuml_variant "$dir" "$base"; then
             echo "::debug::Skipping '$source' because a PlantUML variant exists (prefer PlantUML)"
             continue
           fi
+          ;;
+      esac
+      case "$source" in
+        *.plantuml|*.puml|*.uml)
+          [ "$RENDER_PLANTUML" = "true" ] || continue
           ;;
       esac
       render_if_changed "$source"

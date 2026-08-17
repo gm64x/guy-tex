@@ -39,6 +39,7 @@ latexmkrc
 # Build directories
 _build/
 _dist/
+.act-artifacts/
 
 # Local agent instructions
 .agents/

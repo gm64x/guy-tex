@@ -8,6 +8,8 @@ on:
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "**/*.bst"
+      - "fontes/codigos/**"
       - "**/*.mmd"
       - "**/*.plantuml"
       - "**/*.puml"
@@ -24,6 +26,8 @@ on:
       - "**/*.bib"
       - "**/*.sty"
       - "**/*.cls"
+      - "**/*.bst"
+      - "fontes/codigos/**"
       - "**/*.mmd"
       - "**/*.plantuml"
       - "**/*.puml"
@@ -69,7 +73,7 @@ jobs:
       diagrams: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
       mermaid: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
       plantuml: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
-      latex: ${{ !inputs.render_images_only && (steps.paths.outputs.latex == 'true' || steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || steps.paths.outputs.build == 'true' || inputs.force_all) }}
+      latex: ${{ !inputs.render_images_only && (steps.paths.outputs.latex == 'true' || steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || steps.paths.outputs.build == 'true' || inputs.force_all || inputs.force_publish) }}
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - id: paths
@@ -93,6 +97,8 @@ jobs:
               - '**/*.bib'
               - '**/*.sty'
               - '**/*.cls'
+              - '**/*.bst'
+              - 'fontes/codigos/**'
               - 'fontes/imagens/**'
               - 'pretextuais/institucionais/*.pdf'
 
@@ -120,7 +126,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
       - name: Commit rendered diagrams
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && env.ACT != 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -157,7 +163,7 @@ jobs:
           output-dir: .pdf
           force-build: ${{ inputs.force_all }}
       - name: Attach PDF to release
-        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || inputs.force_publish) && env.ACT != 'true'
         uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           tag_name: build-${{ github.run_number }}
