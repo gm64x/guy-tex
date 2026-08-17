@@ -71,7 +71,7 @@ jobs:
       plantuml: ${{ steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || inputs.force_all || inputs.render_images_only }}
       latex: ${{ !inputs.render_images_only && (steps.paths.outputs.latex == 'true' || steps.paths.outputs.diagrams == 'true' || steps.paths.outputs.rendering == 'true' || steps.paths.outputs.build == 'true' || inputs.force_all) }}
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - id: paths
         uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         with:
@@ -104,7 +104,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           fetch-depth: 0
       - uses: ./.github/actions/render-diagrams
@@ -146,7 +146,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - if: needs.diagrams.result == 'success'
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:

@@ -78,7 +78,7 @@ prefira trocar `v1` pelo SHA completo da versão revisada):
 
 ```yaml
 steps:
-  - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+  - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
   - uses: gm64x/guy-tex/.github/actions/build-latex@v1
     with:
       root-file: main.tex

@@ -244,7 +244,7 @@ hash_diagram() {
 
   case "$source" in
     *.mmd) renderer_version="mermaid:${MERMAID_CLI_VERSION:-11}" ;;
-    *) renderer_version="plantuml:${PLANTUML_JAR_SHA256:-${PLANTUML_JAR_URL}}" ;;
+    *) renderer_version="plantuml:${PLANTUML_JAR_SHA256:-${PLANTUML_JAR_URL}}:$("${GRAPHVIZ_DOT:-dot}" -V 2>&1)" ;;
   esac
 
   {
